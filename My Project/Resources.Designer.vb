@@ -11,6 +11,7 @@
 Option Strict On
 Option Explicit On
 
+Imports System
 
 Namespace My.Resources
 
@@ -54,7 +55,7 @@ Namespace My.Resources
       Get
         Return resourceCulture
       End Get
-      Set(ByVal value As Global.System.Globalization.CultureInfo)
+      Set
         resourceCulture = value
       End Set
     End Property
