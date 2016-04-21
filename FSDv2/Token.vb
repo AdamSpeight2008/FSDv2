@@ -112,8 +112,7 @@ Public Structure Source
   End Sub
 
   Public Function First() As Position?
-    If Length = 0 Then Return Nothing
-    Return Position.Create(Me, 0)
+    Return Position.Create(Me, If(Length <= 0, -1, 0))
   End Function
 
   Default Friend ReadOnly Property Chars(Index As Integer) As Char?
@@ -282,7 +281,7 @@ Public Structure Source
     End Function
 
     Public Overrides Function ToString() As String
-      Return $"{Start} : {Size}"
+      Return $"({Start,3} : {Size,3})"
     End Function
 
     Iterator Function GetChars() As IEnumerable(Of Char?)
@@ -334,7 +333,7 @@ End Class
 Public Class Tokens
   Public Shared ReadOnly Property Empty As Tokens = New Tokens()
   Private ReadOnly Property _Tokens As Token()
-  Private ReadOnly Property Count As Integer
+  Public ReadOnly Property Count As Integer
 
   Private Sub New(Optional Tokens As IEnumerable(Of Token) = Nothing)
     If Tokens Is Nothing Then Me._Tokens = Array.Empty(Of Token) Else Me._Tokens = Tokens.ToArray
@@ -345,6 +344,7 @@ Public Class Tokens
     If (T0 Is Nothing) OrElse (T1 Is Nothing) Then Throw New Exception
     Return New Tokens(Enumerable.Repeat(T0, 1).Concat(Enumerable.Repeat(T1, 1)))
   End Function
+
 
   Public Function GetEnumerator() As IEnumerable(Of Token)
     Return _Tokens.AsEnumerable
