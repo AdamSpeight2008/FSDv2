@@ -64,6 +64,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tokens\FormatString\FormatString.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -79,7 +80,18 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ParseError.vb" />
+    <Compile Include="Resync\ResyncPoint.vb" />
+    <Compile Include="Resync\ResyncPoints.vb" />
+    <Compile Include="Source\Position.vb" />
+    <Compile Include="Source\Source.vb" />
+    <Compile Include="Source\Span.vb" />
     <Compile Include="Token.vb" />
+    <Compile Include="Tokens\FormatString\ArgHole\ArgHole.vb" />
+    <Compile Include="Tokens\Common\Common.vb" />
+    <Compile Include="Tokens\Symbol\Symbol.vb" />
+    <Compile Include="Tokens\FormatString\Text\Text.vb" />
+    <Compile Include="Tokens\Tokens.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
