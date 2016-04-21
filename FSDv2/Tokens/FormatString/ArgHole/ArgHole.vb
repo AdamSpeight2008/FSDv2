@@ -8,19 +8,18 @@
     Public Shared Function TryParse(Ix As Source.Position) As Token
       If Ix.IsInvalid Then Return Nothing
       Dim T As Token = Common.Brace.Opening.TryParse(Ix)
-      If T Is Nothing Then Return Nothing
       Dim sx = Ix
       Dim txn = Tokens.Empty : txn = Common.AddThenNext(T, txn, Ix)
-      T = ArgHole.Index.TryParse(Ix) : If T Is Nothing Then Return Nothing
-      txn = Common.AddThenNext(T, txn, Ix)
+      T = ArgHole.Index.TryParse(Ix)
+      If T IsNot Nothing Then txn = Common.AddThenNext(T, txn, Ix)
       T = ArgHole.Align.TryParse(Ix)
       If T IsNot Nothing Then txn = Common.AddThenNext(T, txn, Ix)
       T = ArgHole.Format.TryParse(Ix)
       If T IsNot Nothing Then txn = Common.AddThenNext(T, txn, Ix)
       T = Common.Brace.Closing.TryParse(Ix)
-      If T Is Nothing Then Return Nothing
       txn = Common.AddThenNext(T, txn, Ix)
       Return New ArgHole(sx.To(Ix), txn)
+      ' Checking for the valid tokens is left the Analysis (TODO)
     End Function
 
     Public Class Index : Inherits Token

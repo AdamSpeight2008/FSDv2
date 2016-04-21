@@ -1,4 +1,5 @@
 ﻿Imports FSDv2
+Imports System.Runtime.CompilerServices
 
 
 Module Module1
@@ -7,26 +8,37 @@ Module Module1
     '           0         1         2         3         4         5         6         7         8
     '           012345678901234567890123456789012345678901234567890123456789012345678901234567890
     Dim Text = "{}"
-    'Text = "}  {1 , -123 : {{ABC}} }  {1 , -123 : {{ABC}} {} "
-    'Text = " {0001234567   } {0001234567, 0007654321} {0001234567, -0007654321}{0001234567, 0007654321 : XX44} {0001234567, -7654321 : XX44} {0001234567 : XX44} "
     Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
     Dim Ix = TheSource.First
-    'Dim T0 = FormatString.ArgHole.Index.TryParse(Ix)
-    'Dim T1 = FormatString.ArgHole.Align.TryParse(T0.Span.Next)
-    'Dim T2 = FormatString.ArgHole.Format.TryParse(T1.Span.Next)
-    ' Dim T3 = ArgHole.TryParse(Ix)
-    'Dim Txt = TryCast(T3.Inner.Tokens(3).Inner.Tokens(1).Inner.Tokens(0), ArgHole.Text)
-
-
-    'Dim rp0 = New ResyncPoint(AddressOf FormatString.Common.Digits.TryParse, Nothing) + New ResyncPoint(AddressOf FormatString.ArgHole.Align.Comma.TryParse, Nothing) +
-    '          New ResyncPoint(AddressOf FormatString.ArgHole.Format.Colon.TryParse, Nothing) + New ResyncPoint(AddressOf FormatString.Common.Brace.Closing.TryParse, Nothing)
-    '  Dim res = rp0.TryToResync(Ix)
-    Dim sw = Diagnostics.Stopwatch.StartNew
-    Dim T4 = FormatString.TryParse(Ix)
-    sw.Stop()
-    Console.WriteLine(sw.Elapsed.TotalMilliseconds.ToString)
+    'Dim sw = Diagnostics.Stopwatch.StartNew
+    Dim ParseResult = FormatString.TryParse(Ix)
+    Console.WriteLine($"Input:=[{Text}]")
+    Dim Actual = ParseResult.AsString
+    Console.WriteLine($"Output:= {Actual}")
+    'sw.Stop()
+    '    Console.WriteLine(sw.Elapsed.TotalMilliseconds.ToString)
 
   End Sub
 
 End Module
 
+
+Public Module Exts
+  <Extension>
+  Public Function AsString(Tk As Token) As String
+    If Tk Is Nothing Then Return "{Nothing}"
+    Dim sb As New Text.StringBuilder
+    _AsString(Tk, sb, 0)
+    Return sb.ToString
+  End Function
+
+  Private Sub _AsString(Tk As Token, sb As Text.StringBuilder, level As Integer)
+    sb.AppendLine($"{Space(level * 2)}{Tk.Span.ToString} {Tk.GetType.FullName}")
+    For i = 0 To Tk.Inner.Count - 1
+      sb.Append(Space(level * 2))
+      sb.Append($"[{i,2}]")
+      _AsString(Tk.Inner(i), sb, level + 1)
+    Next
+  End Sub
+
+End Module

@@ -1,0 +1,2 @@
+﻿
+Why is "{}" not being parsed as an ArgHole?, that is empty?

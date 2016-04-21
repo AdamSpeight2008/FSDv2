@@ -13,7 +13,7 @@ Public Module Exts
   End Function
 
   Private Sub _AsString(Tk As Token, sb As StringBuilder, level As Integer)
-    sb.AppendLine($"{Space(level * 2)}{Tk.Span.ToString} {Tk.GetType.Name}")
+    sb.AppendLine($"{Space(level * 2)}{Tk.Span.ToString} {Tk.GetType.FullName}")
     For i = 0 To Tk.Inner.Count - 1
       sb.Append(Space(level * 2))
       sb.Append($"[{i,2}]")
