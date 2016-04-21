@@ -43,8 +43,21 @@ Public Class FSDv2_UnitTests
     Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
     Dim Text = ParseResult.AsString()
     Dim Expected =
-"(  0 :   3) FormatString
-[ 0]  (  0 :   3) Text
+"(  0:  3) FormatString
+[ 0]  (  0:  3) Text
+"
+    Assert.AreEqual(Expected, Text)
+  End Sub
+
+  <TestMethod>
+  Public Sub _02_Text_Brace_Closing()
+    Dim TheText = "}"
+    Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim Text = ParseResult.AsString()
+    Dim Expected =
+"(  0:  1) FormatString
+[ 0]  (  0:  1) ParseError
 "
     Assert.AreEqual(Expected, Text)
   End Sub

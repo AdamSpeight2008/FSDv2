@@ -281,7 +281,7 @@ Public Structure Source
     End Function
 
     Public Overrides Function ToString() As String
-      Return $"({Start,3} : {Size,3})"
+      Return $"({Start,3}:{Size,3})"
     End Function
 
     Iterator Function GetChars() As IEnumerable(Of Char?)
