@@ -5,7 +5,7 @@
     Public Class Whitespace : Inherits Token
 
       Private Sub New(Span As Source.Span)
-        MyBase.New(Span)
+        MyBase.New(TokenKind.Whitespace, Span)
       End Sub
 
       Public Shared Function TryParse(Ix As Source.Position) As Whitespace
@@ -18,7 +18,7 @@
     Public Class Whitespaces : Inherits Token
 
       Private Sub New(Span As Source.Span, Inner As Tokens)
-        MyBase.New(Span, Inner)
+        MyBase.New(TokenKind.Whitespaces, Span, Inner)
       End Sub
 
       Public Shared Function TryParse(Ix As Source.Position) As Whitespaces
@@ -41,7 +41,7 @@
     Public Class Digit : Inherits Token
 
       Private Sub New(Span As Source.Span)
-        MyBase.New(Span)
+        MyBase.New(TokenKind.Digit, Span)
       End Sub
 
       Public Shared Function TryParse(Ix As Source.Position) As Digit
@@ -60,7 +60,7 @@
     Public Class Digits : Inherits Token
 
       Private Sub New(Span As Source.Span, Inner As Tokens)
-        MyBase.New(Span, Inner)
+        MyBase.New(TokenKind.Digits, Span, Inner)
       End Sub
 
       Public Shared Function TryParse(Ix As Source.Position) As Digits
@@ -82,7 +82,7 @@
     Public Class HexDigit : Inherits Token
 
       Private Sub New(Span As Source.Span)
-        MyBase.New(Span)
+        MyBase.New(TokenKind.HexDigit, Span)
       End Sub
 
       Public Shared Function TryParse(Ix As Source.Position) As HexDigit
@@ -101,7 +101,7 @@
     Public Class HexDigits : Inherits Token
 
       Friend Sub New(Span As Source.Span, Inner As Tokens)
-        MyBase.New(Span, Inner)
+        MyBase.New(TokenKind.HexDigits, Span, Inner)
       End Sub
 
       'Public Shared Function TryParse(Ix As Source.Position) As HexDigits
@@ -123,8 +123,8 @@
 
     MustInherit Class Brace : Inherits Token
 
-      Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
-        MyBase.New(Span, Inner)
+      Friend Sub New(Kind As TokenKind, Span As Source.Span, Optional Inner As Tokens = Nothing)
+        MyBase.New(Kind, Span, Inner)
       End Sub
 
       Public Shared Function TryParse(Ix As Source.Position) As Token
@@ -145,7 +145,7 @@
       Public Class Opening : Inherits Brace
 
         Friend Sub New(Span As Source.Span)
-          MyBase.New(Span)
+          MyBase.New(TokenKind.Brace_Opening, Span)
         End Sub
 
         Public Shared Shadows Function TryParse(Ix As Source.Position) As Opening
@@ -157,7 +157,7 @@
       Public Class Closing : Inherits Brace
 
         Friend Sub New(Span As Source.Span)
-          MyBase.New(Span)
+          MyBase.New(TokenKind.Brace_Closing, Span)
         End Sub
 
         Public Shared Shadows Function TryParse(Ix As Source.Position) As Closing
@@ -171,7 +171,7 @@
         Public Class Opening : Inherits Brace
 
           Friend Sub New(Span As Source.Span, Inner As Tokens)
-            MyBase.New(Span, Inner)
+            MyBase.New(TokenKind.Esc_Brace_Opening, Span, Inner)
           End Sub
 
           Public Shared Shadows Function TryParse(Ix As Source.Position) As Esc.Opening
@@ -183,7 +183,7 @@
         Public Class Closing : Inherits Brace
 
           Friend Sub New(Span As Source.Span, Inner As Tokens)
-            MyBase.New(Span, Inner)
+            MyBase.New(TokenKind.Esc_Brace_Closing, Span, Inner)
           End Sub
 
           Public Shared Shadows Function TryParse(Ix As Source.Position) As Esc.Closing
@@ -194,13 +194,13 @@
 
         Public Class SeqHead : Inherits Token
           Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
-            MyBase.New(Span, Inner)
+            MyBase.New(TokenKind.Esc_Seq_Head, Span, Inner)
           End Sub
         End Class
 
         Public MustInherit Class Sequence : Inherits Token
-          Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
-            MyBase.New(Span, Inner)
+          Friend Sub New(Kind As TokenKind, Span As Source.Span, Optional Inner As Tokens = Nothing)
+            MyBase.New(Kind, Span, Inner)
           End Sub
 
           Public Shared Function TryParse(Ix As Source.Position) As Esc.Sequence
@@ -226,13 +226,13 @@
 
           Public Class Simple : Inherits Esc.Sequence
             Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
-              MyBase.New(Span, Inner)
+              MyBase.New(TokenKind.Esc_Seq_Simple, Span, Inner)
             End Sub
           End Class
 
           Public Class Unicode : Inherits Esc.Sequence
             Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
-              MyBase.New(Span, Inner)
+              MyBase.New(TokenKind.Esc_Seq_Unicode, Span, Inner)
             End Sub
 
             Private Shared Function Backslash_UpperU(Ix As Source.Position) As Esc.Sequence
@@ -303,7 +303,7 @@
 
           Public Class HexaDecimal : Inherits Esc.Sequence
             Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
-              MyBase.New(Span, Inner)
+              MyBase.New(TokenKind.Esc_Seq_Unicode, Span, Inner)
             End Sub
             Public Shared Shadows Function TryParse(Ix As Source.Position) As Esc.Sequence.HexaDecimal
               If Ix.Source.Kind <> Source.SourceKind.CS_Standard Then Return Nothing

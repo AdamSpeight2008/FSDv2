@@ -1,7 +1,7 @@
 ﻿Partial Public Class FormatString : Inherits Token
 
   Friend Sub New(Span As Source.Span, Inner As Tokens)
-    MyBase.New(Span, Inner)
+    MyBase.New(TokenKind.FormatString, Span, Inner)
   End Sub
 
   Public Shared Function TryParse(Ix As Source.Position) As Token
@@ -17,13 +17,13 @@
              TypeOf T Is Common.Brace.Esc.Closing
           Txn = Common.AddThenNext(T, Txn, Ix, TextStart)
         Case TypeOf T Is Common.Brace.Closing
-          Txn = Common.AddThenNext(New ParseError(T.Span, ParseError.Reason.Invalid), Txn, Ix, TextStart)
+          Txn = Common.AddThenNext(New ParseError(T.Span, ParseError.Reason.Invalid, T), Txn, Ix, TextStart)
         Case TypeOf T Is Common.Brace.Opening
           Dim res = ArgHole.TryParse(Ix)
           If res IsNot Nothing Then
             Txn = Common.AddThenNext(res, Txn, Ix, TextStart)
           Else
-            Txn = Common.AddThenNext(New ParseError(Ix.ToUnitSpan, ParseError.Reason.UnexpectedCharacter), Txn, Ix, TextStart)
+            Txn = Common.AddThenNext(New ParseError(Ix.ToUnitSpan, ParseError.Reason.UnexpectedCharacter, res), Txn, Ix, TextStart)
           End If
         Case Else
           If TextStart Is Nothing Then TextStart = New Source.Position?(Ix)

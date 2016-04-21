@@ -8,15 +8,15 @@ Public Module Exts
   Public Function AsString(Tk As Token) As String
     If Tk Is Nothing Then Return "{Nothing}"
     Dim sb As New Text.StringBuilder
-    _AsString(Tk, sb, 0)
+    sb.AppendLine($"{Tk.Span.ToString} {Tk.Kind}")
+    _AsString(Tk, sb, 1)
     Return sb.ToString
   End Function
 
   Private Sub _AsString(Tk As Token, sb As StringBuilder, level As Integer)
-    sb.AppendLine($"{Space(level * 2)}{Tk.Span.ToString} {Tk.GetType.FullName}")
     For i = 0 To Tk.Inner.Count - 1
       sb.Append(Space(level * 2))
-      sb.Append($"[{i,2}]")
+      sb.AppendLine($"[{i,2}]  {Tk.Inner(i).Span.ToString} {Tk.Inner(i).Kind}")
       _AsString(Tk.Inner(i), sb, level + 1)
     Next
   End Sub
@@ -44,7 +44,7 @@ Public Class FSDv2_UnitTests
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "(  0:  3) FormatString
-[ 0]  (  0:  3) Text
+  [ 0]  (  0:  3) Text
 "
     Assert.AreEqual(Expected, Text)
   End Sub
@@ -57,7 +57,8 @@ Public Class FSDv2_UnitTests
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "(  0:  1) FormatString
-[ 0]  (  0:  1) ParseError
+  [ 0]  (  0:  1) ParseError
+    [ 0]  (  0:  1) Brace_Closing
 "
     Assert.AreEqual(Expected, Text)
   End Sub
@@ -70,7 +71,8 @@ Public Class FSDv2_UnitTests
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "(  0:  1) FormatString
-[ 0]  (  0:  1) ParseError
+  [ 0]  (  0:  1) ArgHole
+    [ 0]  (  0:  1) Brace_Opening
 "
     Assert.AreEqual(Expected, Text)
   End Sub
@@ -83,10 +85,25 @@ Public Class FSDv2_UnitTests
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "(  0:  2) FormatString
-[ 0]  (  0:  2) Text
-  [ 0]  (  0: 2) Esc.Brace.Closing
+  [ 0]  (  0:  2) Esc_Brace_Opening
+    [ 0]  (  0:  1) Brace_Opening
+    [ 1]  (  1:  1) Brace_Opening
 "
     Assert.AreEqual(Expected, Text)
   End Sub
 
+  <TestMethod>
+  Public Sub _05_EscapedClosing()
+    Dim TheText = "}}"
+    Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim Text = ParseResult.AsString()
+    Dim Expected =
+"(  0:  2) FormatString
+  [ 0]  (  0:  2) Esc_Brace_Closing
+    [ 0]  (  0:  1) Brace_Closing
+    [ 1]  (  1:  1) Brace_Closing
+"
+    Assert.AreEqual(Expected, Text)
+  End Sub
 End Class

@@ -3,7 +3,7 @@
   Public Class Text : Inherits Token
 
     Friend Sub New(Span As Source.Span, Inner As Tokens)
-      MyBase.New(Span, Inner)
+      MyBase.New(TokenKind.Text, Span, Inner)
     End Sub
 
     Public Shared Function TryParse(Ix As Source.Position) As Token

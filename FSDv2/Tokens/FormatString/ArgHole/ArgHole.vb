@@ -1,8 +1,9 @@
 ﻿Partial Public Class FormatString
+
   Public Class ArgHole : Inherits Token
 
     Private Sub New(Span As Source.Span, Inner As Tokens)
-      MyBase.New(Span, Inner)
+      MyBase.New(TokenKind.ArgHole, Span, Inner)
     End Sub
 
     Public Shared Function TryParse(Ix As Source.Position) As Token
@@ -28,7 +29,7 @@
 
 
       Private Sub New(Span As Source.Span, Inner As Tokens)
-        MyBase.New(Span, Inner)
+        MyBase.New(TokenKind.ArgHole_Index, Span, Inner)
       End Sub
 
       Public Shared Function TryParse(Ix As Source.Position) As Token
@@ -47,7 +48,7 @@ IsThereTrailingWhitespace:
           Select Case True
             Case r Is Nothing : Return Nothing
             Case TypeOf r Is Common.Digits
-              Dim tmp As New ParseError(sx.To(r.Span.Start), Nothing)
+              Dim tmp As New ParseError(sx.To(r.Span.Start), Nothing, r)
               Txn = Txn + tmp + r
               Ix = r.Span.Next
               GoTo IsThereTrailingWhitespace
@@ -63,7 +64,7 @@ IsThereTrailingWhitespace:
       Private Shared RPX1 As ResyncPoints = New ResyncPoint(AddressOf Body.TryParse) + New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
 
       Private Sub New(Span As Source.Span, Inner As Tokens)
-        MyBase.New(Span, Inner)
+        MyBase.New(TokenKind.ArgHole_Align, Span, Inner)
       End Sub
 
       Public Shared Function TryParse(Ix As Source.Position) As Align
@@ -84,7 +85,7 @@ TryToResyncHead:
         Select Case True
           Case rp0 Is Nothing : Return Nothing
           Case TypeOf rp0 Is Head
-            Txn = Txn + New ParseError(sx.To(rp0.Span.Start), Nothing) + rp0
+            Txn = Txn + New ParseError(sx.To(rp0.Span.Start), Nothing, rp0) + rp0
             GoTo IsThereABody
         End Select
         Return Nothing
@@ -93,7 +94,7 @@ TryToResyncBody:
         Select Case True
           Case rp1 Is Nothing : Return Nothing
           Case TypeOf rp1 Is Body
-            Txn = Txn + New ParseError(sx.To(rp1.Span.Start), Nothing) + rp1
+            Txn = Txn + New ParseError(sx.To(rp1.Span.Start), Nothing, rp1) + rp1
             GoTo AfterBody
         End Select
         Return Nothing
@@ -102,7 +103,7 @@ TryToResyncBody:
       Public Class Comma : Inherits Token
 
         Private Sub New(Span As Source.Span)
-          MyBase.New(Span)
+          MyBase.New(TokenKind.Comma, Span)
         End Sub
 
         Public Shared Function TryParse(Ix As Source.Position) As Token
@@ -115,7 +116,7 @@ TryToResyncBody:
       Public Class MinusSign : Inherits Token
 
         Private Sub New(Span As Source.Span)
-          MyBase.New(Span)
+          MyBase.New(TokenKind.MinusSign, Span)
         End Sub
 
         Public Shared Function TryParse(Ix As Source.Position) As Token
@@ -128,7 +129,7 @@ TryToResyncBody:
       Public Class Head : Inherits Token
 
         Private Sub New(Span As Source.Span, Inner As Tokens)
-          MyBase.New(Span, Inner)
+          MyBase.New(TokenKind.ArgHole_Align_Head, Span, Inner)
         End Sub
 
         Public Shared Function TryParse(Ix As Source.Position) As Token
@@ -151,7 +152,7 @@ TryToResyncBody:
       Public Class Body : Inherits Token
 
         Private Sub New(Span As Source.Span, Inner As Tokens)
-          MyBase.New(Span, Inner)
+          MyBase.New(TokenKind.ArgHole_Align_Body, Span, Inner)
         End Sub
 
         Public Shared Function TryParse(Ix As Source.Position) As Token
@@ -182,7 +183,7 @@ TryToResyncBody:
     Public Class Format : Inherits Token
 
       Private Sub New(Span As Source.Span, Inner As Tokens)
-        MyBase.New(Span, Inner)
+        MyBase.New(TokenKind.ArgHole_Format, Span, Inner)
       End Sub
 
       Public Shared Function TryParse(Ix As Source.Position) As Format
@@ -201,7 +202,7 @@ TryToResyncBody:
       Public Class Colon : Inherits Token
 
         Private Sub New(Span As Source.Span)
-          MyBase.New(Span)
+          MyBase.New(TokenKind.Colon, Span)
         End Sub
 
         Public Shared Function TryParse(Ix As Source.Position) As Format.Colon
@@ -214,7 +215,7 @@ TryToResyncBody:
         Inherits Token
 
         Private Sub New(Span As Source.Span, Inner As Tokens)
-          MyBase.New(Span, Inner)
+          MyBase.New(TokenKind.ArgHole_Format_Head, Span, Inner)
         End Sub
 
         Public Shared Function TryParse(Ix As Source.Position) As Format.Head
@@ -228,7 +229,7 @@ TryToResyncBody:
         Inherits Token
 
         Private Sub New(Span As Source.Span, Inner As Tokens)
-          MyBase.New(Span, Inner)
+          MyBase.New(TokenKind.ArgHole_Format_Body, Span, Inner)
         End Sub
 
         Public Shared Function TryParse(Ix As Source.Position) As Format.Body
@@ -239,7 +240,7 @@ TryToResyncBody:
           While Ix.IsValid
             T = Common.Brace.Opening.TryParse(Ix)
             If T IsNot Nothing Then
-              Dim pe As New ParseError(T.Span, ParseError.Reason.Invalid)
+              Dim pe As New ParseError(T.Span, ParseError.Reason.Invalid, T)
               Txn = Common.AddThenNext(pe, Txn, Ix)
               Continue While
             End If
