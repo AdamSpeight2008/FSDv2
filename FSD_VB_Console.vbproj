@@ -106,6 +106,12 @@
     </None>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="FSDv2\FSDv2.vbproj">
+      <Project>{a936a41a-2823-4d10-9dfa-9b6cf72092cf}</Project>
+      <Name>FSDv2</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
