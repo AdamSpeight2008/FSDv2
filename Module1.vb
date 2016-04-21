@@ -5,45 +5,52 @@ Module Module1
   Sub Main()
     '           0         1         2         3         4         5         6         7         8
     '           012345678901234567890123456789012345678901234567890123456789012345678901234567890
-    Dim Text = "  123  ,hh  -99 "
-    '"}  {1 , -123 : {{ABC}} }  {1 , -123 : {{ABC}} {} "
-    Dim TheSource = Source.Create(Text)
+    Dim Text = "{}"
+    'Text = "}  {1 , -123 : {{ABC}} }  {1 , -123 : {{ABC}} {} "
+    'Text = " {0001234567   } {0001234567, 0007654321} {0001234567, -0007654321}{0001234567, 0007654321 : XX44} {0001234567, -7654321 : XX44} {0001234567 : XX44} "
+    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
     Dim Ix = TheSource.First
-    Dim T0 = FormatString.ArgHole.Index.TryParse(Ix)
-    Dim T1 = FormatString.ArgHole.Align.TryParse(T0.Span.Next)
-    'Dim T2 = ArgHole.Format.TryParse(T1.Span.Next)
+    'Dim T0 = FormatString.ArgHole.Index.TryParse(Ix)
+    'Dim T1 = FormatString.ArgHole.Align.TryParse(T0.Span.Next)
+    'Dim T2 = FormatString.ArgHole.Format.TryParse(T1.Span.Next)
     ' Dim T3 = ArgHole.TryParse(Ix)
     'Dim Txt = TryCast(T3.Inner.Tokens(3).Inner.Tokens(1).Inner.Tokens(0), ArgHole.Text)
 
 
     'Dim rp0 = New ResyncPoint(AddressOf FormatString.Common.Digits.TryParse, Nothing) + New ResyncPoint(AddressOf FormatString.ArgHole.Align.Comma.TryParse, Nothing) +
     '          New ResyncPoint(AddressOf FormatString.ArgHole.Format.Colon.TryParse, Nothing) + New ResyncPoint(AddressOf FormatString.Common.Brace.Closing.TryParse, Nothing)
-    'Dim res = rp0.TryToResync(Ix)
+    '  Dim res = rp0.TryToResync(Ix)
+    Dim sw = Diagnostics.Stopwatch.StartNew
+    Dim T4 = FormatString.TryParse(Ix)
+    sw.Stop()
+    Console.WriteLine(sw.Elapsed.TotalMilliseconds.ToString)
+
   End Sub
 
 End Module
 
 
 
-Public Class ResyncPoint
+Public Structure ResyncPoint
   Public ReadOnly Property TryParse As Func(Of Source.Position, Token)
-  Public ReadOnly Property ContinueAt As Token
 
-  Public Sub New(TryParse As Func(Of Source.Position, Token), ContinueAt As Token)
-    Me.TryParse = TryParse : Me.ContinueAt = ContinueAt
+  Public Sub New(TryParse As Func(Of Source.Position, Token))
+    Me.TryParse = TryParse
   End Sub
 
   Public Shared Operator +(Rp0 As ResyncPoint, Rp1 As ResyncPoint) As ResyncPoints
     Return ResyncPoints.CreateNew(Rp0, Rp1)
   End Operator
-End Class
+End Structure
 
-Public Class ResyncPoints
-  Public Shared ReadOnly Property Empty As New ResyncPoints()
-  Private _ResyncPoints As ResyncPoint() = Array.Empty(Of ResyncPoint)
+Public Structure ResyncPoints
+  'Public Shared ReadOnly Property Empty As New ResyncPoints()
+  Private _ResyncPoints As ResyncPoint() '= Array.Empty(Of ResyncPoint)
 
   Private Sub New(Optional ResyncPoints As IEnumerable(Of ResyncPoint) = Nothing)
-    If ResyncPoints IsNot Nothing Then Me._ResyncPoints = ResyncPoints.ToArray
+    'If ResyncPoints IsNot Nothing Then
+    Me._ResyncPoints = ResyncPoints.ToArray
+    'End If
   End Sub
 
   Public Shared Operator +(Rpx As ResyncPoints, Rp As ResyncPoint) As ResyncPoints
@@ -55,26 +62,40 @@ Public Class ResyncPoints
   End Function
 
   Public Function TryToResync(ix As Source.Position) As Token
-    If Me._ResyncPoints.Count = 0 Then Return Nothing
-    Dim tt = _ResyncPoints.AsParallel.Select(
-      Function(rp As ResyncPoint)
-        Dim _rp = rp
-        Return Task.Run(Of Token)(Function()
-                                    Dim lx = ix
-                                    Dim res As Token
-                                    While lx.IsValid
-                                      res = _rp.TryParse(lx)
-                                      If res IsNot Nothing Then Return res
-                                      lx = lx.Next
-                                    End While
-                                    Return Nothing
-                                  End Function)
-      End Function).ToArray
-    Dim q = Task.WhenAll(Of Token)(tt)
-    Dim output = tt.AsParallel.AsOrdered.FirstOrDefault(Function(rp) rp.Result IsNot Nothing)?.Result
-    Return output
+    Dim c = _ResyncPoints.Count - 1
+    If c < 0 Then Return Nothing
+    Dim sx = ix
+    While ix.IsValid
+      For i = 0 To c
+        Dim q = _ResyncPoints(i).TryParse(ix)
+        If q IsNot Nothing Then Return q
+      Next
+      ix = ix.Next
+    End While
+    Return Nothing
   End Function
-End Class
+
+  'Public Function TryToResync(ix As Source.Position) As Token
+  '  If Me._ResyncPoints.Count = 0 Then Return Nothing
+  '  Dim tt = _ResyncPoints.AsParallel.Select(
+  '    Function(rp As ResyncPoint)
+  '      Dim _rp = rp
+  '      Return Task.Run(Of Token)(Function()
+  '                                  Dim lx = ix
+  '                                  Dim res As Token
+  '                                  While lx.IsValid
+  '                                    res = _rp.TryParse(lx)
+  '                                    If res IsNot Nothing Then Return res
+  '                                    lx = lx.Next
+  '                                  End While
+  '                                  Return Nothing
+  '                                End Function)
+  '    End Function).ToArray
+  '  Dim q = Task.WhenAll(Of Token)(tt)
+  '  Dim output = tt.AsParallel.AsOrdered.FirstOrDefault(Function(rp) rp.Result IsNot Nothing)?.Result
+  '  Return output
+  'End Function
+End Structure
 
 
 
@@ -82,8 +103,9 @@ Public Structure Source
   Friend ReadOnly Property ID As Guid
   Public ReadOnly Property Text As String
   Public ReadOnly Property Length As Integer
+  Public ReadOnly Property Kind As SourceKind
 
-  Private Sub New(Text As String)
+  Private Sub New(Text As String, Kind As SourceKind)
     Me.ID = Guid.NewGuid
     Me.Text = If(Text, String.Empty)
     Me.Length = Me.Text.Length
@@ -100,8 +122,8 @@ Public Structure Source
     End Get
   End Property
 
-  Public Shared Function Create(Text As String) As Source
-    Return New Source(Text)
+  Public Shared Function Create(Text As String, SourceKind As SourceKind) As Source
+    Return New Source(Text, SourceKind)
   End Function
 
   Public Shared Operator =(S0 As Source, S1 As Source) As Boolean
@@ -110,6 +132,12 @@ Public Structure Source
   Public Shared Operator <>(S0 As Source, S1 As Source) As Boolean
     Return (S0.ID <> S1.ID)
   End Operator
+
+  Public Enum SourceKind As Integer
+    VB_Standard
+    CS_Standard
+    CS_Verbatum
+  End Enum
 
   <DebuggerDisplay("{Index}=[{Value}]")>
   Public Structure Position
@@ -290,20 +318,27 @@ End Class
 
 Public Class ParseError : Inherits Token
 
-  Public Sub New(Span As Source.Span, Token As Token)
-    MyBase.New(Span, Tokens.Empty + Token)
+  Public Enum Reason
+    UnexpectedCharacter
+    Invalid
+  End Enum
+
+  Public ReadOnly Property Why As ParseError.Reason
+  Public Sub New(Span As Source.Span, Reason As Reason)
+    MyBase.New(Span)
+    Me.Why = Reason
   End Sub
 
 End Class
 
 Public Class Tokens
   Public Shared ReadOnly Property Empty As Tokens = New Tokens()
-  Public ReadOnly Property Tokens As Token()
+  Private ReadOnly Property _Tokens As Token()
   Private ReadOnly Property Count As Integer
 
   Private Sub New(Optional Tokens As IEnumerable(Of Token) = Nothing)
-    If Tokens Is Nothing Then Me.Tokens = Array.Empty(Of Token) Else Me.Tokens = Tokens.ToArray
-    Me.Count = Me.Tokens.Count
+    If Tokens Is Nothing Then Me._Tokens = Array.Empty(Of Token) Else Me._Tokens = Tokens.ToArray
+    Me.Count = _Tokens.Count
   End Sub
 
   Public Shared Function Create(T0 As Token, T1 As Token) As Tokens
@@ -312,21 +347,34 @@ Public Class Tokens
   End Function
 
   Public Function GetEnumerator() As IEnumerable(Of Token)
-    Return Tokens.AsEnumerable
+    Return _Tokens.AsEnumerable
   End Function
 
   Public Function Add(Token As Token) As Tokens
-    If Token Is Nothing Then Return New Tokens(Me.Tokens) Else Return New Tokens(Me.Tokens.Concat(Enumerable.Repeat(Token, 1)))
+    If Token Is Nothing Then Return New Tokens(_Tokens) Else Return New Tokens(_Tokens.Concat(Enumerable.Repeat(Token, 1)))
+  End Function
+
+  Public Function First() As Token
+    Return _Tokens.FirstOrDefault
+  End Function
+  Public Function Last() As Token
+    Return _Tokens.LastOrDefault
   End Function
 
   Public Shared Operator +(Tx As Tokens, T As Token) As Tokens
-    Return New Tokens(Tx.Tokens.Concat(Enumerable.Repeat(T, 1)))
+    Return New Tokens(Tx._Tokens.Concat(Enumerable.Repeat(T, 1)))
   End Operator
 
   Public Shared Operator +(T As Token, Tx As Tokens) As Tokens
-    Return New Tokens(Enumerable.Repeat(T, 1).Concat(Tx.Tokens))
+    Return New Tokens(Enumerable.Repeat(T, 1).Concat(Tx._Tokens))
   End Operator
 
+  Default Public ReadOnly Property Tokens(ByVal Index As Integer) As Token
+    Get
+      If Index < 0 OrElse Index >= Count Then Return Nothing
+      Return _Tokens(Index)
+    End Get
+  End Property
 End Class
 
 Public Class FormatString : Inherits Token
@@ -348,11 +396,13 @@ Public Class FormatString : Inherits Token
              TypeOf T Is Common.Brace.Esc.Closing
           Txn = Common.AddThenNext(T, Txn, Ix, TextStart)
         Case TypeOf T Is Common.Brace.Closing
-          Txn = Common.AddThenNext(New ParseError(T.Span, T), Txn, Ix, TextStart)
+          Txn = Common.AddThenNext(New ParseError(T.Span, ParseError.Reason.Invalid), Txn, Ix, TextStart)
         Case TypeOf T Is Common.Brace.Opening
           Dim res = ArgHole.TryParse(Ix)
           If res IsNot Nothing Then
             Txn = Common.AddThenNext(res, Txn, Ix, TextStart)
+          Else
+            Txn = Common.AddThenNext(New ParseError(Ix.ToUnitSpan, ParseError.Reason.UnexpectedCharacter), Txn, Ix, TextStart)
           End If
         Case Else
           If TextStart Is Nothing Then TextStart = New Source.Position?(Ix)
@@ -362,6 +412,21 @@ Public Class FormatString : Inherits Token
     Txn = Common.AddThenNext(Nothing, Txn, Ix, TextStart)
     Return New FormatString(sx.To(Ix), Txn)
   End Function
+
+  Public Class Symbol : Inherits Token
+
+    Friend Sub New(Span As Source.Span)
+      MyBase.New(Span)
+    End Sub
+
+    Public Class BackSlash : Inherits Symbol
+
+      Friend Sub New(Span As Source.Span)
+        MyBase.New(Span)
+      End Sub
+    End Class
+  End Class
+
 
   Public Class Common
 
@@ -442,6 +507,48 @@ Public Class FormatString : Inherits Token
 
     End Class
 
+    Public Class HexDigit : Inherits Token
+
+      Private Sub New(Span As Source.Span)
+        MyBase.New(Span)
+      End Sub
+
+      Public Shared Function TryParse(Ix As Source.Position) As HexDigit
+        If Ix.IsInvalid Then Return Nothing
+        If Ix.Value.HasValue = False Then Return Nothing
+        Select Case Ix.Value.Value
+          Case "0"c To "9"c, "a"c To "f"c, "A"c To "F"c
+            Return New HexDigit(Ix.ToUnitSpan)
+          Case Else
+            Return Nothing
+        End Select
+      End Function
+
+    End Class
+
+    Public Class HexDigits : Inherits Token
+
+      Friend Sub New(Span As Source.Span, Inner As Tokens)
+        MyBase.New(Span, Inner)
+      End Sub
+
+      'Public Shared Function TryParse(Ix As Source.Position) As HexDigits
+      '  If Ix.IsInvalid Then Return Nothing
+      '  Dim Txn = Tokens.Empty()
+      '  Dim Sx = Ix
+      '  While Ix.IsValid
+      '    Dim T = HexDigit.TryParse(Ix)
+      '    If T Is Nothing Then Exit While
+      '    Txn = Common.AddThenNext(T, Txn, Ix)
+      '  End While
+      '  Dim s = Sx.To(Ix)
+      '  If s.HasValue = False OrElse s.Value.Size = 0 Then Return Nothing
+      '  Return New HexDigits(s.Value, Txn)
+      'End Function
+
+    End Class
+
+
     MustInherit Class Brace : Inherits Token
 
       Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
@@ -513,6 +620,147 @@ Public Class FormatString : Inherits Token
 
         End Class
 
+        Public Class SeqHead : Inherits Token
+          Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
+            MyBase.New(Span, Inner)
+          End Sub
+        End Class
+
+        Public MustInherit Class Sequence : Inherits Token
+          Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
+            MyBase.New(Span, Inner)
+          End Sub
+
+          Public Shared Function TryParse(Ix As Source.Position) As Esc.Sequence
+            If Ix.IsInvalid Then Return Nothing
+            If Ix.Source.Kind <> Source.SourceKind.CS_Standard Then Return Nothing
+            Dim Txn = Tokens.Empty
+            If Ix <> "\"c Then Return Nothing
+            Dim nx = Ix.Next
+            If nx.IsInvalid Then Return Nothing
+            Dim T As Token
+            Select Case nx
+              Case "'"c, """"c, "\"c, "0"c,
+                   "a"c, "b"c, "f"c, "n"c,
+                   "r"c, "t"c, "v"c
+                Return New Simple(Ix.To(nx.Next))
+              Case "x"c
+                T = HexaDecimal.TryParse(Ix)
+              Case "u"c
+                T = Unicode.TryParse(Ix)
+            End Select
+            Return Nothing
+          End Function
+
+          Public Class Simple : Inherits Esc.Sequence
+            Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
+              MyBase.New(Span, Inner)
+            End Sub
+          End Class
+
+          Public Class Unicode : Inherits Esc.Sequence
+            Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
+              MyBase.New(Span, Inner)
+            End Sub
+
+            Private Shared Function Backslash_UpperU(Ix As Source.Position) As Esc.Sequence
+              '
+              ' unicode_escape_sequence ::= \U hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit
+              '
+              If Ix.Source.Kind <> Source.SourceKind.CS_Standard Then Return Nothing
+              If Ix.IsInvalid Then Return Nothing 'Already at the end of the text.
+              If Ix <> "\"c Then Return Nothing ' Character is not a blackslash
+              Dim sx = Ix ' Start Index of this potential token.
+              Dim txn = Tokens.Empty : Ix = Ix.Next
+              If Ix.IsInvalid Then Return Nothing ' A lone backslash (\) at the end of the text.
+              If Ix <> "U"c Then Return Nothing ' Doesn't have correct the start to an Unicode escape squence. (\U)
+              Ix = Ix.Next
+              Dim T As Token = New Esc.SeqHead(sx.To(Ix)) : txn += T
+              ' OK. At this stage we hace the start of a escape sequence for a unicode characeter \u
+              '
+              ' unicode_escape_sequence ::= \U hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit
+              Dim Hx = Tokens.Empty
+              Dim count = 0
+              While Ix.IsInvalid AndAlso count < 8
+                T = Common.HexDigit.TryParse(Ix)
+                If T Is Nothing Then Exit While
+                Hx = Common.AddThenNext(T, Hx, Ix)
+                count += 1
+              End While
+              If count <> 8 AndAlso count <> 0 Then Return Nothing
+              Return New Esc.Sequence.Unicode(sx.To(Ix), txn + New HexDigits(Hx.First.Span.Start.To(Hx.Last.Span.Next), Hx))
+
+            End Function
+            Private Shared Function Backslash_LowerU(Ix As Source.Position) As Esc.Sequence
+              '
+              ' unicode_escape_sequence ::= \u hex_digit hex_digit hex_digit hex_digit
+              '
+              If Ix.Source.Kind <> Source.SourceKind.CS_Standard Then Return Nothing
+              If Ix.IsInvalid Then Return Nothing 'Already at the end of the text.
+              If Ix <> "\"c Then Return Nothing ' Character is not a blackslash
+              Dim sx = Ix ' Start Index of this potential token.
+              Dim txn = Tokens.Empty : Ix = Ix.Next
+              If Ix.IsInvalid Then Return Nothing ' A lone backslash (\) at the end of the text.
+              If Ix <> "u"c Then Return Nothing ' Doesn't have correct the start to an Unicode escape squence. (\c)
+              Ix = Ix.Next
+              Dim T As Token = New Esc.SeqHead(sx.To(Ix)) : txn += T
+              ' OK. At this stage we hace the start of a escape sequence for a unicode characeter \u
+              '
+              If Ix.IsInvalid Then Return Nothing
+              ' 
+              Dim Hx = Tokens.Empty
+              Dim count = 0
+              While Ix.IsInvalid AndAlso count < 4
+                T = Common.HexDigit.TryParse(Ix)
+                If T Is Nothing Then Exit While
+                Hx = Common.AddThenNext(T, Hx, Ix)
+                count += 1
+              End While
+              If count <> 4 AndAlso count <> 0 Then Return Nothing
+              Return New Esc.Sequence.Unicode(sx.To(Ix), txn + New HexDigits(Hx.First.Span.Start.To(Hx.Last.Span.Next), Hx))
+
+            End Function
+
+            Public Shared Shadows Function TryParse(Ix As Source.Position) As Esc.Sequence
+              Dim T As Token
+              T = Backslash_UpperU(Ix) : If T IsNot Nothing Then Return T
+              T = Backslash_LowerU(Ix) : If T IsNot Nothing Then Return T
+              Return Nothing
+            End Function
+          End Class
+
+          Public Class HexaDecimal : Inherits Esc.Sequence
+            Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
+              MyBase.New(Span, Inner)
+            End Sub
+            Public Shared Shadows Function TryParse(Ix As Source.Position) As Esc.Sequence.HexaDecimal
+              If Ix.Source.Kind <> Source.SourceKind.CS_Standard Then Return Nothing
+              If Ix.IsInvalid Then Return Nothing
+              If Ix <> "\"c Then Return Nothing
+              Dim sx = Ix
+              Dim txn = Tokens.Empty
+              Ix = Ix.Next
+              If Ix.IsInvalid Then Return Nothing ' A lone backslash (\) at the end of the text.
+              If Ix <> "x"c Then Return Nothing ' Doesn't have correct the start to an Unicode escape squence. (\c)
+              Ix = Ix.Next
+              Dim T As Token = New Esc.SeqHead(sx.To(Ix))
+              txn += T
+              If Ix.IsInvalid Then Return Nothing
+              Dim Hx = Tokens.Empty
+              Dim count = 0
+              While Ix.IsInvalid AndAlso count < 4
+                T = Common.HexDigit.TryParse(Ix)
+                If T Is Nothing Then Exit While
+                Hx = Common.AddThenNext(T, Hx, Ix)
+                count += 1
+              End While
+              If count = 0 Then Return Nothing
+              Return New Esc.Sequence.HexaDecimal(sx.To(Ix), txn + New HexDigits(Hx.First.Span.Start.To(Hx.Last.Span.Next), Hx))
+            End Function
+          End Class
+
+        End Class
+
       End Class
 
     End Class
@@ -553,8 +801,8 @@ Public Class FormatString : Inherits Token
     End Function
 
     Public Class Index : Inherits Token
-      Private Shared RPX As ResyncPoints = New ResyncPoint(AddressOf Common.Digits.TryParse, Nothing) + New ResyncPoint(AddressOf Align.Comma.TryParse, Nothing) +
-                                           New ResyncPoint(AddressOf Format.Colon.TryParse, Nothing) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse, Nothing)
+      Private Shared RPX As ResyncPoints = New ResyncPoint(AddressOf Common.Digits.TryParse) + New ResyncPoint(AddressOf Align.Comma.TryParse) +
+                                           New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
 
 
       Private Sub New(Span As Source.Span, Inner As Tokens)
@@ -568,6 +816,7 @@ Public Class FormatString : Inherits Token
         Dim sx = Ix
         T = Common.Digits.TryParse(Ix)
         If T IsNot Nothing Then
+          Txn = Common.AddThenNext(T, Txn, Ix)
 IsThereTrailingWhitespace:
           T = Common.Whitespaces.TryParse(Ix)
           If T IsNot Nothing Then Txn = Common.AddThenNext(T, Txn, Ix) : Return New Index(Source.Span.From(sx, Ix), Txn)
@@ -588,9 +837,8 @@ IsThereTrailingWhitespace:
     End Class
 
     Public Class Align : Inherits Token
-      Private Shared RPX0 As ResyncPoints = New ResyncPoint(AddressOf Head.TryParse, Nothing) + New ResyncPoint(AddressOf Format.Colon.TryParse, Nothing) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse, Nothing)
-      Private Shared RPX1 As ResyncPoints = New ResyncPoint(AddressOf Body.TryParse, Nothing) + New ResyncPoint(AddressOf Format.Colon.TryParse, Nothing) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse, Nothing)
-
+      Private Shared RPX0 As ResyncPoints = New ResyncPoint(AddressOf Head.TryParse) + New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
+      Private Shared RPX1 As ResyncPoints = New ResyncPoint(AddressOf Body.TryParse) + New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
 
       Private Sub New(Span As Source.Span, Inner As Tokens)
         MyBase.New(Span, Inner)
@@ -601,13 +849,13 @@ IsThereTrailingWhitespace:
         Dim sx = Ix
         Dim _Head = Head.TryParse(Ix)
         If _Head Is Nothing Then GoTo TryToResyncHead
-        Txn += _Head
+        Txn = Common.AddThenNext(_Head, Txn, Ix)
 IsThereABody:
-        Dim _Body = Body.TryParse(_Head.Span.Next)
+        Dim _Body = Body.TryParse(Ix)
         If _Body Is Nothing Then GoTo TryToResyncBody
-        Txn += _Body
+        Txn = Common.AddThenNext(_Body, Txn, Ix)
 AfterBody:
-        Return New Align(Txn.Tokens.First.Span.Start.To(Txn.Tokens.Last.Span.Next), Txn)
+        Return New Align(Txn.First.Span.Start.To(Txn.Last.Span.Next), Txn)
 
 TryToResyncHead:
         Dim rp0 = RPX0.TryToResync(Ix)
@@ -769,7 +1017,7 @@ TryToResyncBody:
           While Ix.IsValid
             T = Common.Brace.Opening.TryParse(Ix)
             If T IsNot Nothing Then
-              Dim pe As New ParseError(T.Span, T)
+              Dim pe As New ParseError(T.Span, ParseError.Reason.Invalid)
               Txn = Common.AddThenNext(pe, Txn, Ix)
               Continue While
             End If
