@@ -8,13 +8,14 @@
     Me.ID = Guid.NewGuid
     Me.Text = If(Text, String.Empty)
     Me.Length = Me.Text.Length
+    Me.Kind = Kind
   End Sub
 
   Public Function First() As Position?
     Return Position.Create(Me, If(Length <= 0, -1, 0))
   End Function
 
-  Default Friend ReadOnly Property Chars(Index As Integer) As Char?
+  Default Public ReadOnly Property Chars(Index As Integer) As Char?
     Get
       Return If((0 <= Index) AndAlso (Index < Me.Length), New Char?(Text(Index)), Nothing)
     End Get
