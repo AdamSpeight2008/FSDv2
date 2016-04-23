@@ -142,7 +142,7 @@ TryToResyncBody:
             T = Common.Whitespaces.TryParse(Ix)
             If T IsNot Nothing Then
               Txn += T : Ix = T.Span.Next
-              Return New Head(Source.Span.From(sx, Ix), Txn)
+              Return New Head(sx.To(Ix), Txn)
             End If
           End If
           Return Nothing
@@ -171,7 +171,7 @@ TryToResyncBody:
             If T IsNot Nothing Then
               Txn = Common.AddThenNext(T, Txn, Ix)
             End If
-            Return New Body(Source.Span.From(sx, Ix), Txn)
+            Return New Body(sx.To(Ix), Txn)
           Else
             Return Nothing
           End If

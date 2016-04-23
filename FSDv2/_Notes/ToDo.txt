@@ -1,2 +1,24 @@
 ﻿
 Why is "{}" not being parsed as an ArgHole?, that is empty?
+
+ArgAlign Test
+
+Head
+0.  Comma
+1.  Comma Whitespaces
+
+Body
+0.  MinusSign Digits Whitespaces
+1.  MinusSign Digits
+2.  Digits Whitespaces
+3.  Digits
+
+Head Body
+   0    0 Done (Test: _03_)
+   0    1 Done (Test: _04_)
+   0    2 Done (Test: _05_)
+   0    3 Done (Test: _01_)
+   1    0 Done (Test: _06_)
+   1    1 Done (Test: _07_)
+   1    2
+   1    3 Done (Test: _02_)

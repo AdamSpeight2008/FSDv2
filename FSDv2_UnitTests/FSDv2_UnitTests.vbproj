@@ -83,6 +83,7 @@
     <Import Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Arghole_UnitTest\ArgAlign_UnitTest\ArgAlign_UnitTest.vb" />
     <Compile Include="Arghole_UnitTest\ArgIndex_UnitTest\ArgIndex_UnitTest.vb" />
     <Compile Include="FormatString_UnitTests.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -137,7 +138,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Arghole_UnitTest\ArgAlign_UnitTest\" />
     <Folder Include="Arghole_UnitTest\ArgFormat_UnitTest\" />
   </ItemGroup>
   <Choose>
