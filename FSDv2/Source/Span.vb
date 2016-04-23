@@ -44,5 +44,7 @@
       Dim r = New String(GetChars.Where(Function(c) c.HasValue).Select(Function(c) c.Value).ToArray)
       Return r
     End Function
+
   End Structure
+
 End Structure
