@@ -32,7 +32,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
-    Assert.AreEqual(TokenKind.Digit, res.Kind)
+    Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
     Assert.AreEqual(1, res.Span.Size)
     Assert.AreEqual("(  0:  1)", res.Span.ToString)
@@ -54,7 +54,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "3"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
     Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)

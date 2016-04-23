@@ -103,19 +103,20 @@
         MyBase.New(TokenKind.HexDigits, Span, Inner)
       End Sub
 
-      'Public Shared Function TryParse(Ix As Source.Position) As HexDigits
-      '  If Ix.IsInvalid Then Return Nothing
-      '  Dim Txn = Tokens.Empty()
-      '  Dim Sx = Ix
-      '  While Ix.IsValid
-      '    Dim T = HexDigit.TryParse(Ix)
-      '    If T Is Nothing Then Exit While
-      '    Txn = Common.AddThenNext(T, Txn, Ix)
-      '  End While
-      '  Dim s = Sx.To(Ix)
-      '  If s.HasValue = False OrElse s.Value.Size = 0 Then Return Nothing
-      '  Return New HexDigits(s.Value, Txn)
-      'End Function
+      Public Shared Function TryParse(Ix As Source.Position) As HexDigits
+        If Ix.IsInvalid Then Return Nothing
+        Dim Txn = Tokens.Empty()
+        Dim Sx = Ix
+        While Ix.IsValid
+          Dim T = HexDigit.TryParse(Ix)
+          If T Is Nothing Then Exit While
+          Txn = Common.AddThenNext(T, Txn, Ix)
+        End While
+        Dim s = Sx.To(Ix)
+        If s.HasValue = False OrElse s.Value.Size = 0 Then Return Nothing
+        Return New HexDigits(s.Value, Txn)
+        Return Nothing
+      End Function
 
     End Class
 
