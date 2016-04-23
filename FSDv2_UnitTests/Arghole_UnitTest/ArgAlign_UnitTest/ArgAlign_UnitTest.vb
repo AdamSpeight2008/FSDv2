@@ -10,7 +10,6 @@ Public Class ArgAlign_UnitTest
   ' Align_Head ::= Comma Whitespaces? 
   ' Align_Body ::= MinusSign? Digits Whitespaces?
   '
-
   <TestMethod, TestCategory("Tokens.Arghole.ArgAlign")>
   Public Sub _00_()
     Dim Text = ""
@@ -195,7 +194,6 @@ Public Class ArgAlign_UnitTest
 #End Region
   End Sub
 
-
   <TestMethod, TestCategory("Tokens.Arghole.ArgAlign")>
   Public Sub _05_()
     Dim Text = ",1 "
@@ -239,7 +237,6 @@ Public Class ArgAlign_UnitTest
 #End Region
   End Sub
 
-
   <TestMethod, TestCategory("Tokens.Arghole.ArgAlign")>
   Public Sub _06_()
     Dim Text = ", -1 "
@@ -251,7 +248,6 @@ Public Class ArgAlign_UnitTest
     Assert.AreEqual(TokenKind.ArgHole_Align, res.Kind)
     Assert.AreEqual("(  0:  5)", res.Span.ToString)
     Assert.AreEqual(2, res.Inner.Count)
-
     Assert.AreEqual(TokenKind.ArgHole_Align_Head, res.Inner(0).Kind)
     Assert.AreEqual(TokenKind.ArgHole_Align_Body, res.Inner(1).Kind)
     ' Check the head portion
@@ -298,7 +294,6 @@ Public Class ArgAlign_UnitTest
     Assert.AreEqual(TokenKind.ArgHole_Align, res.Kind)
     Assert.AreEqual("(  0:  4)", res.Span.ToString)
     Assert.AreEqual(2, res.Inner.Count)
-
     Assert.AreEqual(TokenKind.ArgHole_Align_Head, res.Inner(0).Kind)
     Assert.AreEqual(TokenKind.ArgHole_Align_Body, res.Inner(1).Kind)
     ' Check the head portion
@@ -376,4 +371,5 @@ Public Class ArgAlign_UnitTest
     Assert.AreEqual("(  3:  1)", Body.Inner(1).Span.ToString)
 #End Region
   End Sub
+
 End Class

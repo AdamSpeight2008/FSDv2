@@ -17,7 +17,7 @@
           Txn = Common.AddThenNext(T, Txn, Ix, TextStart)
         Case TokenKind.Brace_Closing
           Txn = Common.AddThenNext(New ParseError(T.Span, ParseError.Reason.Invalid, T), Txn, Ix, TextStart)
-        Case T.Kind = TokenKind.Brace_Opening
+        Case TokenKind.Brace_Opening
           Dim res = ArgHole.TryParse(Ix)
           If res.Kind = TokenKind.ArgHole Then
             Txn = Common.AddThenNext(res, Txn, Ix, TextStart)
@@ -32,11 +32,5 @@
     Txn = Common.AddThenNext(Nothing, Txn, Ix, TextStart)
     Return New FormatString(sx.To(Ix), Txn)
   End Function
-
-
-
-
-
-
 
 End Class

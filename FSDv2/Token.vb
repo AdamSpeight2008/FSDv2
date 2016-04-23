@@ -47,4 +47,6 @@ Public Enum TokenKind As Integer
   Esc_Seq_Unicode
   Esc_Seq_Head
   Esc_Seq
+  Backslash_UpperU
+  Backslash_LowerU
 End Enum

@@ -30,7 +30,6 @@ Public Class ArgIndex_UnitTest
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Index))
     Assert.AreEqual(TokenKind.ArgHole_Index, res.Kind)
     Assert.AreEqual(1, res.Inner.Count)
-
     Assert.AreEqual(TokenKind.Digits, res.Inner(0).Kind)
     Assert.AreEqual(1, res.Inner(0).Inner.Count)
     Assert.AreEqual(TokenKind.Digit, res.Inner(0).Inner(0).Kind)
@@ -47,7 +46,6 @@ Public Class ArgIndex_UnitTest
     Assert.AreEqual(TokenKind.ArgHole_Index, res.Kind)
     Assert.AreEqual(1, res.Inner.Count)
     Assert.AreEqual("(  0:  2)", res.Span.ToString)
-
     Assert.AreEqual(TokenKind.Digits, res.Inner(0).Kind)
     Assert.AreEqual(2, res.Inner(0).Inner.Count)
     Assert.AreEqual("(  0:  2)", res.Inner(0).Span.ToString)
@@ -67,8 +65,8 @@ Public Class ArgIndex_UnitTest
     Assert.AreEqual(TokenKind.ArgHole_Index, res.Kind)
     Assert.AreEqual("(  0:  3)", res.Span.ToString)
     Assert.AreEqual(2, res.Inner.Count)
-
     Assert.AreEqual(TokenKind.Digits, res.Inner(0).Kind)
+
     Assert.AreEqual("(  0:  1)", res.Inner(0).Span.ToString)
     Assert.AreEqual("0", res.Inner(0).Span.Text)
     Assert.AreEqual(1, res.Inner(0).Inner.Count)
@@ -163,4 +161,5 @@ Public Class ArgIndex_UnitTest
     Assert.AreEqual("(  2:  2)", res.Inner(2).Span.ToString)
     Assert.AreEqual("  ", res.Inner(2).Span.Text)
   End Sub
+
 End Class

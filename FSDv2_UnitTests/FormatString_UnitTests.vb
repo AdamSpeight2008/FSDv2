@@ -106,4 +106,19 @@ Public Class FSDv2_UnitTests
 "
     Assert.AreEqual(Expected, Text)
   End Sub
+
+  <TestMethod>
+  Public Sub _06_EmptyArgHole()
+    Dim TheText = "{}"
+    Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim Text = ParseResult.AsString()
+    Dim Expected =
+"(  0:  2) FormatString
+  [ 0]  (  0:  2) ArgHole
+    [ 0]  (  0:  1) Brace_Opening
+    [ 1]  (  1:  1) Brace_Closing
+"
+    Assert.AreEqual(Expected, Text)
+  End Sub
 End Class
