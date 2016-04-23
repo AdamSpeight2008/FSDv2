@@ -42,7 +42,8 @@
           Txn = Common.AddThenNext(T, Txn, Ix)
 IsThereTrailingWhitespace:
           T = Common.Whitespaces.TryParse(Ix)
-          If T IsNot Nothing Then Txn = Common.AddThenNext(T, Txn, Ix) : Return New Index(Source.Span.From(sx, Ix), Txn)
+          If T IsNot Nothing Then Txn = Common.AddThenNext(T, Txn, Ix)
+          Return New Index(Source.Span.From(sx, Ix), Txn)
         Else
           Dim r = RPX.TryToResync(Ix)
           Select Case True

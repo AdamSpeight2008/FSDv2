@@ -83,6 +83,7 @@
     <Import Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Arghole_UnitTest\ArgIndex_UnitTest\ArgIndex_UnitTest.vb" />
     <Compile Include="FormatString_UnitTests.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -134,6 +135,10 @@
       <Project>{a936a41a-2823-4d10-9dfa-9b6cf72092cf}</Project>
       <Name>FSDv2</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Arghole_UnitTest\ArgAlign_UnitTest\" />
+    <Folder Include="Arghole_UnitTest\ArgFormat_UnitTest\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
