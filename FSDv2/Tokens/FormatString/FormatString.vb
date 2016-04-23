@@ -12,15 +12,14 @@
     Dim TextStart As Source.Position? = Nothing
     While Ix.IsValid
       T = Common.Brace.TryParse(Ix)
-      Select Case True
-        Case TypeOf T Is Common.Brace.Esc.Opening,
-             TypeOf T Is Common.Brace.Esc.Closing
+      Select Case T.Kind
+        Case TokenKind.Esc_Brace_Opening, TokenKind.Esc_Brace_Closing
           Txn = Common.AddThenNext(T, Txn, Ix, TextStart)
-        Case TypeOf T Is Common.Brace.Closing
+        Case TokenKind.Brace_Closing
           Txn = Common.AddThenNext(New ParseError(T.Span, ParseError.Reason.Invalid, T), Txn, Ix, TextStart)
-        Case TypeOf T Is Common.Brace.Opening
+        Case T.Kind = TokenKind.Brace_Opening
           Dim res = ArgHole.TryParse(Ix)
-          If res IsNot Nothing Then
+          If res.Kind = TokenKind.ArgHole Then
             Txn = Common.AddThenNext(res, Txn, Ix, TextStart)
           Else
             Txn = Common.AddThenNext(New ParseError(Ix.ToUnitSpan, ParseError.Reason.UnexpectedCharacter, res), Txn, Ix, TextStart)
