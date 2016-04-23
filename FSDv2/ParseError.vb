@@ -1,6 +1,8 @@
 ﻿Public Class ParseError : Inherits Token
 
-  Public Enum Reason
+  Public Enum Reason As Integer
+    NullParse = 0
+    EoT
     UnexpectedCharacter
     Invalid
   End Enum
@@ -14,4 +16,11 @@
     MyBase.New(TokenKind.ParseError, Span, Tx)
     Me.Why = Reason
   End Sub
+
+  Public Shared Function EoT(ix As Source.Position) As ParseError
+    Return New ParseError(ix.ToZeroSpan, Reason.EoT, Tokens.Empty)
+  End Function
+  Public Shared Function NullParse(ix As Source.Position) As ParseError
+    Return New ParseError(ix.ToZeroSpan, Reason.NullParse, Tokens.Empty)
+  End Function
 End Class

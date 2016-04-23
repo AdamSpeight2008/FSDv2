@@ -8,8 +8,9 @@
         MyBase.New(TokenKind.Whitespace, Span)
       End Sub
 
-      Public Shared Function TryParse(Ix As Source.Position) As Whitespace
-        If Ix.IsInvalid OrElse (Ix <> " "c) Then Return Nothing
+      Public Shared Function TryParse(Ix As Source.Position) As Token
+        If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+        If (Ix <> " "c) Then Return ParseError.NullParse(Ix)
         Return New Whitespace(Ix.ToUnitSpan)
       End Function
 
@@ -21,17 +22,17 @@
         MyBase.New(TokenKind.Whitespaces, Span, Inner)
       End Sub
 
-      Public Shared Function TryParse(Ix As Source.Position) As Whitespaces
-        If Ix.IsInvalid Then Return Nothing
+      Public Shared Function TryParse(Ix As Source.Position) As Token
+        If Ix.IsInvalid Then Return ParseError.EoT(Ix)
         Dim Txn = Tokens.Empty
         Dim Sx = Ix
         While Ix.IsValid
           Dim T = Whitespace.TryParse(Ix)
-          If T Is Nothing Then Exit While
+          If T.Kind = TokenKind.ParseError Then Exit While
           Txn = Common.AddThenNext(T, Txn, Ix)
         End While
-        Dim s = Source.Span.From(Sx, Ix)
-        If s.HasValue = False Then Return Nothing
+        Dim s = Sx.To(Ix)
+        If s.HasValue = False Then Return ParseError.NullParse(Ix)
         Return New Whitespaces(s.Value, Txn)
       End Function
 
@@ -43,14 +44,13 @@
         MyBase.New(TokenKind.Digit, Span)
       End Sub
 
-      Public Shared Function TryParse(Ix As Source.Position) As Digit
-        If Ix.IsInvalid Then Return Nothing
-        If Ix.Value.HasValue = False Then Return Nothing
+      Public Shared Function TryParse(Ix As Source.Position) As Token
+        If Ix.IsInvalid OrElse Ix.Value.HasValue = False Then Return ParseError.EoT(Ix)
         Select Case Ix.Value.Value
           Case "0"c To "9"c
             Return New Digit(Ix.ToUnitSpan)
           Case Else
-            Return Nothing
+            Return ParseError.NullParse(Ix)
         End Select
       End Function
 
@@ -62,17 +62,17 @@
         MyBase.New(TokenKind.Digits, Span, Inner)
       End Sub
 
-      Public Shared Function TryParse(Ix As Source.Position) As Digits
-        If Ix.IsInvalid Then Return Nothing
+      Public Shared Function TryParse(Ix As Source.Position) As Token
+        If Ix.IsInvalid Then Return ParseError.EoT(Ix)
         Dim Txn = Tokens.Empty()
         Dim Sx = Ix
         While Ix.IsValid
           Dim T = Digit.TryParse(Ix)
-          If T Is Nothing Then Exit While
+          If T.Kind = TokenKind.ParseError Then Exit While
           Txn = Common.AddThenNext(T, Txn, Ix)
         End While
         Dim s = Sx.To(Ix)
-        If s.HasValue = False OrElse s.Value.Size = 0 Then Return Nothing
+        If s.HasValue = False OrElse s.Value.Size = 0 Then Return ParseError.NullParse(Ix)
         Return New Digits(s.Value, Txn)
       End Function
 
@@ -84,14 +84,13 @@
         MyBase.New(TokenKind.HexDigit, Span)
       End Sub
 
-      Public Shared Function TryParse(Ix As Source.Position) As HexDigit
-        If Ix.IsInvalid Then Return Nothing
-        If Ix.Value.HasValue = False Then Return Nothing
+      Public Shared Function TryParse(Ix As Source.Position) As Token
+        If Ix.IsInvalid OrElse Ix.Value.HasValue = False Then Return ParseError.EoT(Ix)
         Select Case Ix.Value.Value
           Case "0"c To "9"c, "a"c To "f"c, "A"c To "F"c
             Return New HexDigit(Ix.ToUnitSpan)
           Case Else
-            Return Nothing
+            Return ParseError.NullParse(Ix)
         End Select
       End Function
 
@@ -103,19 +102,18 @@
         MyBase.New(TokenKind.HexDigits, Span, Inner)
       End Sub
 
-      Public Shared Function TryParse(Ix As Source.Position) As HexDigits
-        If Ix.IsInvalid Then Return Nothing
+      Public Shared Function TryParse(Ix As Source.Position) As Token
+        If Ix.IsInvalid Then Return ParseError.EoT(Ix)
         Dim Txn = Tokens.Empty()
         Dim Sx = Ix
         While Ix.IsValid
           Dim T = HexDigit.TryParse(Ix)
-          If T Is Nothing Then Exit While
+          If TypeOf T Is ParseError Then Exit While
           Txn = Common.AddThenNext(T, Txn, Ix)
         End While
         Dim s = Sx.To(Ix)
-        If s.HasValue = False OrElse s.Value.Size = 0 Then Return Nothing
+        If s.HasValue = False OrElse s.Value.Size = 0 Then Return ParseError.NullParse(Ix)
         Return New HexDigits(s.Value, Txn)
-        Return Nothing
       End Function
 
     End Class
@@ -128,8 +126,7 @@
       End Sub
 
       Public Shared Function TryParse(Ix As Source.Position) As Token
-        If Ix.IsInvalid Then Return Nothing
-        If Ix.Value.HasValue = False Then Return Nothing
+        If Ix.IsInvalid OrElse Ix.Value.HasValue = False Then Return ParseError.EoT(Ix)
         Dim nx = Ix.Next
         If Ix.Value.Value = "{"c Then
           If nx.IsInvalid OrElse (nx <> "{") Then Return New Opening(Ix.ToUnitSpan)
@@ -138,7 +135,7 @@
           If nx.IsInvalid OrElse (nx <> "}") Then Return New Closing(Ix.ToUnitSpan)
           Return New Brace.Esc.Closing(Ix.To(nx.Next), New Closing(Ix.ToUnitSpan) + New Closing(nx.ToUnitSpan))
         Else
-          Return Nothing
+          Return ParseError.NullParse(Ix)
         End If
       End Function
 
@@ -148,8 +145,11 @@
           MyBase.New(TokenKind.Brace_Opening, Span)
         End Sub
 
-        Public Shared Shadows Function TryParse(Ix As Source.Position) As Opening
-          Return TryCast(Brace.TryParse(Ix), Opening)
+        Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
+          If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+          Dim res = Brace.TryParse(Ix)
+          If res.Kind <> TokenKind.Brace_Opening Then Return ParseError.NullParse(Ix)
+          Return res
         End Function
 
       End Class
@@ -160,8 +160,11 @@
           MyBase.New(TokenKind.Brace_Closing, Span)
         End Sub
 
-        Public Shared Shadows Function TryParse(Ix As Source.Position) As Closing
-          Return TryCast(Brace.TryParse(Ix), Closing)
+        Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
+          If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+          Dim res = Brace.TryParse(Ix)
+          If res.Kind <> TokenKind.Brace_Closing Then Return ParseError.NullParse(Ix)
+          Return res
         End Function
 
       End Class
@@ -174,8 +177,11 @@
             MyBase.New(TokenKind.Esc_Brace_Opening, Span, Inner)
           End Sub
 
-          Public Shared Shadows Function TryParse(Ix As Source.Position) As Esc.Opening
-            Return TryCast(Brace.TryParse(Ix), Esc.Opening)
+          Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
+            If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+            Dim res = Brace.TryParse(Ix)
+            If res.Kind <> TokenKind.Esc_Brace_Opening Then Return ParseError.NullParse(Ix)
+            Return res
           End Function
 
         End Class
@@ -186,8 +192,11 @@
             MyBase.New(TokenKind.Esc_Brace_Closing, Span, Inner)
           End Sub
 
-          Public Shared Shadows Function TryParse(Ix As Source.Position) As Esc.Closing
-            Return TryCast(Brace.TryParse(Ix), Esc.Closing)
+          Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
+            If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+            Dim res = Brace.TryParse(Ix)
+            If res.Kind <> TokenKind.Esc_Brace_Closing Then Return ParseError.NullParse(Ix)
+            Return res
           End Function
 
         End Class

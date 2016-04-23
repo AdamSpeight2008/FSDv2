@@ -10,7 +10,9 @@ Imports FSDv2
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
     Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Brace.TryParse(FirstPos)
-    Assert.IsNull(res)
+    Assert.IsNotNull(res)
+    Assert.IsInstanceOfType(res, GetType(ParseError))
+    Assert.AreEqual(ParseError.Reason.EoT, DirectCast(res, ParseError).Why)
   End Sub
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _01_()

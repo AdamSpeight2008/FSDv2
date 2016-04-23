@@ -150,7 +150,8 @@ Public Class Tokens_Common_Digit_UnitTest
     Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Digit.TryParse(FirstPos)
     Assert.IsNotInstanceOfType(res, GetType(FormatString.Common.Digit))
-    Assert.IsNull(res)
+    Assert.IsInstanceOfType(res, GetType(ParseError))
+    Assert.AreEqual(ParseError.Reason.NullParse, DirectCast(res, ParseError).Why)
   End Sub
 
 End Class

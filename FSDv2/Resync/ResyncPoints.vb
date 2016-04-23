@@ -23,11 +23,12 @@
     While ix.IsValid
       For i = 0 To c
         Dim q = _ResyncPoints(i).TryParse(ix)
-        If q IsNot Nothing Then Return q
+        If q Is Nothing Then Continue For
+        If q.Kind <> TokenKind.ParseError Then Return q
       Next
       ix = ix.Next
     End While
-    Return Nothing
+    Return ParseError.NullParse(ix)
   End Function
 
   'Public Function TryToResync(ix As Source.Position) As Token

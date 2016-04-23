@@ -14,7 +14,10 @@ Public Class ArgIndex_UnitTest
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
     Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Index.TryParse(FirstPos)
-    Assert.IsNull(res)
+    Assert.IsNotNull(res)
+    Assert.IsNotInstanceOfType(res, GetType(FormatString.ArgHole.Index))
+    Assert.IsInstanceOfType(res, GetType(ParseError))
+    Assert.AreEqual(ParseError.Reason.EoT, DirectCast(res, ParseError).Why)
   End Sub
 
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>

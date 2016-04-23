@@ -11,7 +11,10 @@ Public Class Tokens_Common_HexDigits_UnitTest
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
     Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.HexDigits.TryParse(FirstPos)
-    Assert.IsNull(res)
+    Assert.IsNotNull(res)
+    Assert.IsNotInstanceOfType(res, GetType(FormatString.Common.HexDigit))
+    Assert.IsInstanceOfType(res, GetType(ParseError))
+    Assert.AreEqual(ParseError.Reason.EoT, DirectCast(res, ParseError).Why)
 
 
   End Sub
