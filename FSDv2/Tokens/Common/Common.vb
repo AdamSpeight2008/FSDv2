@@ -29,7 +29,6 @@
           Dim T = Whitespace.TryParse(Ix)
           If T Is Nothing Then Exit While
           Txn = Common.AddThenNext(T, Txn, Ix)
-
         End While
         Dim s = Source.Span.From(Sx, Ix)
         If s.HasValue = False Then Return Nothing

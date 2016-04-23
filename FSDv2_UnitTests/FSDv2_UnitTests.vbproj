@@ -106,6 +106,7 @@
     <Compile Include="Tokens\Common\HexDigit.vb" />
     <Compile Include="Tokens\Common\Digit.vb" />
     <Compile Include="Tokens\Common\Digits.vb" />
+    <Compile Include="Tokens\Common\Brace.vb" />
     <Compile Include="Tokens\Common\Whitespaces.vb" />
     <Compile Include="Tokens\Common\Whitespace.vb" />
   </ItemGroup>

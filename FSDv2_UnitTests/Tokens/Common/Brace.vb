@@ -1,0 +1,79 @@
+﻿Imports System.Text
+Imports Microsoft.VisualStudio.TestTools.UnitTesting
+Imports FSDv2
+
+<TestClass> Public Class Brace
+
+  <TestMethod, TestCategory("Tokens.Common.Brace")>
+  Public Sub _00_()
+    Dim Text = ""
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
+    Dim FirstPos = TheSource.First
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Assert.IsNull(res)
+  End Sub
+  <TestMethod, TestCategory("Tokens.Common.Brace")>
+  Public Sub _01_()
+    Dim Text = "{"
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
+    Dim FirstPos = TheSource.First
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Assert.IsNotNull(res)
+    Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Opening))
+    Assert.AreEqual(TokenKind.Brace_Opening, res.Kind)
+    Assert.AreEqual(0, res.Span.Start.Index)
+    Assert.AreEqual(1, res.Span.Size)
+    Assert.AreEqual(0, res.Inner.Count)
+  End Sub
+  <TestMethod, TestCategory("Tokens.Common.Brace")>
+  Public Sub _02_()
+    Dim Text = "}"
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
+    Dim FirstPos = TheSource.First
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Assert.IsNotNull(res)
+    Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Closing))
+    Assert.AreEqual(TokenKind.Brace_Closing, res.Kind)
+    Assert.AreEqual(0, res.Span.Start.Index)
+    Assert.AreEqual(1, res.Span.Size)
+    Assert.AreEqual(0, res.Inner.Count)
+  End Sub
+  <TestMethod, TestCategory("Tokens.Common.Brace")>
+  Public Sub _03_()
+    Dim Text = "{{"
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
+    Dim FirstPos = TheSource.First
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Assert.IsNotNull(res)
+    Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Esc.Opening))
+    Assert.AreEqual(TokenKind.Esc_Brace_Opening, res.Kind)
+    Assert.AreEqual(0, res.Span.Start.Index)
+    Assert.AreEqual(2, res.Span.Size)
+    Assert.AreEqual(2, res.Inner.Count)
+    Assert.AreEqual(TokenKind.Brace_Opening, res.Inner(0).Kind)
+    Assert.AreEqual(0, res.Inner(0).Span.Start.Index)
+    Assert.AreEqual(1, res.Inner(0).Span.Size)
+    Assert.AreEqual(TokenKind.Brace_Opening, res.Inner(1).Kind)
+    Assert.AreEqual(1, res.Inner(1).Span.Start.Index)
+    Assert.AreEqual(1, res.Inner(1).Span.Size)
+  End Sub
+  <TestMethod, TestCategory("Tokens.Common.Brace")>
+  Public Sub _04_()
+    Dim Text = "}}"
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
+    Dim FirstPos = TheSource.First
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Assert.IsNotNull(res)
+    Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Esc.Closing))
+    Assert.AreEqual(TokenKind.Esc_Brace_Closing, res.Kind)
+    Assert.AreEqual(0, res.Span.Start.Index)
+    Assert.AreEqual(2, res.Span.Size)
+    Assert.AreEqual(2, res.Inner.Count)
+    Assert.AreEqual(TokenKind.Brace_Closing, res.Inner(0).Kind)
+    Assert.AreEqual(0, res.Inner(0).Span.Start.Index)
+    Assert.AreEqual(1, res.Inner(0).Span.Size)
+    Assert.AreEqual(TokenKind.Brace_Closing, res.Inner(1).Kind)
+    Assert.AreEqual(1, res.Inner(1).Span.Start.Index)
+    Assert.AreEqual(1, res.Inner(1).Span.Size)
+  End Sub
+End Class
