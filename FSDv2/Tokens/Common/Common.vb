@@ -236,7 +236,7 @@
           Select Case nx
             Case "'"c, "\"c, "0"c, "a"c,
                  "b"c, "f"c, "n"c, "r"c,
-                 "t"c, "v"c, """"c,
+                 "t"c, "v"c, """"c
               Return New Simple(Ix.To (nx.Next))
             Case "x"c
               Return HexaDecimal.TryParse(Ix)

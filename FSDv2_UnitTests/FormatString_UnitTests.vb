@@ -26,7 +26,9 @@ End Module
 <TestClass()>
 Public Class FSDv2_UnitTests
 
-  <TestMethod>
+  Const Cat0 = "Tokens.FormatString (CS_Standard)"
+
+  <TestMethod, TestCategory(Cat0)>
   Public Sub _00_EmptyString()
     Dim TheText = ""
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard)
@@ -36,7 +38,7 @@ Public Class FSDv2_UnitTests
     Assert.AreEqual(Expected, Text)
   End Sub
 
-  <TestMethod>
+  <TestMethod, TestCategory(Cat0)>
   Public Sub _01_JustText()
     Dim TheText = "abc"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard)
@@ -49,7 +51,7 @@ Public Class FSDv2_UnitTests
     Assert.AreEqual(Expected, Text)
   End Sub
 
-  <TestMethod>
+  <TestMethod, TestCategory(Cat0)>
   Public Sub _02_Text_Brace_Closing()
     Dim TheText = "}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard)
@@ -63,7 +65,7 @@ Public Class FSDv2_UnitTests
     Assert.AreEqual(Expected, Text)
   End Sub
 
-  <TestMethod>
+  <TestMethod, TestCategory(Cat0)>
   Public Sub _03_Text_Brace_Opening()
     Dim TheText = "{"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard)
@@ -77,7 +79,7 @@ Public Class FSDv2_UnitTests
     Assert.AreEqual(Expected, Text)
   End Sub
 
-  <TestMethod>
+  <TestMethod, TestCategory(Cat0)>
   Public Sub _04_EscapedOpening()
     Dim TheText = "{{"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard)
@@ -92,7 +94,7 @@ Public Class FSDv2_UnitTests
     Assert.AreEqual(Expected, Text)
   End Sub
 
-  <TestMethod>
+  <TestMethod, TestCategory(Cat0)>
   Public Sub _05_EscapedClosing()
     Dim TheText = "}}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard)
@@ -107,7 +109,7 @@ Public Class FSDv2_UnitTests
     Assert.AreEqual(Expected, Text)
   End Sub
 
-  <TestMethod>
+  <TestMethod, TestCategory(Cat0)>
   Public Sub _06_EmptyArgHole()
     Dim TheText = "{}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard)
