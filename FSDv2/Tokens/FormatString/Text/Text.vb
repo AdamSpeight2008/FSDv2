@@ -16,12 +16,24 @@
       While Ix.IsValid
         T = Common.Brace.Esc.Closing.TryParse(Ix) : If T.Kind = TokenKind.Esc_Brace_Closing Then Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
         T = Common.Brace.Esc.Opening.TryParse(Ix) : If T.Kind = TokenKind.Esc_Brace_Opening Then Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
-        T = Common.Brace.Closing.TryParse(Ix) : If T.Kind = TokenKind.Esc_Brace_Closing Then Exit While
-        T = Common.Brace.Opening.TryParse(Ix)
-        If T.Kind = TokenKind.Esc_Brace_Opening Then
-          If ParsingArgFormatText Then Exit While
-          Txn = Common.AddThenNext(T, Txn, Ix, TextStart)
-          Continue While
+        T = Common.Brace.Closing.TryParse(Ix)
+        If T.Kind = Global.FSDv2.TokenKind.Brace_Closing Then
+          If Not ParsingArgFormatText Then
+            Txn = Common.AddThenNext(New ParseError(T.Span, ParseError.Reason.Invalid, T), Txn, Ix, TextStart)
+          Else
+            Exit While 
+          End If
+
+        End If
+          T = Common.Brace.Opening.TryParse(Ix)
+        If T.Kind = TokenKind.Brace_Opening Then
+          If ParsingArgFormatText Then
+            Txn = Common.AddThenNext(New ParseError(T.Span, ParseError.Reason.Invalid, T), Txn, Ix, TextStart)
+            Continue While
+          Else
+            Txn = Common.AddThenNext(Nothing, Txn, Ix, TextStart)
+            Exit While
+          End If
         End If
         If TextStart Is Nothing Then TextStart = New Source.Position?(Ix)
         Ix = Ix.Next

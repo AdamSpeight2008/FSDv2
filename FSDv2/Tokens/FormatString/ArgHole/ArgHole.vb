@@ -244,12 +244,12 @@ TryToResyncBody:
           Dim sx = Ix
           Dim T As Token
           While Ix.IsValid
-            T = Common.Brace.Opening.TryParse(Ix)
-            If T.Kind = TokenKind.Brace_Opening Then
-              Dim pe As New ParseError(T.Span, ParseError.Reason.Invalid, T)
-              Txn = Common.AddThenNext(pe, Txn, Ix)
-              Continue While
-            End If
+            'T = Common.Brace.Opening.TryParse(Ix)
+            'If T.Kind = TokenKind.Brace_Opening Then
+            '  Dim pe As New ParseError(T.Span, ParseError.Reason.Invalid, T)
+            '  Txn = Common.AddThenNext(pe, Txn, Ix)
+            '  Continue While
+            'End If
             T = Common.Brace.Closing.TryParse(Ix) : If T.Kind = TokenKind.Brace_Closing Then Exit While
             T = Text._TryParse(Ix, True) : If T.Kind = TokenKind.ParseError Then Exit While
             Txn = Common.AddThenNext(T, Txn, Ix)
