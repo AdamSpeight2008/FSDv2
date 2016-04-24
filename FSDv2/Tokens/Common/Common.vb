@@ -230,6 +230,7 @@
           If Ix.IsInvalid Then Return ParseError.EoT(Ix)
           Dim Txn = Tokens.Empty
           If Ix <> "\"c Then Return ParseError.NullParse(Ix)
+          Dim sx = Ix
           Dim nx = Ix.Next
           If nx.IsInvalid Then Return ParseError.EoT(Ix)
           Dim T As Token
@@ -238,11 +239,13 @@
               Return New Simple(Ix.To(nx.Next))
             Case "x"c
               T = HexaDecimal.TryParse(Ix)
+              Return T
 
             Case "u"c, "U"c
               T = Unicode.TryParse(Ix)
+              Return T
           End Select
-          Return Nothing
+          Return ParseError.Unsupported(sx.To(nx), "")
         End Function
 
         Public Class Simple : Inherits Esc.Sequence
@@ -258,34 +261,44 @@
           End Sub
 
           Private Shared Function Backslash_UpperU(Ix As Source.Position) As Token
+            Dim T As Token
+            Dim Txn = Tokens.Empty
+            Dim sx = Ix
+            ' OK. At this stage we hace the start of a escape sequence for a unicode characeter \u
             '
-            ' unicode_escape_sequence ::= \U hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit
-            '
-            If Ix.Source.Kind <> Source.SourceKind.CS_Standard Then Return ParseError.Unsupported(Ix, $"{Ix.Source.Kind} doesn't support escape sequences")
-            If Ix.IsInvalid Then Return ParseError.EoT(Ix) '  Already at the end of the text.
-            If Ix <> "\"c Then Return ParseError.NullParse(Ix) ' Character is not a blackslash
-            Dim sx = Ix ' Start Index of this potential token.
-            Dim txn = Tokens.Empty : Ix = Ix.Next
-            If Ix.IsInvalid Then Return ParseError.NullParse(sx) ' A lone backslash (\) at the end of the text.
-            If Ix <> "U"c Then Return ParseError.NullParse(sx) ' Doesn't have correct the start to an Unicode escape squence. (\U)
-            Ix = Ix.Next
-            Dim T As Token = New Esc.SeqHead(sx.To(Ix)) : txn += T
+            If Ix.IsInvalid Then Return New ParseError(sx.To(Ix), ParseError.Reason.Invalid, T, "Expecting 8 Hexadecimal Digits")
             ' OK. At this stage we hace the start of a escape sequence for a unicode characeter \u
             '
             ' unicode_escape_sequence ::= \U hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit
             Dim Hx = Tokens.Empty
-            Dim count = 0
-            While Ix.IsInvalid AndAlso count < 8
+            While Ix.IsValid AndAlso Hx.Count < 8
               T = Common.HexDigit.TryParse(Ix)
               If T.Kind = TokenKind.ParseError Then Exit While
               Hx = Common.AddThenNext(T, Hx, Ix)
-              count += 1
             End While
-            If count <> 8 AndAlso count <> 0 Then Return ParseError.NullParse(sx)
-            Return New Esc.Sequence.Unicode(sx.To(Ix), txn + New HexDigits(Hx.First.Span.Start.To(Hx.Last.Span.Next), Hx))
+            If Hx.Count <> 8 Then Return New ParseError(sx.To(Ix), ParseError.Reason.Invalid, T + Hx, "Expecting 8 Hexadecimal Digits")
+            Return New HexDigits(Hx.First.Span.Start.To(Hx.Last.Span.Next), Hx)
           End Function
 
           Private Shared Function Backslash_LowerU(Ix As Source.Position) As Token
+            Dim T As Token
+            Dim Txn = Tokens.Empty
+            Dim sx = Ix
+            ' OK. At this stage we hace the start of a escape sequence for a unicode characeter \u
+            '
+            If Ix.IsInvalid Then Return New ParseError(sx.To(Ix), ParseError.Reason.Invalid, T, "Expecting 4 Hexadecimal Digits")
+            ' Try and parse 4 HexaDecimal characters.
+            Dim Hx = Tokens.Empty
+            While Ix.IsValid AndAlso Hx.Count < 4
+              T = Common.HexDigit.TryParse(Ix)
+              If T.Kind = TokenKind.ParseError Then Exit While
+              Hx = Common.AddThenNext(T, Hx, Ix)
+            End While
+            If Hx.Count <> 4 Then Return New ParseError(sx.To(Ix), ParseError.Reason.Invalid, T + Hx, "Expecting 4 Hexadecimal Digits")
+            Return New HexDigits(Hx.First.Span.Start.To(Hx.Last.Span.Next), Hx)
+          End Function
+
+          Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
             '
             ' unicode_escape_sequence ::= \u hex_digit hex_digit hex_digit hex_digit
             '
@@ -295,38 +308,30 @@
             Dim sx = Ix ' Start Index of this potential token.
             Dim txn = Tokens.Empty : Ix = Ix.Next
             If Ix.IsInvalid Then Return ParseError.NullParse(sx) ' A lone backslash (\) at the end of the text.
-            If Ix <> "u"c Then Return ParseError.NullParse(sx) ' Doesn't have correct the start to an Unicode escape squence. (\c)
-            Ix = Ix.Next
-            Dim T As Token = New Esc.SeqHead(sx.To(Ix)) : txn += T
-            ' OK. At this stage we hace the start of a escape sequence for a unicode characeter \u
-            '
-            If Ix.IsInvalid Then ParseError.NullParse(sx)
-            ' Try and parse 4 HexaDecimal characters.
-            Dim Hx = Tokens.Empty
-            Dim count = 0
-            While Ix.IsInvalid AndAlso count < 4
-              T = Common.HexDigit.TryParse(Ix)
-              If T.Kind = TokenKind.ParseError Then Exit While
-              Hx = Common.AddThenNext(T, Hx, Ix)
-              count += 1
-            End While
-            If count <> 4 AndAlso count <> 0 Then Return ParseError.NullParse(sx)
-            Return New Esc.Sequence.Unicode(sx.To(Ix), txn + New HexDigits(Hx.First.Span.Start.To(Hx.Last.Span.Next), Hx))
-          End Function
+            If Ix = "u"c Then
+              txn = FormatString.Common.AddThenNext(New Esc.SeqHead(sx.To(Ix.Next)), txn, Ix)
+              Dim hx = Backslash_LowerU(Ix)
+              If hx.Kind = TokenKind.HexDigits Then Return New Unicode(sx.To(hx.Span.Next), txn + hx)
+              Return New ParseError(sx.To(hx.Span.Next), ParseError.Reason.Invalid, txn + hx, "")
 
-          Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
-            Dim T As Token
-            T = Backslash_UpperU(Ix) : If T.Kind = TokenKind.Backslash_UpperU Then Return T
-            T = Backslash_LowerU(Ix) : If T.Kind = TokenKind.Backslash_LowerU Then Return T
-            Return ParseError.NullParse(Ix)
+            ElseIf Ix = "U"c Then
+              txn = FormatString.Common.AddThenNext(New Esc.SeqHead(sx.To(Ix.Next)), txn, Ix)
+              Dim hx = Backslash_UpperU(Ix)
+              If hx.Kind = TokenKind.HexDigits Then Return New Unicode(sx.To(hx.Span.Next), txn + hx)
+              Return New ParseError(sx.To(hx.Span.Next), ParseError.Reason.Invalid, txn + hx, "")
+            Else
+              Return ParseError.NullParse(sx) ' Doesn't have correct the start to an Unicode escape squence. (\c)
+            End If
           End Function
 
         End Class
 
         Public Class HexaDecimal : Inherits Esc.Sequence
+
           Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
             MyBase.New(TokenKind.Esc_Seq_Unicode, Span, Inner)
           End Sub
+
           Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
             If Ix.Source.Kind <> Source.SourceKind.CS_Standard Then Return ParseError.Unsupported(Ix, $"{Ix.Source.Kind} doesn't support escape sequences")
             If Ix.IsInvalid Then Return ParseError.EoT(Ix)
@@ -337,19 +342,19 @@
             Ix = Ix.Next
             Dim T As Token = New Esc.SeqHead(sx.To(Ix))
             txn += T
-            If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+            If Ix.IsInvalid Then Return New ParseError(sx.To(Ix), ParseError.Reason.Invalid, T, "Expecting 4 Hexadecimal Digits")
             Dim Hx = Tokens.Empty
-            Dim count = 0
-            While Ix.IsInvalid AndAlso count < 4
+            While Ix.IsValid AndAlso Hx.Count < 4
               T = Common.HexDigit.TryParse(Ix)
               If T.Kind = TokenKind.ParseError Then Exit While
               Hx = Common.AddThenNext(T, Hx, Ix)
-              count += 1
             End While
-            If count = 0 Then Return ParseError.NullParse(sx)
+            If Hx.Count = 0 Then Return New ParseError(sx.To(Ix), ParseError.Reason.Invalid, txn + Hx, "Expecting 4 Hexadecimal Digits")
             Return New Esc.Sequence.HexaDecimal(sx.To(Ix), txn + New HexDigits(Hx.First.Span.Start.To(Hx.Last.Span.Next), Hx))
           End Function
+
         End Class
+
       End Class
 
     End Class

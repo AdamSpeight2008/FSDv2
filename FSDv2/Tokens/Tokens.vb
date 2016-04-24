@@ -36,6 +36,9 @@
   Public Shared Operator +(T As Token, Tx As Tokens) As Tokens
     Return New Tokens(Enumerable.Repeat(T, 1).Concat(Tx._Tokens))
   End Operator
+  Public Shared Operator +(Tx0 As Tokens, Tx1 As Tokens) As Tokens
+    Return New Tokens(Tx0._Tokens.Concat(Tx1._Tokens))
+  End Operator
 
   Default Public ReadOnly Property Tokens(ByVal Index As Integer) As Token
     Get

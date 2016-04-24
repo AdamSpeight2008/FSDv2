@@ -31,4 +31,7 @@
   Public Shared Function Unsupported(ix As Source.Position, Text As String) As ParseError
     Return New ParseError(ix.ToZeroSpan, Reason.Unsupported, Tokens.Empty, Text)
   End Function
+  Public Shared Function Unsupported(sp As Source.Span, Text As String) As ParseError
+    Return New ParseError(sp, Reason.Unsupported, Tokens.Empty, Text)
+  End Function
 End Class

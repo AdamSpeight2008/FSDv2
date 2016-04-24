@@ -105,7 +105,8 @@
     <Compile Include="Source_UnitTests\Source_UnitTest_CB_Verbatum.vb" />
     <Compile Include="Source_UnitTests\Source_UnitTest_CS_Standard.vb" />
     <Compile Include="Source_UnitTests\Source_UnitTest_VB_Standard.vb" />
-    <Compile Include="Tokens\Common\EscSeq_Compound_Test.vb" />
+    <Compile Include="Tokens\Common\EscSeq_Compound_Unicode.vb" />
+    <Compile Include="Tokens\Common\EscSeq_Compound_HexaDecimal.vb" />
     <Compile Include="Tokens\Common\HexDigits.vb" />
     <Compile Include="Tokens\Common\HexDigit.vb" />
     <Compile Include="Tokens\Common\Digit.vb" />
