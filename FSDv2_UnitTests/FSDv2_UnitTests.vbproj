@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arghole_UnitTest\ArgAlign_UnitTest\ArgAlign_UnitTest.vb" />
+    <Compile Include="Arghole_UnitTest\ArgHole_UnitTests.vb" />
     <Compile Include="Arghole_UnitTest\ArgFormat_UnitTest\ArgFormat_UnitTests.vb" />
     <Compile Include="Arghole_UnitTest\ArgIndex_UnitTest\ArgIndex_UnitTest.vb" />
     <Compile Include="FormatString_UnitTests.vb" />

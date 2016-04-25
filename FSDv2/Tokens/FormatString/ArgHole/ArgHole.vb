@@ -98,10 +98,18 @@ TryToResyncHead:
         Return ParseError.NullParse(Ix)
 TryToResyncBody:
         Dim rp1 = RPX1.TryToResync(Ix)
-        Select Case True
-          Case TypeOf rp1 Is Body
-            Txn = Txn + New ParseError(sx.To(rp1.Span.Start), Nothing, rp1) + rp1
+        Select Case rp1.Kind
+          Case TokenKind.ParseError
+          Case TokenKind.Colon
+            Txn = Txn + New ParseError(sx.To(rp1.Span.Start), Nothing, rp1)
             GoTo AfterBody
+          Case TokenKind.ArgHole_Align_Body
+            Txn = Txn + New ParseError(sx.To(rp1.Span.Start), Nothing, rp1)
+            GoTo AfterBody
+          Case TokenKind.Brace_Closing
+            Txn += New ParseError(sx.To(rp1.Span.Start), Nothing, rp1)
+            GoTo AfterBody
+
         End Select
         Return ParseError.NullParse(Ix)
       End Function
@@ -200,21 +208,6 @@ TryToResyncBody:
         If T.Kind = TokenKind.ArgHole_Format_Body Then Txn = Common.AddThenNext(T, Txn, Ix)
         Return New Format(sx.To(Ix), Txn)
       End Function
-
-      Public Class Colon : Inherits Token
-
-        Private Sub New(Span As Source.Span)
-          MyBase.New(TokenKind.Colon, Span)
-        End Sub
-
-        Public Shared Function TryParse(Ix As Source.Position) As Token
-          If Ix.IsInvalid Then Return ParseError.EoT(Ix)
-          If (Ix <> ":"c) Then Return ParseError.NullParse(Ix)
-          Return New Colon(Source.Span.Create_UnitSpan(Ix))
-        End Function
-
-      End Class
-
       Public Class Head
         Inherits Token
 
@@ -258,6 +251,21 @@ TryToResyncBody:
         End Function
 
       End Class
+      Public Class Colon : Inherits Token
+
+        Private Sub New(Span As Source.Span)
+          MyBase.New(TokenKind.Colon, Span)
+        End Sub
+
+        Public Shared Function TryParse(Ix As Source.Position) As Token
+          If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+          If (Ix <> ":"c) Then Return ParseError.NullParse(Ix)
+          Return New Colon(Source.Span.Create_UnitSpan(Ix))
+        End Function
+
+      End Class
+
+
 
     End Class
 

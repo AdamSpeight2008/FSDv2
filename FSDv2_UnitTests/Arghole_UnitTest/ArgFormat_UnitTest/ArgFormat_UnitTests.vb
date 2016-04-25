@@ -116,6 +116,7 @@ Public Class ArgFormat_UnitTests
 #End Region
 
   End Sub
+
   <TestMethod, TestCategory(Cat)>
   Public Sub _04_()
     Dim Text = ":{}"
