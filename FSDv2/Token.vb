@@ -17,6 +17,10 @@ Public MustInherit Class Token
     Return Tokens.Create(T)
   End Operator
 
+  Public Overrides Function ToString() As String
+    Return $"{Span.ToString()}  {Kind.ToString}"
+  End Function
+
 End Class
 
 Public Enum TokenKind As Integer

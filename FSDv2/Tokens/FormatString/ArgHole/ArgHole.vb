@@ -1,6 +1,8 @@
 ﻿Partial Public Class FormatString
 
   Public Class ArgHole : Inherits Token
+    Private Shared RPX0 As ResyncPoints = New ResyncPoint(AddressOf Align.Comma.TryParse) + New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
+
 
     Private Sub New(Span As Source.Span, Inner As Tokens)
       MyBase.New(TokenKind.ArgHole, Span, Inner)
@@ -14,17 +16,64 @@
       Dim sx = Ix
       Dim txn = Tokens.Empty
       Dim T As Token = Common.Brace.Opening.TryParse(Ix)
-      If T.Kind = TokenKind.Brace_Opening Then txn = Common.AddThenNext(T, txn, Ix)
+      If T.Kind = TokenKind.Brace_Opening Then
+        txn = Common.AddThenNext(T, txn, Ix)
+      End If
+Find_Index:
       T = ArgHole.Index.TryParse(Ix)
-      If T.Kind = TokenKind.ArgHole_Index Then txn = Common.AddThenNext(T, txn, Ix)
+      If TypeOf T Is ParseError.EoT Then txn += T : GoTo Done
+      If T.Kind = TokenKind.ArgHole_Index Then
+        txn = Common.AddThenNext(T, txn, Ix)
+        GoTo Find_Align
+      Else
+        Dim pe = DirectCast(T, ParseError)
+
+      End If
+      GoTo TryToResync
+Find_Align:
       T = ArgHole.Align.TryParse(Ix)
-      If T.Kind = TokenKind.ArgHole_Align Then txn = Common.AddThenNext(T, txn, Ix)
+      If TypeOf T Is ParseError.EoT Then txn += T : GoTo Done
+      If T.Kind = TokenKind.ArgHole_Align Then
+        txn = Common.AddThenNext(T, txn, Ix)
+        GoTo Find_Format
+      Else
+        Dim pe = DirectCast(T, ParseError)
+
+      End If
+      GoTo TryToResync
+Find_Format:
       T = ArgHole.Format.TryParse(Ix)
-      If T.Kind = TokenKind.ArgHole_Format Then txn = Common.AddThenNext(T, txn, Ix)
+      If TypeOf T Is ParseError.EoT Then txn += T : GoTo Done
+      If T.Kind = TokenKind.ArgHole_Format Then txn = Common.AddThenNext(T, txn, Ix) : GoTo Find_Brace_Closing
+      GoTo TryToResync
+Find_Brace_Closing:
       T = Common.Brace.Closing.TryParse(Ix)
+      If TypeOf T Is ParseError.EoT Then txn += T : GoTo Done
       If T.Kind = TokenKind.Brace_Closing Then txn = Common.AddThenNext(T, txn, Ix)
+Done:
       Return New ArgHole(sx.To(Ix), txn)
       ' Checking for the valid tokens is left the Analysis (TODO)
+TryToResync:
+      Dim rp1 = RPX0.TryToResync(Ix)
+      If rp1.Kind = TokenKind.ParseError Then
+        Dim pe = DirectCast(rp1, ParseError)
+        If TypeOf pe IsNot ParseError.NullParse Then
+
+          Select Case rp1.Inner(0).Kind
+            Case TokenKind.Comma
+              txn += rp1 : Ix = rp1.Span.Next
+              GoTo Find_Align
+            Case TokenKind.Colon
+              txn += rp1 : Ix = rp1.Span.Next
+              GoTo Find_Format
+            Case TokenKind.Brace_Closing
+              txn += rp1 : Ix = rp1.Span.Next
+              GoTo Find_Brace_Closing
+          End Select
+        End If
+      End If
+      GoTo Find_Brace_Closing
+      Return ParseError.Make.NullParse(Ix)
     End Function
 
     Public Class Index : Inherits Token
@@ -76,41 +125,67 @@ IsThereTrailingWhitespace:
         '
         '  ArgHole.Index ::= ArgHole.Align.Head ArgHole.Align.Body
         '
-        Dim Txn = Tokens.Empty
-        Dim sx = Ix
-        Dim _Head = Head.TryParse(Ix)
-        If _Head.Kind = TokenKind.ParseError Then GoTo TryToResyncHead
-        Txn = Common.AddThenNext(_Head, Txn, Ix)
+IsThereAHead:
+        Dim Txn = Tokens.Empty, sx = Ix, _Head = Head.TryParse(Ix)
+        If _Head.Kind = TokenKind.ArgHole_Align_Head Then Txn = Common.AddThenNext(_Head, Txn, Ix) : GoTo IsThereABody
+        GoTo TryToResyncHead
+
 IsThereABody:
         Dim _Body = Body.TryParse(Ix)
-        If _Body.Kind = TokenKind.ParseError Then GoTo TryToResyncBody
-        Txn = Common.AddThenNext(_Body, Txn, Ix)
-AfterBody:
+        If _Body.Kind = TokenKind.ArgHole_Align_Body Then Txn = Common.AddThenNext(_Body, Txn, Ix) : GoTo Done
+        GoTo TryToResyncBody
+
+Done:
         Return New Align(Txn.First.Span.Start.To(Txn.Last.Span.Next), Txn)
 
 TryToResyncHead:
         Dim rp0 = RPX0.TryToResync(Ix)
-        Select Case True
-          Case TypeOf rp0 Is Head
+        Select Case rp0.Kind
+          Case TokenKind.ArgHole_Align_Head
+            Txn = Txn + New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
+            GoTo IsThereAHead
+
+          Case TokenKind.Colon
             Txn = Txn + New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
             GoTo IsThereABody
+
+          Case TokenKind.ArgHole_Align_Body
+            Txn = Txn + New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
+            GoTo IsThereABody
+
+          Case TokenKind.Brace_Closing
+            Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
+            GoTo Done
+          Case TokenKind.ParseError
+            If TypeOf rp0 Is ParseError.Partial Then
+              Txn = Txn + New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
+
+            End If
         End Select
+        
         Return ParseError.Make.NullParse(Ix)
 TryToResyncBody:
         Dim rp1 = RPX1.TryToResync(Ix)
         Select Case rp1.Kind
           Case TokenKind.ParseError
+          Case TokenKind.ArgHole_Align_Head
+            Txn = Txn + New ParseError.Resync(sx.To(rp1.Span.Start), rp1)
+            GoTo Done
+
           Case TokenKind.Colon
             Txn = Txn + New ParseError.Resync(sx.To(rp1.Span.Start), rp1)
-            GoTo AfterBody
+            GoTo Done
+
           Case TokenKind.ArgHole_Align_Body
             Txn = Txn + New ParseError.Resync(sx.To(rp1.Span.Start), rp1)
-            GoTo AfterBody
+            GoTo Done
+
           Case TokenKind.Brace_Closing
             Txn += New ParseError.Resync(sx.To(rp1.Span.Start), rp1)
-            GoTo AfterBody
+            GoTo Done
 
         End Select
+        GoTo Done
         Return ParseError.Make.NullParse(Ix)
       End Function
 

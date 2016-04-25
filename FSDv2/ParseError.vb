@@ -21,6 +21,11 @@
     Me.Why = Reason
     Me.Additional = If(Additional, String.Empty)
   End Sub
+
+  Public Overrides Function ToString() As String
+    Return $"{MyBase.ToString()}.{Why.ToString}"
+  End Function
+
   Public Class Make
     Public Shared Function EoT(ix As Source.Position) As ParseError
       Return New EoT(ix.ToZeroSpan, Tokens.Empty)

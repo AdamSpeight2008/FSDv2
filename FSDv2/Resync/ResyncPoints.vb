@@ -24,7 +24,7 @@
       For i = 0 To c
         Dim q = _ResyncPoints(i).TryParse(ix)
         If q Is Nothing Then Continue For
-        If q.Kind <> TokenKind.ParseError Then Return q
+        If q.Kind <> TokenKind.ParseError Then Return New ParseError.Resync(sx.To(ix), q)
       Next
       ix = ix.Next
     End While

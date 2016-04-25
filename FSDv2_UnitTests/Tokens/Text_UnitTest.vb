@@ -70,6 +70,36 @@ Public Class Text_UnitTests
     Assert.AreEqual("(  0:  5)", res.Span.ToString)
     Assert.AreEqual(2, res.Inner.Count)
     Assert.IsInstanceOfType(res.Inner(0), GetType(Text))
-    Assert.IsInstanceOfType(res.Inner(1), GetType(ParseError))
+    Assert.IsInstanceOfType(res.Inner(1), GetType(ParseError.Unsupported))
+  End Sub
+  <TestMethod, TestCategory(Cat)>
+  Public Sub _05_()
+    Dim Text = "abc\x"
+    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
+    Dim FirstPos = TheSource.First
+    Dim res = FormatString.Text.TryParse(FirstPos)
+    Assert.IsNotNull(res)
+    Assert.IsNotInstanceOfType(res, GetType(ParseError))
+    Assert.IsInstanceOfType(res, GetType(Text))
+    Assert.AreEqual("(  0:  5)", res.Span.ToString)
+    Assert.AreEqual(2, res.Inner.Count)
+    Assert.IsInstanceOfType(res.Inner(0), GetType(Text))
+    Assert.IsInstanceOfType(res.Inner(1), GetType(ParseError.Partial))
+  End Sub
+
+  <TestMethod, TestCategory(Cat)>
+  Public Sub _06_()
+    Dim Text = "abc\x0000f"
+    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
+    Dim FirstPos = TheSource.First
+    Dim res = FormatString.Text.TryParse(FirstPos)
+    Assert.IsNotNull(res)
+    Assert.IsNotInstanceOfType(res, GetType(ParseError))
+    Assert.IsInstanceOfType(res, GetType(Text))
+    Assert.AreEqual("(  0: 10)", res.Span.ToString)
+    Assert.AreEqual(3, res.Inner.Count)
+    Assert.IsInstanceOfType(res.Inner(0), GetType(Text))
+    Assert.IsInstanceOfType(res.Inner(1), GetType(Common.Esc.Sequence.HexaDecimal))
+    Assert.IsInstanceOfType(res.Inner(2), GetType(Text))
   End Sub
 End Class

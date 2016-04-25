@@ -27,22 +27,18 @@
           Txn = Common.AddThenNext(Nothing, Txn, Ix, TextStart) : Exit While
 
         End If
-
-        If Ix.Source.Kind = Source.SourceKind.CS_Standard Then
-          T = Common.Esc.Sequence.TryParse(Ix)
-          Select Case T.Kind
-            Case TokenKind.Esc_Seq_Simple, TokenKind.Esc_Seq_HexaDecimal, TokenKind.Esc_Seq_Unicode
-              Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
-            Case TokenKind.Partial
-              Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
-            Case TokenKind.ParseError
-              Dim pe = DirectCast(T, ParseError)
-              Select Case pe.Why
-                Case ParseError.Reason.Unsupported, ParseError.Reason.UnexpectedCharacter, ParseError.Reason.Invalid
-                  Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
-
-              End Select
-          End Select
+        If Ix = "\"c Then
+          If Ix.Source.Kind = Source.SourceKind.CS_Standard Then
+            T = Common.Esc.Sequence.TryParse(Ix)
+            Select Case T.Kind
+              Case TokenKind.Esc_Seq_Simple, TokenKind.Esc_Seq_HexaDecimal, TokenKind.Esc_Seq_Unicode
+                Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
+              Case TokenKind.Partial
+                Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
+              Case TokenKind.ParseError
+                If T.IsNotNullParse Then Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
+            End Select
+          End If
 
         End If
         If TextStart Is Nothing Then TextStart = New Source.Position?(Ix)
@@ -52,9 +48,7 @@
       Return New Text(sx.To(Ix), Txn)
     End Function
 
-    Private Shared Function KindOrPartial(T As Token, k As TokenKind) As Boolean
-      Return (T.Kind = k) OrElse ((T.Kind = TokenKind.Partial) AndAlso DirectCast(T, ParseError.Partial).Target = k)
-    End Function
+
 
   End Class
 
