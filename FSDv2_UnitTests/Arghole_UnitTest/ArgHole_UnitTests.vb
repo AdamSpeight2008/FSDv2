@@ -124,5 +124,56 @@ Public Class ArgHole_UnitTests
     Assert.IsInstanceOfType(res.Inner(4), GetType(Common.Brace.Closing))
 
   End Sub
+  <TestMethod, TestCategory(Cat)>
+  Public Sub _07_()
+    Dim Text = "{0 , 1}"
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
+    Dim FirstPos = TheSource.First
+    Dim res = FormatString.ArgHole.TryParse(FirstPos)
+    Assert.IsNotNull(res)
+    Assert.IsNotInstanceOfType(res, GetType(ParseError))
+    Assert.IsInstanceOfType(res, GetType(ArgHole))
+    Assert.AreEqual("(  0:  7)", res.Span.ToString)
+    Assert.AreEqual(4, res.Inner.Count)
+    Assert.IsInstanceOfType(res.Inner(0), GetType(Common.Brace.Opening))
+    Assert.IsInstanceOfType(res.Inner(1), GetType(ArgHole.Index))
+    Assert.IsInstanceOfType(res.Inner(2), GetType(ArgHole.Align))
+    Assert.IsInstanceOfType(res.Inner(3), GetType(Common.Brace.Closing))
 
+  End Sub
+
+  <TestMethod, TestCategory(Cat)>
+  Public Sub _08_()
+    Dim Text = "{0 , -1}"
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
+    Dim FirstPos = TheSource.First
+    Dim res = FormatString.ArgHole.TryParse(FirstPos)
+    Assert.IsNotNull(res)
+    Assert.IsNotInstanceOfType(res, GetType(ParseError))
+    Assert.IsInstanceOfType(res, GetType(ArgHole))
+    Assert.AreEqual("(  0:  8)", res.Span.ToString)
+    Assert.AreEqual(4, res.Inner.Count)
+    Assert.IsInstanceOfType(res.Inner(0), GetType(Common.Brace.Opening))
+    Assert.IsInstanceOfType(res.Inner(1), GetType(ArgHole.Index))
+    Assert.IsInstanceOfType(res.Inner(2), GetType(ArgHole.Align))
+    Assert.IsInstanceOfType(res.Inner(3), GetType(Common.Brace.Closing))
+
+  End Sub
+  <TestMethod, TestCategory(Cat)>
+  Public Sub _09_()
+    Dim Text = "{0 :{{}"
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
+    Dim FirstPos = TheSource.First
+    Dim res = FormatString.ArgHole.TryParse(FirstPos)
+    Assert.IsNotNull(res)
+    Assert.IsNotInstanceOfType(res, GetType(ParseError))
+    Assert.IsInstanceOfType(res, GetType(ArgHole))
+    Assert.AreEqual("(  0:  7)", res.Span.ToString)
+    Assert.AreEqual(4, res.Inner.Count)
+    Assert.IsInstanceOfType(res.Inner(0), GetType(Common.Brace.Opening))
+    Assert.IsInstanceOfType(res.Inner(1), GetType(ArgHole.Index))
+    Assert.IsInstanceOfType(res.Inner(2), GetType(ArgHole.Format))
+    Assert.IsInstanceOfType(res.Inner(3), GetType(Common.Brace.Closing))
+
+  End Sub
 End Class
