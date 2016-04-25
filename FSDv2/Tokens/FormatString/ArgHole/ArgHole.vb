@@ -10,7 +10,7 @@
       '
       '  ArgHole ::= Brace.Opening ArgHole.Index?
       '
-      If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+      If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
       Dim sx = Ix
       Dim txn = Tokens.Empty
       Dim T As Token = Common.Brace.Opening.TryParse(Ix)
@@ -37,7 +37,7 @@
       End Sub
 
       Public Shared Function TryParse(Ix As Source.Position) As Token
-        If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+        If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         Dim Txn = Tokens.Empty
         Dim T As Token
         Dim sx = Ix
@@ -53,13 +53,13 @@ IsThereTrailingWhitespace:
           Select Case True
             Case r Is Nothing : Return Nothing
             Case TypeOf r Is Common.Digits
-              Dim tmp As New ParseError(sx.To(r.Span.Start), ParseError.Reason.UnexpectedCharacter, r)
+              Dim tmp As ParseError = ParseError.Make.UnexpectedChars(sx.To(r.Span.Start), Tokens.Empty + r, "")
               Txn = Txn + tmp + r
               Ix = r.Span.Next
               GoTo IsThereTrailingWhitespace
           End Select
         End If
-        Return ParseError.NullParse(Ix)
+        Return ParseError.Make.NullParse(Ix)
       End Function
 
     End Class
@@ -92,26 +92,26 @@ TryToResyncHead:
         Dim rp0 = RPX0.TryToResync(Ix)
         Select Case True
           Case TypeOf rp0 Is Head
-            Txn = Txn + New ParseError(sx.To(rp0.Span.Start), Nothing, rp0) + rp0
+            Txn = Txn + New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
             GoTo IsThereABody
         End Select
-        Return ParseError.NullParse(Ix)
+        Return ParseError.Make.NullParse(Ix)
 TryToResyncBody:
         Dim rp1 = RPX1.TryToResync(Ix)
         Select Case rp1.Kind
           Case TokenKind.ParseError
           Case TokenKind.Colon
-            Txn = Txn + New ParseError(sx.To(rp1.Span.Start), Nothing, rp1)
+            Txn = Txn + New ParseError.Resync(sx.To(rp1.Span.Start), rp1)
             GoTo AfterBody
           Case TokenKind.ArgHole_Align_Body
-            Txn = Txn + New ParseError(sx.To(rp1.Span.Start), Nothing, rp1)
+            Txn = Txn + New ParseError.Resync(sx.To(rp1.Span.Start), rp1)
             GoTo AfterBody
           Case TokenKind.Brace_Closing
-            Txn += New ParseError(sx.To(rp1.Span.Start), Nothing, rp1)
+            Txn += New ParseError.Resync(sx.To(rp1.Span.Start), rp1)
             GoTo AfterBody
 
         End Select
-        Return ParseError.NullParse(Ix)
+        Return ParseError.Make.NullParse(Ix)
       End Function
 
       Public Class Comma : Inherits Token
@@ -121,8 +121,8 @@ TryToResyncBody:
         End Sub
 
         Public Shared Function TryParse(Ix As Source.Position) As Token
-          If Ix.IsInvalid Then Return ParseError.EoT(Ix)
-          If (Ix.Value <> ","c) Then Return ParseError.NullParse(Ix)
+          If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
+          If (Ix.Value <> ","c) Then Return ParseError.Make.NullParse(Ix)
           Return New Comma(Source.Span.Create_UnitSpan(Ix))
         End Function
 
@@ -135,8 +135,8 @@ TryToResyncBody:
         End Sub
 
         Public Shared Function TryParse(Ix As Source.Position) As Token
-          If Ix.IsInvalid Then Return ParseError.EoT(Ix)
-          If (Ix.Value <> "-"c) Then Return ParseError.NullParse(Ix)
+          If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
+          If (Ix.Value <> "-"c) Then Return ParseError.Make.NullParse(Ix)
           Return New MinusSign(Source.Span.Create_UnitSpan(Ix))
         End Function
 
@@ -152,10 +152,10 @@ TryToResyncBody:
           '
           ' ArgHole.Align.Head ::= Comma Whitespaces?
           '
-          If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+          If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim Txn = Tokens.Empty
           Dim T = Comma.TryParse(Ix)
-          If T.Kind <> TokenKind.Comma Then Return ParseError.NullParse(Ix)
+          If T.Kind <> TokenKind.Comma Then Return ParseError.Make.NullParse(Ix)
           Dim sx = Ix : Txn += T : Ix = T.Span.Next
           T = Common.Whitespaces.TryParse(Ix)
           If T.Kind = TokenKind.Whitespaces Then Txn += T : Ix = T.Span.Next
@@ -174,13 +174,13 @@ TryToResyncBody:
           '
           '  ArgHole.Align.Body ::= MinusSign? Digits Whitespaces?
           '
-          If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+          If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim sx = Ix
           Dim Txn = Tokens.Empty
           Dim T As Token = MinusSign.TryParse(Ix)
           If T.Kind = TokenKind.MinusSign Then Txn = Common.AddThenNext(T, Txn, Ix)
           T = Common.Digits.TryParse(Ix)
-          If T.Kind = TokenKind.ParseError Then Return ParseError.NullParse(Ix)
+          If T.Kind = TokenKind.ParseError Then Return ParseError.Make.NullParse(Ix)
           Txn = Common.AddThenNext(T, Txn, Ix)
           T = Common.Whitespaces.TryParse(Ix)
           If T.Kind = TokenKind.Whitespaces Then Txn = Common.AddThenNext(T, Txn, Ix)
@@ -199,9 +199,9 @@ TryToResyncBody:
       End Sub
 
       Public Shared Function TryParse(Ix As Source.Position) As Token
-        If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+        If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         Dim T As Token = Format.Head.TryParse(Ix)
-        If T.Kind = TokenKind.ParseError Then Return T
+        If TypeOf T Is ParseError Then Return T
         Dim sx = Ix
         Dim Txn = Tokens.Empty : Txn = Common.AddThenNext(T, Txn, Ix)
         T = ArgHole.Format.Body.TryParse(Ix)
@@ -216,9 +216,9 @@ TryToResyncBody:
         End Sub
 
         Public Shared Function TryParse(Ix As Source.Position) As Token
-          If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+          If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim T As Token = Colon.TryParse(Ix)
-          If T.Kind = TokenKind.ParseError Then Return ParseError.NullParse(Ix)
+          If T.Kind = TokenKind.ParseError Then Return ParseError.Make.NullParse(Ix)
           Return New Head(T.Span, Tokens.Empty + T)
         End Function
 
@@ -232,7 +232,7 @@ TryToResyncBody:
         End Sub
 
         Public Shared Function TryParse(Ix As Source.Position) As Token
-          If Ix.IsInvalid Then Return ParseError.EoT(Ix)
+          If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim Txn = Tokens.Empty
           Dim sx = Ix
           Dim T As Token
@@ -258,8 +258,8 @@ TryToResyncBody:
         End Sub
 
         Public Shared Function TryParse(Ix As Source.Position) As Token
-          If Ix.IsInvalid Then Return ParseError.EoT(Ix)
-          If (Ix <> ":"c) Then Return ParseError.NullParse(Ix)
+          If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
+          If (Ix <> ":"c) Then Return ParseError.Make.NullParse(Ix)
           Return New Colon(Source.Span.Create_UnitSpan(Ix))
         End Function
 

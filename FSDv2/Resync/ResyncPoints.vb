@@ -28,7 +28,7 @@
       Next
       ix = ix.Next
     End While
-    Return ParseError.NullParse(ix)
+    Return ParseError.Make.NullParse(ix)
   End Function
 
   'Public Function TryToResync(ix As Source.Position) As Token

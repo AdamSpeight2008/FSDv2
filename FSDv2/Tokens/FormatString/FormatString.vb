@@ -16,13 +16,13 @@
         Case TokenKind.Esc_Brace_Opening, TokenKind.Esc_Brace_Closing
           Txn = Common.AddThenNext(T, Txn, Ix, TextStart)
         Case TokenKind.Brace_Closing
-          Txn = Common.AddThenNext(New ParseError(T.Span, ParseError.Reason.Invalid, T), Txn, Ix, TextStart)
+          Txn = Common.AddThenNext(ParseError.Make.Invalid(T.Span, T), Txn, Ix, TextStart)
         Case TokenKind.Brace_Opening
           Dim res = ArgHole.TryParse(Ix)
           If res.Kind = TokenKind.ArgHole Then
             Txn = Common.AddThenNext(res, Txn, Ix, TextStart)
           Else
-            Txn = Common.AddThenNext(New ParseError(Ix.ToUnitSpan, ParseError.Reason.UnexpectedCharacter, res), Txn, Ix, TextStart)
+            Txn = Common.AddThenNext(ParseError.Make.UnexpectedChars(Ix.ToUnitSpan, res, ""), Txn, Ix, TextStart)
           End If
         Case Else
           If TextStart Is Nothing Then TextStart = New Source.Position?(Ix)

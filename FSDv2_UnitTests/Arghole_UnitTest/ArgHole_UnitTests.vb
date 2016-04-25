@@ -38,6 +38,7 @@ Public Class ArgHole_UnitTests
     Assert.IsInstanceOfType(res.Inner(0), GetType(Common.Brace.Opening))
 
   End Sub
+
   <TestMethod, TestCategory(Cat)>
   Public Sub _02_()
     Dim Text = "{}"

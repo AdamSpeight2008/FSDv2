@@ -38,7 +38,7 @@ Public Class EscSeq_Compound_HexaDecimal
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Dim pe As ParseError = DirectCast(res, ParseError)
-    Assert.AreEqual(ParseError.Reason.Invalid, pe.Why)
+    Assert.AreEqual(ParseError.Reason.Partial, pe.Why)
   End Sub
 
   <TestMethod, TestCategory(Cat)>

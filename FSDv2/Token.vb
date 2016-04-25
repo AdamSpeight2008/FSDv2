@@ -13,6 +13,10 @@ Public MustInherit Class Token
     Return Tokens.Create(T0, T1)
   End Operator
 
+  Public Shared Widening Operator CType(T As Token) As Tokens
+    Return Tokens.Create(T)
+  End Operator
+
 End Class
 
 Public Enum TokenKind As Integer
@@ -49,4 +53,5 @@ Public Enum TokenKind As Integer
   Esc_Seq
   Backslash_UpperU
   Backslash_LowerU
+  [Partial]
 End Enum

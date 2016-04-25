@@ -13,6 +13,10 @@
     Return New Tokens(Enumerable.Repeat(T0, 1).Concat(Enumerable.Repeat(T1, 1)))
   End Function
 
+  Public Shared Function Create(T0 As Token) As Tokens
+    If (T0 Is Nothing) Then Throw New Exception
+    Return New Tokens(Enumerable.Repeat(T0, 1))
+  End Function
 
   Public Function GetEnumerator() As IEnumerable(Of Token)
     Return _Tokens.AsEnumerable
