@@ -1,14 +1,14 @@
 ﻿Partial Public Structure Source
+
+#Region "ReadOnly Properties"
   Friend ReadOnly Property ID As Guid
   Public ReadOnly Property Text As String
   Public ReadOnly Property Length As Integer
   Public ReadOnly Property Kind As SourceKind
+#End Region
 
   Private Sub New(Text As String, Kind As SourceKind)
-    Me.ID = Guid.NewGuid
-    Me.Text = If(Text, String.Empty)
-    Me.Length = Me.Text.Length
-    Me.Kind = Kind
+    Me.ID = Guid.NewGuid : Me.Text = If(Text, String.Empty) : Me.Length = Me.Text.Length : Me.Kind = Kind
   End Sub
 
   Public Function First() As Position?
@@ -28,6 +28,7 @@
   Public Shared Operator =(S0 As Source, S1 As Source) As Boolean
     Return (S0.ID = S1.ID)
   End Operator
+
   Public Shared Operator <>(S0 As Source, S1 As Source) As Boolean
     Return (S0.ID <> S1.ID)
   End Operator
@@ -37,9 +38,5 @@
     CS_Standard
     CS_Verbatum
   End Enum
-
-
-
-
 
 End Structure
