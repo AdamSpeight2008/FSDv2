@@ -26,8 +26,8 @@ Public Class Tokens_Common_Whitespaces_UnitTest
     Assert.AreEqual(0, res.Span.Start.Index)
     Assert.AreEqual(1, res.Span.Size)
     Assert.AreEqual("(  0:  1)", res.Span.ToString)
-    Assert.AreEqual(1, res.Inner.Count)
-    Assert.AreEqual(TokenKind.Whitespace, res.Inner(0).Kind)
+    Assert.AreEqual(1, res.InnerTokens.Count)
+    Assert.AreEqual(TokenKind.Whitespace, res.InnerTokens(0).Kind)
 
   End Sub
 

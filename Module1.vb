@@ -34,10 +34,10 @@ Public Module Exts
 
   Private Sub _AsString(Tk As Token, sb As Text.StringBuilder, level As Integer)
     sb.AppendLine($"{Space(level * 2)}{Tk.Span.ToString} {Tk.GetType.FullName}")
-    For i = 0 To Tk.Inner.Count - 1
+    For i = 0 To Tk.InnerTokens.Count - 1
       sb.Append(Space(level * 2))
       sb.Append($"[{i,2}]")
-      _AsString(Tk.Inner(i), sb, level + 1)
+      _AsString(Tk.InnerTokens(i), sb, level + 1)
     Next
   End Sub
 

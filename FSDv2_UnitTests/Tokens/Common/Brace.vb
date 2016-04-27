@@ -25,7 +25,7 @@ Imports FSDv2
     Assert.AreEqual(TokenKind.Brace_Opening, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
     Assert.AreEqual(1, res.Span.Size)
-    Assert.AreEqual(0, res.Inner.Count)
+    Assert.AreEqual(0, res.InnerTokens.Count)
   End Sub
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _02_()
@@ -38,7 +38,7 @@ Imports FSDv2
     Assert.AreEqual(TokenKind.Brace_Closing, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
     Assert.AreEqual(1, res.Span.Size)
-    Assert.AreEqual(0, res.Inner.Count)
+    Assert.AreEqual(0, res.InnerTokens.Count)
   End Sub
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _03_()
@@ -51,13 +51,13 @@ Imports FSDv2
     Assert.AreEqual(TokenKind.Esc_Brace_Opening, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
     Assert.AreEqual(2, res.Span.Size)
-    Assert.AreEqual(2, res.Inner.Count)
-    Assert.AreEqual(TokenKind.Brace_Opening, res.Inner(0).Kind)
-    Assert.AreEqual(0, res.Inner(0).Span.Start.Index)
-    Assert.AreEqual(1, res.Inner(0).Span.Size)
-    Assert.AreEqual(TokenKind.Brace_Opening, res.Inner(1).Kind)
-    Assert.AreEqual(1, res.Inner(1).Span.Start.Index)
-    Assert.AreEqual(1, res.Inner(1).Span.Size)
+    Assert.AreEqual(2, res.InnerTokens.Count)
+    Assert.AreEqual(TokenKind.Brace_Opening, res.InnerTokens(0).Kind)
+    Assert.AreEqual(0, res.InnerTokens(0).Span.Start.Index)
+    Assert.AreEqual(1, res.InnerTokens(0).Span.Size)
+    Assert.AreEqual(TokenKind.Brace_Opening, res.InnerTokens(1).Kind)
+    Assert.AreEqual(1, res.InnerTokens(1).Span.Start.Index)
+    Assert.AreEqual(1, res.InnerTokens(1).Span.Size)
   End Sub
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _04_()
@@ -70,13 +70,13 @@ Imports FSDv2
     Assert.AreEqual(TokenKind.Esc_Brace_Closing, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
     Assert.AreEqual(2, res.Span.Size)
-    Assert.AreEqual(2, res.Inner.Count)
-    Assert.AreEqual(TokenKind.Brace_Closing, res.Inner(0).Kind)
-    Assert.AreEqual(0, res.Inner(0).Span.Start.Index)
-    Assert.AreEqual(1, res.Inner(0).Span.Size)
-    Assert.AreEqual(TokenKind.Brace_Closing, res.Inner(1).Kind)
-    Assert.AreEqual(1, res.Inner(1).Span.Start.Index)
-    Assert.AreEqual(1, res.Inner(1).Span.Size)
+    Assert.AreEqual(2, res.InnerTokens.Count)
+    Assert.AreEqual(TokenKind.Brace_Closing, res.InnerTokens(0).Kind)
+    Assert.AreEqual(0, res.InnerTokens(0).Span.Start.Index)
+    Assert.AreEqual(1, res.InnerTokens(0).Span.Size)
+    Assert.AreEqual(TokenKind.Brace_Closing, res.InnerTokens(1).Kind)
+    Assert.AreEqual(1, res.InnerTokens(1).Span.Start.Index)
+    Assert.AreEqual(1, res.InnerTokens(1).Span.Size)
   End Sub
 
   <TestMethod, TestCategory("Tokens.Common.Brace")>
@@ -90,7 +90,7 @@ Imports FSDv2
     Assert.AreEqual(TokenKind.Brace_Opening, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
     Assert.AreEqual(1, res.Span.Size)
-    Assert.AreEqual(0, res.Inner.Count)
+    Assert.AreEqual(0, res.InnerTokens.Count)
   End Sub
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _06_()
@@ -103,7 +103,7 @@ Imports FSDv2
     Assert.AreEqual(TokenKind.Brace_Closing, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
     Assert.AreEqual(1, res.Span.Size)
-    Assert.AreEqual(0, res.Inner.Count)
+    Assert.AreEqual(0, res.InnerTokens.Count)
   End Sub
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _07_()
@@ -116,13 +116,13 @@ Imports FSDv2
     Assert.AreEqual(TokenKind.Esc_Brace_Opening, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
     Assert.AreEqual(2, res.Span.Size)
-    Assert.AreEqual(2, res.Inner.Count)
-    Assert.AreEqual(TokenKind.Brace_Opening, res.Inner(0).Kind)
-    Assert.AreEqual(0, res.Inner(0).Span.Start.Index)
-    Assert.AreEqual(1, res.Inner(0).Span.Size)
-    Assert.AreEqual(TokenKind.Brace_Opening, res.Inner(1).Kind)
-    Assert.AreEqual(1, res.Inner(1).Span.Start.Index)
-    Assert.AreEqual(1, res.Inner(1).Span.Size)
+    Assert.AreEqual(2, res.InnerTokens.Count)
+    Assert.AreEqual(TokenKind.Brace_Opening, res.InnerTokens(0).Kind)
+    Assert.AreEqual(0, res.InnerTokens(0).Span.Start.Index)
+    Assert.AreEqual(1, res.InnerTokens(0).Span.Size)
+    Assert.AreEqual(TokenKind.Brace_Opening, res.InnerTokens(1).Kind)
+    Assert.AreEqual(1, res.InnerTokens(1).Span.Start.Index)
+    Assert.AreEqual(1, res.InnerTokens(1).Span.Size)
   End Sub
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _08_()
@@ -135,12 +135,12 @@ Imports FSDv2
     Assert.AreEqual(TokenKind.Esc_Brace_Closing, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
     Assert.AreEqual(2, res.Span.Size)
-    Assert.AreEqual(2, res.Inner.Count)
-    Assert.AreEqual(TokenKind.Brace_Closing, res.Inner(0).Kind)
-    Assert.AreEqual(0, res.Inner(0).Span.Start.Index)
-    Assert.AreEqual(1, res.Inner(0).Span.Size)
-    Assert.AreEqual(TokenKind.Brace_Closing, res.Inner(1).Kind)
-    Assert.AreEqual(1, res.Inner(1).Span.Start.Index)
-    Assert.AreEqual(1, res.Inner(1).Span.Size)
+    Assert.AreEqual(2, res.InnerTokens.Count)
+    Assert.AreEqual(TokenKind.Brace_Closing, res.InnerTokens(0).Kind)
+    Assert.AreEqual(0, res.InnerTokens(0).Span.Start.Index)
+    Assert.AreEqual(1, res.InnerTokens(0).Span.Size)
+    Assert.AreEqual(TokenKind.Brace_Closing, res.InnerTokens(1).Kind)
+    Assert.AreEqual(1, res.InnerTokens(1).Span.Start.Index)
+    Assert.AreEqual(1, res.InnerTokens(1).Span.Size)
   End Sub
 End Class

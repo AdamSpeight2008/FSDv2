@@ -2,11 +2,11 @@
 
 Public MustInherit Class Token
   Public ReadOnly Property Span As Source.Span
-  Public ReadOnly Property Inner As Tokens = Tokens.Empty
+  ReadOnly Property InnerTokens As Tokens = Tokens.Empty
   Public ReadOnly Property Kind As TokenKind
 
   Protected Sub New(kind As TokenKind, span As Source.Span, Optional Inner As Tokens = Nothing)
-    Me.Kind = kind : Me.Span = span : Me.Inner = If(Inner, Tokens.Empty)
+    Me.Kind = kind : Me.Span = span : Me.InnerTokens = If(Inner, Tokens.Empty)
   End Sub
 
   Public Shared Operator +(T0 As Token, T1 As Token) As Tokens
@@ -20,6 +20,12 @@ Public MustInherit Class Token
   Public Overrides Function ToString() As String
     Return $"{Span.ToString()}  {Kind.ToString}"
   End Function
+
+  Default Public ReadOnly Property Inner(ByVal Index As Integer) As Token
+    Get
+      Return InnerTokens(Index)
+    End Get
+  End Property
 
 End Class
 

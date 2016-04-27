@@ -53,9 +53,9 @@ Public Class EscSeq_Compound_HexaDecimal
     Dim hx = DirectCast(res, Esc.Sequence.HexaDecimal)
     Assert.AreEqual("(  0:  3)", hx.Span.ToString)
     Assert.AreEqual("\x0", hx.Span.Text)
-    Assert.AreEqual(2, hx.Inner.Count)
-    Assert.IsInstanceOfType(hx.Inner(0), GetType(Esc.SeqHead))
-    Assert.IsInstanceOfType(hx.Inner(1), GetType(FormatString.Common.HexDigits))
+    Assert.AreEqual(2, hx.InnerTokens.Count)
+    Assert.IsInstanceOfType(hx.InnerTokens(0), GetType(Esc.SeqHead))
+    Assert.IsInstanceOfType(hx.InnerTokens(1), GetType(FormatString.Common.HexDigits))
   End Sub
 
   <TestMethod, TestCategory(Cat)>
@@ -70,9 +70,9 @@ Public Class EscSeq_Compound_HexaDecimal
     Dim hx = DirectCast(res, Esc.Sequence.HexaDecimal)
     Assert.AreEqual("(  0:  4)", hx.Span.ToString)
     Assert.AreEqual("\x00", hx.Span.Text)
-    Assert.AreEqual(2, hx.Inner.Count)
-    Assert.IsInstanceOfType(hx.Inner(0), GetType(Esc.SeqHead))
-    Assert.IsInstanceOfType(hx.Inner(1), GetType(FormatString.Common.HexDigits))
+    Assert.AreEqual(2, hx.InnerTokens.Count)
+    Assert.IsInstanceOfType(hx.InnerTokens(0), GetType(Esc.SeqHead))
+    Assert.IsInstanceOfType(hx.InnerTokens(1), GetType(FormatString.Common.HexDigits))
   End Sub
 
   <TestMethod, TestCategory(Cat)>
@@ -87,9 +87,9 @@ Public Class EscSeq_Compound_HexaDecimal
     Dim hx = DirectCast(res, Esc.Sequence.HexaDecimal)
     Assert.AreEqual("(  0:  5)", hx.Span.ToString)
     Assert.AreEqual("\x000", hx.Span.Text)
-    Assert.AreEqual(2, hx.Inner.Count)
-    Assert.IsInstanceOfType(hx.Inner(0), GetType(Esc.SeqHead))
-    Assert.IsInstanceOfType(hx.Inner(1), GetType(FormatString.Common.HexDigits))
+    Assert.AreEqual(2, hx.InnerTokens.Count)
+    Assert.IsInstanceOfType(hx.InnerTokens(0), GetType(Esc.SeqHead))
+    Assert.IsInstanceOfType(hx.InnerTokens(1), GetType(FormatString.Common.HexDigits))
   End Sub
 
   <TestMethod, TestCategory(Cat)>
@@ -104,9 +104,9 @@ Public Class EscSeq_Compound_HexaDecimal
     Dim hx = DirectCast(res, Esc.Sequence.HexaDecimal)
     Assert.AreEqual("(  0:  6)", hx.Span.ToString)
     Assert.AreEqual("\x0000", hx.Span.Text)
-    Assert.AreEqual(2, hx.Inner.Count)
-    Assert.IsInstanceOfType(hx.Inner(0), GetType(Esc.SeqHead))
-    Assert.IsInstanceOfType(hx.Inner(1), GetType(FormatString.Common.HexDigits))
+    Assert.AreEqual(2, hx.InnerTokens.Count)
+    Assert.IsInstanceOfType(hx.InnerTokens(0), GetType(Esc.SeqHead))
+    Assert.IsInstanceOfType(hx.InnerTokens(1), GetType(FormatString.Common.HexDigits))
   End Sub
 
   <TestMethod, TestCategory(Cat)>
@@ -121,9 +121,9 @@ Public Class EscSeq_Compound_HexaDecimal
     Dim hx = DirectCast(res, Esc.Sequence.HexaDecimal)
     Assert.AreEqual("(  0:  6)", hx.Span.ToString)
     Assert.AreEqual("\x0000", hx.Span.Text)
-    Assert.AreEqual(2, hx.Inner.Count)
-    Assert.IsInstanceOfType(hx.Inner(0), GetType(Esc.SeqHead))
-    Assert.IsInstanceOfType(hx.Inner(1), GetType(FormatString.Common.HexDigits))
+    Assert.AreEqual(2, hx.InnerTokens.Count)
+    Assert.IsInstanceOfType(hx.InnerTokens(0), GetType(Esc.SeqHead))
+    Assert.IsInstanceOfType(hx.InnerTokens(1), GetType(FormatString.Common.HexDigits))
   End Sub
 
 End Class

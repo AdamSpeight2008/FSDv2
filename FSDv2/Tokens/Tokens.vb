@@ -4,17 +4,18 @@
   Public ReadOnly Property Count As Integer
 
   Private Sub New(Optional Tokens As IEnumerable(Of Token) = Nothing)
-    If Tokens Is Nothing Then Me._Tokens = Array.Empty(Of Token) Else Me._Tokens = Tokens.ToArray
+    Me._Tokens = If(Tokens Is Nothing, Array.Empty(Of Token), Tokens.ToArray)
     Me.Count = _Tokens.Count
   End Sub
 
   Public Shared Function Create(T0 As Token, T1 As Token) As Tokens
-    If (T0 Is Nothing) OrElse (T1 Is Nothing) Then Throw New Exception
+    If (T0 Is Nothing) Then Throw New ArgumentNullException(NameOf(T0))
+    If (T1 Is Nothing) Then Throw New ArgumentNullException(NameOf(T1))
     Return New Tokens(Enumerable.Repeat(T0, 1).Concat(Enumerable.Repeat(T1, 1)))
   End Function
 
   Public Shared Function Create(T0 As Token) As Tokens
-    If (T0 Is Nothing) Then Throw New Exception
+    If (T0 Is Nothing) Then Throw New ArgumentNullException(NameOf(T0))
     Return New Tokens(Enumerable.Repeat(T0, 1))
   End Function
 
@@ -23,16 +24,18 @@
   End Function
 
   Public Function Add(Token As Token) As Tokens
-    If Token Is Nothing Then Return New Tokens(_Tokens) Else Return New Tokens(_Tokens.Concat(Enumerable.Repeat(Token, 1)))
+    Return New Tokens(If(Token Is Nothing, _Tokens, _Tokens.Concat(Enumerable.Repeat(Token, 1))))
   End Function
 
   Public Function First() As Token
     Return _Tokens.FirstOrDefault
   End Function
+
   Public Function Last() As Token
     Return _Tokens.LastOrDefault
   End Function
 
+#Region "Operator to help with creating Tokens"
   Public Shared Operator +(Tx As Tokens, T As Token) As Tokens
     Return New Tokens(Tx._Tokens.Concat(Enumerable.Repeat(T, 1)))
   End Operator
@@ -40,9 +43,11 @@
   Public Shared Operator +(T As Token, Tx As Tokens) As Tokens
     Return New Tokens(Enumerable.Repeat(T, 1).Concat(Tx._Tokens))
   End Operator
+
   Public Shared Operator +(Tx0 As Tokens, Tx1 As Tokens) As Tokens
     Return New Tokens(Tx0._Tokens.Concat(Tx1._Tokens))
   End Operator
+#End Region
 
   Default Public ReadOnly Property Tokens(ByVal Index As Integer) As Token
     Get
@@ -50,4 +55,5 @@
       Return _Tokens(Index)
     End Get
   End Property
+
 End Class
