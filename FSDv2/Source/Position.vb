@@ -32,14 +32,16 @@
     Public Function [Next]() As Position
       Return New Position(Me.Source, Index + 1)
     End Function
+
     Public Function AddOffset(Offset As Integer) As Position
       Return New Position(Me.Source, Index + Offset)
     End Function
+
     Public Function [To](p As Position) As Span?
-      If Me.Source <> p.Source Then Return Nothing
-      Return Source.Span.From(Me, p)
+      Return If(Source = p.Source, Source.Span.From(Me, p), Nothing)
     End Function
 
+#Region "(Position, Char) : Boolean Operators"
     Public Shared Operator =(ByVal P As Position, Ch As Char) As Boolean
       Return Not String.IsNullOrEmpty(P.Source.Text) AndAlso P.Value.HasValue AndAlso (P.Value.Value = Ch)
     End Operator
@@ -58,8 +60,9 @@
     Public Shared Operator <>(ByVal P As Position, Ch As Char) As Boolean
       Return Not String.IsNullOrEmpty(P.Source.Text) AndAlso P.Value.HasValue AndAlso (P.Value.Value <> Ch)
     End Operator
+#End Region
 
-
+#Region "(Char, Position) : Boolean Operators"
     Public Shared Operator =(Ch As Char, P As Position) As Boolean
       Return Not String.IsNullOrEmpty(P.Source.Text) AndAlso P.Value.HasValue AndAlso Ch = P.Value.Value
     End Operator
@@ -78,7 +81,9 @@
     Public Shared Operator <>(Ch As Char, P As Position) As Boolean
       Return Not String.IsNullOrEmpty(P.Source.Text) AndAlso P.Value.HasValue AndAlso Ch <> P.Value.Value
     End Operator
+#End Region
 
+#Region "(Position, Position) : Boolean Operators"
     Public Shared Operator =(P0 As Position, P1 As Position) As Boolean
       Return (P0.Source = P1.Source) AndAlso P0.Index = P1.Index
     End Operator
@@ -97,13 +102,16 @@
     Public Shared Operator >(P0 As Position, P1 As Position) As Boolean
       Return (P0.Source = P1.Source) AndAlso P0.Index > P1.Index
     End Operator
+#End Region
 
+#Region "Span Makers"
     Public Function ToZeroSpan() As Span
       Return Source.Span.Create_ZeroSpan(Me)
     End Function
     Public Function ToUnitSpan() As Span
       Return Source.Span.Create_UnitSpan(Me)
     End Function
+#End Region
 
     Public Shared Function Create(Source As Source, Index As Integer) As Position
       Return New Position(Source, Index)
@@ -112,5 +120,7 @@
     Public Overrides Function ToString() As String
       Return Me.Index.ToString
     End Function
+
   End Structure
+
 End Structure
