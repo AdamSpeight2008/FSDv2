@@ -5,7 +5,7 @@
   End Sub
 
   Public Shared Function TryParse(Ix As Source.Position) As Token
-    If Ix.IsInvalid Then Return Nothing
+    If Ix.IsInvalid Then Return ParseError.Make.NullParse(Ix)
     Dim sx = Ix
     Dim Txn = Tokens.Empty
     Dim T As Token
@@ -13,10 +13,13 @@
     While Ix.IsValid
       T = Common.Brace.TryParse(Ix)
       Select Case T.Kind
+
         Case TokenKind.Esc_Brace_Opening, TokenKind.Esc_Brace_Closing
           Txn = Common.AddThenNext(T, Txn, Ix, TextStart)
+
         Case TokenKind.Brace_Closing
           Txn = Common.AddThenNext(ParseError.Make.Invalid(T.Span, T), Txn, Ix, TextStart)
+
         Case TokenKind.Brace_Opening
           Dim res = ArgHole.TryParse(Ix)
           If res.Kind = TokenKind.ArgHole Then

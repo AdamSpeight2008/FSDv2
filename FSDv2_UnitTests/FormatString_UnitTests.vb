@@ -34,7 +34,9 @@ Public Class FSDv2_UnitTests
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard)
     Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
     Dim Text = ParseResult.AsString()
-    Dim Expected = "{Nothing}"
+    Dim Expected =
+"( -1:  0)  ParseError.NullParse
+"
     Assert.AreEqual(Expected, Text)
   End Sub
 
