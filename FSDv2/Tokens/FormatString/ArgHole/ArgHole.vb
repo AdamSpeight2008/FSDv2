@@ -86,7 +86,7 @@ AreThereWhitespace:
         T = Common.Whitespaces.TryParse(Ix)
         If T.Kind = TokenKind.Whitespaces Then Txn = Common.AddThenNext(T, Txn, Ix)
 #End Region
-        Return New Index(Source.Span.From(sx, Ix), Txn)
+        Return New Index(sx.To(Ix), Txn)
 
 #Region "TryToResync"
 TryToResync:

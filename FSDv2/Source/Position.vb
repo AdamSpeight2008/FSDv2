@@ -38,7 +38,7 @@
     End Function
 
     Public Function [To](p As Position) As Span?
-      Return If(Source = p.Source, Source.Span.From(Me, p), Nothing)
+      Return If(Source = p.Source, New Span(Me, p.Index - Index), Nothing)
     End Function
 
 #Region "(Position, Char) : Boolean Operators"
