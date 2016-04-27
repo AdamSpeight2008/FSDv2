@@ -32,7 +32,7 @@
           Txn = Common.AddThenNext(T, Txn, Ix)
         End While
         Dim s = Sx.To(Ix)
-        If s.HasValue = False Then Return ParseError.Make.NullParse(Ix)
+        If s.HasValue = False OrElse s.Value.Size = 0 Then Return ParseError.Make.NullParse(Ix)
         Return New Whitespaces(s.Value, Txn)
       End Function
 

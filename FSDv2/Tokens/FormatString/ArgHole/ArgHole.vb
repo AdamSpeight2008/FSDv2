@@ -122,6 +122,7 @@ TryToResync:
         '
         '  ArgHole.Index ::= ArgHole.Align.Head ArgHole.Align.Body
         '
+        If Ix.IsInvalid Then Return ParseError.Make.NullParse(Ix)
 #Region "IsThereAHead"
 IsThereAHead:
         Dim Txn = Tokens.Empty, sx = Ix, _Head = Head.TryParse(Ix)
@@ -131,7 +132,7 @@ IsThereAHead:
 #Region "IsThereABody"
 IsThereABody:
         Dim _Body = Body.TryParse(Ix)
-        If _Body.Kind = TokenKind.ArgHole_Align_Body Then GoTo TryToResyncBody
+        If _Body.Kind <> TokenKind.ArgHole_Align_Body Then GoTo TryToResyncBody
         Txn = Common.AddThenNext(_Body, Txn, Ix)
 #End Region
 Done:

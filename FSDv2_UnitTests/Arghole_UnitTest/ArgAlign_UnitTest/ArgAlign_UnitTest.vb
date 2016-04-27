@@ -42,13 +42,13 @@ Public Class ArgAlign_UnitTest
     Dim Head = TryCast(res.Inner(0), FormatString.ArgHole.Align.Head)
     Assert.IsNotNull(Head)
     Assert.AreEqual("(  0:  1)", Head.Span.ToString)
-    Assert.AreEqual(2, Head.Inner.Count)
+    Assert.AreEqual(1, Head.Inner.Count)
     Assert.AreEqual(TokenKind.Comma, Head.Inner(0).Kind)
     Assert.AreEqual("(  0:  1)", Head.Inner(0).Span.ToString)
-    ' Check for the optional whitespace, there shouldn't be any.
-    Assert.AreEqual(TokenKind.Whitespaces, Head.Inner(1).Kind)
-    Assert.AreEqual(0, Head.Inner(1).Span.Size)
-    Assert.AreEqual("(  1:  0)", Head.Inner(1).Span.ToString)
+    '' Check for the optional whitespace, there shouldn't be any.
+    'Assert.AreEqual(TokenKind.Whitespaces, Head.Inner(1).Kind)
+    'Assert.AreEqual(0, Head.Inner(1).Span.Size)
+    'Assert.AreEqual("(  1:  0)", Head.Inner(1).Span.ToString)
 #End Region
 #Region "Check the body part of the Align"
     Dim Body = TryCast(res.Inner(1), FormatString.ArgHole.Align.Body)
@@ -123,13 +123,13 @@ Public Class ArgAlign_UnitTest
     Dim Head = TryCast(res.Inner(0), FormatString.ArgHole.Align.Head)
     Assert.IsNotNull(Head)
     Assert.AreEqual("(  0:  1)", Head.Span.ToString)
-    Assert.AreEqual(2, Head.Inner.Count)
+    Assert.AreEqual(1, Head.Inner.Count)
     Assert.AreEqual(TokenKind.Comma, Head.Inner(0).Kind)
     Assert.AreEqual("(  0:  1)", Head.Inner(0).Span.ToString)
     ' Check for the optional whitespace, there shouldn't be any.
-    Assert.AreEqual(TokenKind.Whitespaces, Head.Inner(1).Kind)
-    Assert.AreEqual(0, Head.Inner(1).Span.Size)
-    Assert.AreEqual("(  1:  0)", Head.Inner(1).Span.ToString)
+    'Assert.AreEqual(TokenKind.Whitespaces, Head.Inner(1).Kind)
+    'Assert.AreEqual(0, Head.Inner(1).Span.Size)
+    'Assert.AreEqual("(  1:  0)", Head.Inner(1).Span.ToString)
 #End Region
 #Region "Check the body part of the Align"
     Dim Body = TryCast(res.Inner(1), FormatString.ArgHole.Align.Body)
@@ -215,13 +215,9 @@ Public Class ArgAlign_UnitTest
     Dim Head = TryCast(res.Inner(0), FormatString.ArgHole.Align.Head)
     Assert.IsNotNull(Head)
     Assert.AreEqual("(  0:  1)", Head.Span.ToString)
-    Assert.AreEqual(2, Head.Inner.Count)
+    Assert.AreEqual(1, Head.Inner.Count)
     Assert.AreEqual(TokenKind.Comma, Head.Inner(0).Kind)
     Assert.AreEqual("(  0:  1)", Head.Inner(0).Span.ToString)
-    ' Check for the optional whitespace, there shouldn't be any.
-    Assert.AreEqual(TokenKind.Whitespaces, Head.Inner(1).Kind)
-    Assert.AreEqual(0, Head.Inner(1).Span.Size)
-    Assert.AreEqual("(  1:  0)", Head.Inner(1).Span.ToString)
 #End Region
 #Region "Check the body part of the Align"
     Dim Body = TryCast(res.Inner(1), FormatString.ArgHole.Align.Body)

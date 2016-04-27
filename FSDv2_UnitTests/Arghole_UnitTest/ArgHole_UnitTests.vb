@@ -89,7 +89,6 @@ Public Class ArgHole_UnitTests
   [ 1]  (  1:  1)  ArgHole_Index
     [ 0]  (  1:  1)  Digits
       [ 0]  (  1:  1)  Digit
-    [ 1]  (  2:  0)  Whitespaces
   [ 2]  (  2:  0)  ParseError.Partial
     [ 0]  (  2:  1)  Brace_Closing
   [ 3]  (  2:  1)  Brace_Closing
@@ -150,7 +149,6 @@ Public Class ArgHole_UnitTests
   [ 2]  (  3:  1)  ArgHole_Align
     [ 0]  (  3:  1)  ArgHole_Align_Head
       [ 0]  (  3:  1)  Comma
-      [ 1]  (  4:  0)  Whitespaces
   [ 3]  (  4:  0)  ParseError.Partial
     [ 0]  (  4:  1)  Brace_Closing
   [ 4]  (  4:  1)  Brace_Closing
@@ -217,7 +215,6 @@ Public Class ArgHole_UnitTests
     [ 1]  (  5:  1)  ArgHole_Align_Body
       [ 0]  (  5:  1)  Digits
         [ 0]  (  5:  1)  Digit
-      [ 1]  (  6:  0)  Whitespaces
   [ 3]  (  6:  0)  ParseError.Partial
     [ 0]  (  6:  1)  Brace_Closing
   [ 4]  (  6:  1)  Brace_Closing
@@ -252,7 +249,6 @@ Public Class ArgHole_UnitTests
       [ 0]  (  5:  1)  MinusSign
       [ 1]  (  6:  1)  Digits
         [ 0]  (  6:  1)  Digit
-      [ 2]  (  7:  0)  Whitespaces
   [ 3]  (  7:  0)  ParseError.Partial
     [ 0]  (  7:  1)  Brace_Closing
   [ 4]  (  7:  1)  Brace_Closing
