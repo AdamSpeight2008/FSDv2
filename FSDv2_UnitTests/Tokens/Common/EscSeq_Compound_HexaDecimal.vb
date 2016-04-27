@@ -54,8 +54,8 @@ Public Class EscSeq_Compound_HexaDecimal
     Assert.AreEqual("(  0:  3)", hx.Span.ToString)
     Assert.AreEqual("\x0", hx.Span.Text)
     Assert.AreEqual(2, hx.InnerTokens.Count)
-    Assert.IsInstanceOfType(hx.InnerTokens(0), GetType(Esc.SeqHead))
-    Assert.IsInstanceOfType(hx.InnerTokens(1), GetType(FormatString.Common.HexDigits))
+    Assert.IsInstanceOfType(hx(0), GetType(Esc.SeqHead))
+    Assert.IsInstanceOfType(hx(1), GetType(FormatString.Common.HexDigits))
   End Sub
 
   <TestMethod, TestCategory(Cat)>
@@ -71,8 +71,8 @@ Public Class EscSeq_Compound_HexaDecimal
     Assert.AreEqual("(  0:  4)", hx.Span.ToString)
     Assert.AreEqual("\x00", hx.Span.Text)
     Assert.AreEqual(2, hx.InnerTokens.Count)
-    Assert.IsInstanceOfType(hx.InnerTokens(0), GetType(Esc.SeqHead))
-    Assert.IsInstanceOfType(hx.InnerTokens(1), GetType(FormatString.Common.HexDigits))
+    Assert.IsInstanceOfType(hx(0), GetType(Esc.SeqHead))
+    Assert.IsInstanceOfType(hx(1), GetType(FormatString.Common.HexDigits))
   End Sub
 
   <TestMethod, TestCategory(Cat)>
@@ -105,8 +105,8 @@ Public Class EscSeq_Compound_HexaDecimal
     Assert.AreEqual("(  0:  6)", hx.Span.ToString)
     Assert.AreEqual("\x0000", hx.Span.Text)
     Assert.AreEqual(2, hx.InnerTokens.Count)
-    Assert.IsInstanceOfType(hx.InnerTokens(0), GetType(Esc.SeqHead))
-    Assert.IsInstanceOfType(hx.InnerTokens(1), GetType(FormatString.Common.HexDigits))
+    Assert.IsInstanceOfType(hx(0), GetType(Esc.SeqHead))
+    Assert.IsInstanceOfType(hx(1), GetType(FormatString.Common.HexDigits))
   End Sub
 
   <TestMethod, TestCategory(Cat)>
@@ -122,8 +122,8 @@ Public Class EscSeq_Compound_HexaDecimal
     Assert.AreEqual("(  0:  6)", hx.Span.ToString)
     Assert.AreEqual("\x0000", hx.Span.Text)
     Assert.AreEqual(2, hx.InnerTokens.Count)
-    Assert.IsInstanceOfType(hx.InnerTokens(0), GetType(Esc.SeqHead))
-    Assert.IsInstanceOfType(hx.InnerTokens(1), GetType(FormatString.Common.HexDigits))
+    Assert.IsInstanceOfType(hx(0), GetType(Esc.SeqHead))
+    Assert.IsInstanceOfType(hx(1), GetType(FormatString.Common.HexDigits))
   End Sub
 
 End Class

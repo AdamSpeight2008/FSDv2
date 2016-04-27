@@ -37,7 +37,7 @@ Public Module Exts
     For i = 0 To Tk.InnerTokens.Count - 1
       sb.Append(Space(level * 2))
       sb.Append($"[{i,2}]")
-      _AsString(Tk.InnerTokens(i), sb, level + 1)
+      _AsString(Tk(i), sb, level + 1)
     Next
   End Sub
 

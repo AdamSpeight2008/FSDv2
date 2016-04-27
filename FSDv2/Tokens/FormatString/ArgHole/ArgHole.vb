@@ -53,7 +53,7 @@ Done:
 TryToResync:
       Dim rp1 = RPX0.TryToResync(Ix), pe = TryCast(rp1, ParseError)
       If pe Is Nothing OrElse pe.Why = ParseError.Reason.NullParse Then GoTo Find_Brace_Closing
-      Select Case rp1.InnerTokens(0).Kind
+      Select Case rp1(0).Kind
         Case TokenKind.Comma : txn = Common.AddThenNext(rp1, txn, Ix) : GoTo Find_Align
         Case TokenKind.Colon : txn = Common.AddThenNext(rp1, txn, Ix) : GoTo Find_Format
         Case TokenKind.Brace_Closing : txn = Common.AddThenNext(rp1, txn, Ix) : GoTo Find_Brace_Closing
@@ -97,7 +97,7 @@ TryToResync:
             Case ParseError.Reason.Partial
               Dim tmp As ParseError = ParseError.Make.UnexpectedChars(sx.To(r.Span.Start.Next), Tokens.Empty, "")
               Txn = Common.AddThenNext(tmp, Txn, Ix)
-              Select Case pe.InnerTokens(0).Kind
+              Select Case pe(0).Kind
                 Case TokenKind.Digits : GoTo AreThereDigits
                 Case TokenKind.Whitespaces : GoTo AreThereWhitespace
               End Select

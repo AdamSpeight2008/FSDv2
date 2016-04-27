@@ -30,9 +30,9 @@ Public Class ArgIndex_UnitTest
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Index))
     Assert.AreEqual(TokenKind.ArgHole_Index, res.Kind)
     Assert.AreEqual(1, res.InnerTokens.Count)
-    Assert.AreEqual(TokenKind.Digits, res.InnerTokens(0).Kind)
-    Assert.AreEqual(1, res.InnerTokens(0).InnerTokens.Count)
-    Assert.AreEqual(TokenKind.Digit, res.InnerTokens(0).InnerTokens(0).Kind)
+    Assert.AreEqual(TokenKind.Digits, res(0).Kind)
+    Assert.AreEqual(1, res(0).InnerTokens.Count)
+    Assert.AreEqual(TokenKind.Digit, res(0)(0).Kind)
   End Sub
 
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>
@@ -46,12 +46,12 @@ Public Class ArgIndex_UnitTest
     Assert.AreEqual(TokenKind.ArgHole_Index, res.Kind)
     Assert.AreEqual(1, res.InnerTokens.Count)
     Assert.AreEqual("(  0:  2)", res.Span.ToString)
-    Assert.AreEqual(TokenKind.Digits, res.InnerTokens(0).Kind)
-    Assert.AreEqual(2, res.InnerTokens(0).InnerTokens.Count)
-    Assert.AreEqual("(  0:  2)", res.InnerTokens(0).Span.ToString)
-    Assert.AreEqual("01", res.InnerTokens(0).Span.Text)
-    Assert.AreEqual(TokenKind.Digit, res.InnerTokens(0).InnerTokens(0).Kind)
-    Assert.AreEqual(TokenKind.Digit, res.InnerTokens(0).InnerTokens(1).Kind)
+    Assert.AreEqual(TokenKind.Digits, res(0).Kind)
+    Assert.AreEqual(2, res(0).InnerTokens.Count)
+    Assert.AreEqual("(  0:  2)", res(0).Span.ToString)
+    Assert.AreEqual("01", res(0).Span.Text)
+    Assert.AreEqual(TokenKind.Digit, res(0)(0).Kind)
+    Assert.AreEqual(TokenKind.Digit, res(0)(1).Kind)
   End Sub
 
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>
@@ -65,17 +65,17 @@ Public Class ArgIndex_UnitTest
     Assert.AreEqual(TokenKind.ArgHole_Index, res.Kind)
     Assert.AreEqual("(  0:  3)", res.Span.ToString)
     Assert.AreEqual(2, res.InnerTokens.Count)
-    Assert.AreEqual(TokenKind.Digits, res.InnerTokens(0).Kind)
+    Assert.AreEqual(TokenKind.Digits, res(0).Kind)
 
-    Assert.AreEqual("(  0:  1)", res.InnerTokens(0).Span.ToString)
-    Assert.AreEqual("0", res.InnerTokens(0).Span.Text)
-    Assert.AreEqual(1, res.InnerTokens(0).InnerTokens.Count)
-    Assert.AreEqual(TokenKind.Digit, res.InnerTokens(0).InnerTokens(0).Kind)
+    Assert.AreEqual("(  0:  1)", res(0).Span.ToString)
+    Assert.AreEqual("0", res(0).Span.Text)
+    Assert.AreEqual(1, res(0).InnerTokens.Count)
+    Assert.AreEqual(TokenKind.Digit, res(0)(0).Kind)
 
-    Assert.AreEqual(TokenKind.Whitespaces, res.InnerTokens(1).Kind)
-    Assert.AreEqual("(  1:  2)", res.InnerTokens(1).Span.ToString)
-    Assert.AreEqual(2, res.InnerTokens(1).InnerTokens.Count)
-    Assert.AreEqual("  ", res.InnerTokens(1).Span.Text)
+    Assert.AreEqual(TokenKind.Whitespaces, res(1).Kind)
+    Assert.AreEqual("(  1:  2)", res(1).Span.ToString)
+    Assert.AreEqual(2, res(1).InnerTokens.Count)
+    Assert.AreEqual("  ", res(1).Span.Text)
   End Sub
 
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>
@@ -91,16 +91,16 @@ Public Class ArgIndex_UnitTest
     Assert.AreEqual(2, res.InnerTokens.Count)
 
     Assert.AreEqual(TokenKind.Digits, res.InnerTokens(0).Kind)
-    Assert.AreEqual("(  0:  2)", res.InnerTokens(0).Span.ToString)
-    Assert.AreEqual("01", res.InnerTokens(0).Span.Text)
-    Assert.AreEqual(2, res.InnerTokens(0).InnerTokens.Count)
-    Assert.AreEqual(TokenKind.Digit, res.InnerTokens(0).InnerTokens(0).Kind)
-    Assert.AreEqual(TokenKind.Digit, res.InnerTokens(0).InnerTokens(1).Kind)
+    Assert.AreEqual("(  0:  2)", res(0).Span.ToString)
+    Assert.AreEqual("01", res(0).Span.Text)
+    Assert.AreEqual(2, res(0).InnerTokens.Count)
+    Assert.AreEqual(TokenKind.Digit, res(0)(0).Kind)
+    Assert.AreEqual(TokenKind.Digit, res(0)(1).Kind)
 
     Assert.AreEqual(TokenKind.Whitespaces, res.InnerTokens(1).Kind)
-    Assert.AreEqual("(  2:  2)", res.InnerTokens(1).Span.ToString)
-    Assert.AreEqual("  ", res.InnerTokens(1).Span.Text)
-    Assert.AreEqual(2, res.InnerTokens(1).InnerTokens.Count)
+    Assert.AreEqual("(  2:  2)", res(1).Span.ToString)
+    Assert.AreEqual("  ", res(1).Span.Text)
+    Assert.AreEqual(2, res(1).InnerTokens.Count)
   End Sub
 
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>

@@ -54,8 +54,8 @@ Public Class Text_UnitTests
     Assert.IsInstanceOfType(res, GetType(Text))
     Assert.AreEqual("(  0:  5)", res.Span.ToString)
     Assert.AreEqual(2, res.InnerTokens.Count)
-    Assert.IsInstanceOfType(res.InnerTokens(0), GetType(Text))
-    Assert.IsInstanceOfType(res.InnerTokens(1), GetType(Common.Esc.Sequence.Simple))
+    Assert.IsInstanceOfType(res(0), GetType(Text))
+    Assert.IsInstanceOfType(res(1), GetType(Common.Esc.Sequence.Simple))
   End Sub
 
   <TestMethod, TestCategory(Cat)>
@@ -69,8 +69,8 @@ Public Class Text_UnitTests
     Assert.IsInstanceOfType(res, GetType(Text))
     Assert.AreEqual("(  0:  5)", res.Span.ToString)
     Assert.AreEqual(2, res.InnerTokens.Count)
-    Assert.IsInstanceOfType(res.InnerTokens(0), GetType(Text))
-    Assert.IsInstanceOfType(res.InnerTokens(1), GetType(ParseError.Unsupported))
+    Assert.IsInstanceOfType(res(0), GetType(Text))
+    Assert.IsInstanceOfType(res(1), GetType(ParseError.Unsupported))
   End Sub
   <TestMethod, TestCategory(Cat)>
   Public Sub _05_()
@@ -83,8 +83,8 @@ Public Class Text_UnitTests
     Assert.IsInstanceOfType(res, GetType(Text))
     Assert.AreEqual("(  0:  5)", res.Span.ToString)
     Assert.AreEqual(2, res.InnerTokens.Count)
-    Assert.IsInstanceOfType(res.InnerTokens(0), GetType(Text))
-    Assert.IsInstanceOfType(res.InnerTokens(1), GetType(ParseError.Partial))
+    Assert.IsInstanceOfType(res(0), GetType(Text))
+    Assert.IsInstanceOfType(res(1), GetType(ParseError.Partial))
   End Sub
 
   <TestMethod, TestCategory(Cat)>
@@ -98,8 +98,8 @@ Public Class Text_UnitTests
     Assert.IsInstanceOfType(res, GetType(Text))
     Assert.AreEqual("(  0: 10)", res.Span.ToString)
     Assert.AreEqual(3, res.InnerTokens.Count)
-    Assert.IsInstanceOfType(res.InnerTokens(0), GetType(Text))
-    Assert.IsInstanceOfType(res.InnerTokens(1), GetType(Common.Esc.Sequence.HexaDecimal))
-    Assert.IsInstanceOfType(res.InnerTokens(2), GetType(Text))
+    Assert.IsInstanceOfType(res(0), GetType(Text))
+    Assert.IsInstanceOfType(res(1), GetType(Common.Esc.Sequence.HexaDecimal))
+    Assert.IsInstanceOfType(res(2), GetType(Text))
   End Sub
 End Class

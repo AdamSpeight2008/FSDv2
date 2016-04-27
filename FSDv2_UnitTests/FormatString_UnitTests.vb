@@ -16,7 +16,7 @@ Public Module Exts
   Private Sub _AsString(Tk As Token, sb As StringBuilder, level As Integer)
     For i = 0 To Tk.InnerTokens.Count - 1
       sb.Append(Space(level * 2))
-      sb.AppendLine($"[{i,2}]  {Tk.InnerTokens(i).ToString}")
+      sb.AppendLine($"[{i,2}]  {Tk(i).ToString}")
       _AsString(Tk.InnerTokens(i), sb, level + 1)
     Next
   End Sub
