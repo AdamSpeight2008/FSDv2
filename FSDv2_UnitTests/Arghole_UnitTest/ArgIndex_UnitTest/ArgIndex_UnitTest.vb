@@ -112,22 +112,18 @@ Public Class ArgIndex_UnitTest
     ' [1] (1:1) Digits
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
     Dim FirstPos = TheSource.First
-    Dim res = FormatString.ArgHole.Index.TryParse(FirstPos)
-    Assert.IsNotNull(res)
-    Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Index))
-    Assert.AreEqual(TokenKind.ArgHole_Index, res.Kind)
-    Assert.AreEqual(2, res.Inner.Count)
+    Dim ParseResult = FormatString.ArgHole.Index.TryParse(FirstPos)
+    Assert.IsNotNull(ParseResult)
+    Assert.IsInstanceOfType(ParseResult, GetType(FormatString.ArgHole.Index))
+    Dim Expected =
+"(  0:  2)  ArgHole_Index
+  [ 0]  (  0:  1)  ParseError.UnexpectedCharacter
+  [ 1]  (  1:  1)  Digits
+    [ 0]  (  1:  1)  Digit
+"
+    Dim Actual = ParseResult.AsString
+    Assert.AreEqual(Expected, Actual)
 
-    Assert.AreEqual(TokenKind.ParseError, res.Inner(0).Kind)
-    Dim t0 = TryCast(res.Inner(0), ParseError)
-    Assert.IsNotNull(t0)
-    Assert.AreEqual(ParseError.Reason.UnexpectedCharacter, t0.Why)
-    Assert.AreEqual("(  0:  1)", t0.Span.ToString)
-    Assert.AreEqual(" ", t0.Span.Text)
-
-    Assert.AreEqual(TokenKind.Digits, res.Inner(1).Kind)
-    Assert.AreEqual("(  1:  1)", res.Inner(1).Span.ToString)
-    Assert.AreEqual("0", res.Inner(1).Span.Text)
   End Sub
 
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>
@@ -139,27 +135,21 @@ Public Class ArgIndex_UnitTest
     ' [1] (1:1) Digits
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
     Dim FirstPos = TheSource.First
-    Dim res = FormatString.ArgHole.Index.TryParse(FirstPos)
-    Assert.IsNotNull(res)
-    Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Index))
-    Assert.AreEqual(TokenKind.ArgHole_Index, res.Kind)
-    Assert.AreEqual(3, res.Inner.Count)
+    Dim ParseResult = FormatString.ArgHole.Index.TryParse(FirstPos)
+    Assert.IsNotNull(ParseResult)
+    Assert.IsInstanceOfType(ParseResult, GetType(FormatString.ArgHole.Index))
 
-    Assert.AreEqual(TokenKind.ParseError, res.Inner(0).Kind)
-    Dim t0 = TryCast(res.Inner(0), ParseError)
-    Assert.IsNotNull(t0)
-    Assert.AreEqual(ParseError.Reason.UnexpectedCharacter, t0.Why)
-    Assert.AreEqual("(  0:  1)", t0.Span.ToString)
-    Assert.AreEqual(" ", t0.Span.Text)
-
-    Assert.AreEqual(TokenKind.Digits, res.Inner(1).Kind)
-    Assert.AreEqual("(  1:  1)", res.Inner(1).Span.ToString)
-    Assert.AreEqual("0", res.Inner(1).Span.Text)
-
-    Assert.AreEqual(TokenKind.Whitespaces, res.Inner(2).Kind)
-    Assert.AreEqual(2, res.Inner(2).Inner.Count)
-    Assert.AreEqual("(  2:  2)", res.Inner(2).Span.ToString)
-    Assert.AreEqual("  ", res.Inner(2).Span.Text)
+    Dim Expected =
+"(  0:  4)  ArgHole_Index
+  [ 0]  (  0:  1)  ParseError.UnexpectedCharacter
+  [ 1]  (  1:  1)  Digits
+    [ 0]  (  1:  1)  Digit
+  [ 2]  (  2:  2)  Whitespaces
+    [ 0]  (  2:  1)  Whitespace
+    [ 1]  (  3:  1)  Whitespace
+"
+    Dim Actual = ParseResult.AsString
+    Assert.AreEqual(Expected, Actual)
   End Sub
 
 End Class
