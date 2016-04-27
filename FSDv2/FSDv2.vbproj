@@ -90,7 +90,6 @@
     <Compile Include="Token.vb" />
     <Compile Include="Tokens\FormatString\ArgHole\ArgHole.vb" />
     <Compile Include="Tokens\Common\Common.vb" />
-    <Compile Include="Tokens\Symbol\Symbol.vb" />
     <Compile Include="Tokens\FormatString\Text\Text.vb" />
     <Compile Include="Tokens\Tokens.vb" />
   </ItemGroup>

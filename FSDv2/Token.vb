@@ -34,7 +34,6 @@ Public Enum TokenKind As Integer
   Comma
   Colon
   MinusSign
-  Symbol ' ???
   FormatString
   Text
   ArgHole
