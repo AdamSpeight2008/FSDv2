@@ -66,6 +66,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyser.vb" />
+    <Compile Include="Arg.vb" />
+    <Compile Include="Args.vb" />
+    <Compile Include="FormatString\Arghole\ArgAlign.vb" />
+    <Compile Include="FormatString\Arghole\ArgFormat.vb" />
+    <Compile Include="FormatString\Arghole\ArgHole.vb" />
+    <Compile Include="FormatString\Arghole\ArgIndex.vb" />
+    <Compile Include="FormatString\ParseError.vb" />
+    <Compile Include="FormatString\Text.vb" />
+    <Compile Include="Framework.vb" />
+    <Compile Include="Issue.vb" />
+    <Compile Include="Issues.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -81,6 +92,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Parameter.vb" />
+    <Compile Include="Result.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -107,6 +120,7 @@
       <Name>FSDv2</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

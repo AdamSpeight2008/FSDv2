@@ -102,8 +102,6 @@ TryToResync:
             Case ParseError.Reason.Partial
               If r.Span.Size > 0 Then
                 Dim tmp As ParseError = ParseError.Make.UnexpectedChars(sx.To(r.Span.Start.Next), Tokens.Empty, "")
-                ' Don't include the token
-                'If tmp.Span.Size > 0 Then
                 Txn = Common.AddThenNext(tmp, Txn, Ix)
               End If
               Select Case pe(0).Kind
