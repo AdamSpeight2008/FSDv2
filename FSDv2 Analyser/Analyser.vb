@@ -24,6 +24,7 @@ Public Class Analyser
       Arg_Align_Framework_Upper_Limit_Exceeded
       Arg_Align_Framework_Lower_Limit_Exceeded
       Invalid
+      Missing_Closing_Brace
     End Enum
 
     Public Shared Operator +(Issue0 As Issue, Issue1 As Issue) As Issues
@@ -35,20 +36,20 @@ Public Class Analyser
   Public Class Issues
     Public Shared ReadOnly Property Empty() As New Issues(Nothing)
     Public ReadOnly Property Issues As Issue()
-    Private Sub New(Issues As IEnumerable(Of Issues))
+    Private Sub New(Issues As IEnumerable(Of Issue))
       Me.Issues = If(Issues Is Nothing, Array.Empty(Of Issue), Issues.ToArray)
     End Sub
 
-    Public Shared Operator +(Issue As Issue, Issues As Issues) As Issues
-      Return New Issues(Enumerable.Repeat(Issue, 1).Concat(Issues))
+    Public Shared Operator +(I As Issue, Ix As Issues) As Issues
+      Return New Issues(Enumerable.Repeat(I, 1).Concat(Ix.Issues.AsEnumerable))
     End Operator
 
-    Public Shared Operator +(Issues As Issues, Issue As Issue) As Issues
-      Return New Issues(Issues.Issues.Concat(Enumerable.Repeat(Issue, 1)))
+    Public Shared Operator +(Ix As Issues, I As Issue) As Issues
+      Return New Issues(Ix.Issues.AsEnumerable.Concat(Enumerable.Repeat(I, 1)))
     End Operator
 
-    Public Shared Operator +(Issues0 As Issues, Issues1 As Issues) As Issues
-      Return New Issues(Issues0.Issues.Concat(Issues1.Issues))
+    Public Shared Operator +(Ix0 As Issues, Ix1 As Issues) As Issues
+      Return New Issues(Ix0.Issues.AsEnumerable.Concat(Ix1.Issues.AsEnumerable))
     End Operator
 
   End Class
@@ -81,7 +82,7 @@ Public Class Analyser
 
   End Class
 
-  Public Function Analyse(FS As FSDv2.Token, q As Parameters) As Parameters
+  Public Function Analyse(FS As FSDv2.Token, ByRef q As Parameters) As Parameters
     Select Case FS.Kind
       Case TokenKind.ParseError
         Dim pe As ParseError = DirectCast(FS, ParseError)
@@ -96,6 +97,7 @@ Public Class Analyser
             Case TokenKind.ArgHole : q = ArgHole(DirectCast(t, FormatString.ArgHole), q)
             Case TokenKind.Text : q = Text(DirectCast(t, FormatString.Text), q)
             Case TokenKind.ParseError : q = ParseError(DirectCast(t, ParseError), q)
+            Case TokenKind.Esc_Brace_Closing, TokenKind.Esc_Brace_Opening
             Case Else
               q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, t.Span, "")
           End Select
@@ -104,7 +106,7 @@ Public Class Analyser
     Return q
   End Function
 
-  Private Function Text(Txt As FormatString.Text, Q As Parameters) As Parameters
+  Private Function Text(Txt As FormatString.Text, ByRef Q As Parameters) As Parameters
     If Txt.InnerTokens.Count = 0 Then Return Q
     Dim en = Txt.InnerTokens.GetEnumerator.GetEnumerator
     While en.MoveNext
@@ -136,7 +138,7 @@ Public Class Analyser
 Expecting_Opening_Brace:
     If en.MoveNext = False Then Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing) : GoTo state_end
     Select Case en.Current.Kind
-      Case TokenKind.Esc_Brace_Opening
+      Case TokenKind.Brace_Opening
       Case Else
         Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span)
         GoTo Expecting_Opening_Brace
@@ -152,7 +154,24 @@ Expecting_Arghole_Index:
         Q.Result.Issues += New Issue(Issue.Kinds.Arg_Index_Missing, Nothing)
         GoTo Expecting_Closing_Brace_1
       Case TokenKind.ParseError
-        Q = ParseError(DirectCast(en.Current, ParseError), Q)
+        Dim pe = DirectCast(en.Current, ParseError)
+        Select Case pe.Why
+          Case FSDv2.ParseError.Reason.EoT
+            Q.Result.Issues += New Issue(Issue.Kinds.Arg_Index_Missing, pe.Span.Start.ToZeroSpan) +
+                               New Issue(Issue.Kinds.Missing_Closing_Brace, pe.Span.Start.ToZeroSpan)
+            GoTo Expecting_Done
+          Case FSDv2.ParseError.Reason.Partial
+            Select Case pe(0).Kind
+              Case TokenKind.Brace_Closing
+                Q.Result.Issues += New Issue(Issue.Kinds.Arg_Index_Missing, pe(0).Span.Start.ToZeroSpan)
+                GoTo Expecting_Closing_Brace
+              Case Else
+                Q = ParseError(pe, Q)
+            End Select
+          Case Else
+            Q = ParseError(pe, Q)
+        End Select
+
       Case Else
         Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span)
         GoTo Expecting_Arghole_Index
@@ -198,10 +217,13 @@ state_end:
     Return Q
   End Function
 
-  Private Function ParseError(pe As ParseError, Q As Parameters) As Parameters
+  Private Function ParseError(pe As ParseError, ByRef Q As Parameters) As Parameters
     Select Case pe.Why
       Case FSDv2.ParseError.Reason.UnexpectedCharacter : Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Characters, pe.Span)
       Case FSDv2.ParseError.Reason.Invalid : Q.Result.Issues += New Issue(Issue.Kinds.Invalid, pe.Span)
+      Case FSDv2.ParseError.Reason.EoT : Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, pe.Span)
+      Case FSDv2.ParseError.Reason.Partial
+
       Case Else
         Throw New NotImplementedException($"ParseError.Why:= {pe.Why}")
     End Select
