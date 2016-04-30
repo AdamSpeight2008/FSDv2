@@ -23,8 +23,11 @@ Find_Brace_Opening:
 Find_Index:
       T = ArgHole.Index.TryParse(Ix)
       If TypeOf T Is ParseError.EoT Then txn += T : GoTo Done
-      If T.Kind <> TokenKind.ArgHole_Index Then GoTo TryToResync
       txn = Common.AddThenNext(T, txn, Ix)
+      If T.Kind <> TokenKind.ArgHole_Index Then
+
+        GoTo TryToResync
+      End If
 #End Region
 #Region "Find Align"
 Find_Align:
@@ -86,6 +89,7 @@ AreThereWhitespace:
         T = Common.Whitespaces.TryParse(Ix)
         If T.Kind = TokenKind.Whitespaces Then Txn = Common.AddThenNext(T, Txn, Ix)
 #End Region
+Done:
         Return New Index(sx.To(Ix), Txn)
 
 #Region "TryToResync"
@@ -100,11 +104,13 @@ TryToResync:
               Select Case pe(0).Kind
                 Case TokenKind.Digits : GoTo AreThereDigits
                 Case TokenKind.Whitespaces : GoTo AreThereWhitespace
+                Case TokenKind.Brace_Closing : GoTo Null
               End Select
           End Select
         End If
 #End Region
-        Return ParseError.Make.NullParse(Ix)
+Null:
+        Return ParseError.Make.NullParse(Ix, Txn)
       End Function
 
     End Class

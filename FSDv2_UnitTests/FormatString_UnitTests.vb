@@ -122,10 +122,17 @@ Public Class FSDv2_UnitTests
 "(  0:  2)  FormatString
   [ 0]  (  0:  2)  ArgHole
     [ 0]  (  0:  1)  Brace_Opening
-    [ 1]  (  1:  0)  ParseError.Partial
-      [ 0]  (  1:  1)  Brace_Closing
-    [ 2]  (  1:  1)  Brace_Closing
+    [ 1]  (  2:  0)  ParseError.NullParse
+      [ 0]  (  1:  1)  ParseError.UnexpectedCharacter
+    [ 2]  (  2:  0)  ParseError.EoT
 "
+    '"(  0:  2)  FormatString
+    '  [ 0]  (  0:  2)  ArgHole
+    '    [ 0]  (  0:  1)  Brace_Opening
+    '    [ 1]  (  1:  0)  ParseError.Partial
+    '      [ 0]  (  1:  1)  Brace_Closing
+    '    [ 2]  (  1:  1)  Brace_Closing
+    '"
     Assert.AreEqual(Expected, Text)
   End Sub
 
@@ -137,17 +144,26 @@ Public Class FSDv2_UnitTests
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "(  0:  4)  FormatString
-  [ 0]  (  0:  2)  ArgHole
+  [ 0]  (  0:  4)  ArgHole
     [ 0]  (  0:  1)  Brace_Opening
-    [ 1]  (  1:  0)  ParseError.Partial
-      [ 0]  (  1:  1)  Brace_Closing
-    [ 2]  (  1:  1)  Brace_Closing
-  [ 1]  (  2:  2)  ArgHole
-    [ 0]  (  2:  1)  Brace_Opening
-    [ 1]  (  3:  0)  ParseError.Partial
+    [ 1]  (  2:  0)  ParseError.NullParse
+      [ 0]  (  1:  1)  ParseError.UnexpectedCharacter
+    [ 2]  (  2:  1)  ParseError.Partial
       [ 0]  (  3:  1)  Brace_Closing
-    [ 2]  (  3:  1)  Brace_Closing
+    [ 3]  (  3:  1)  Brace_Closing
 "
+    '"(  0:  4)  FormatString
+    '  [ 0]  (  0:  2)  ArgHole
+    '    [ 0]  (  0:  1)  Brace_Opening
+    '    [ 1]  (  1:  0)  ParseError.Partial
+    '      [ 0]  (  1:  1)  Brace_Closing
+    '    [ 2]  (  1:  1)  Brace_Closing
+    '  [ 1]  (  2:  2)  ArgHole
+    '    [ 0]  (  2:  1)  Brace_Opening
+    '    [ 1]  (  3:  0)  ParseError.Partial
+    '      [ 0]  (  3:  1)  Brace_Closing
+    '    [ 2]  (  3:  1)  Brace_Closing
+    '"
     Assert.AreEqual(Expected, Text)
   End Sub
   <TestMethod, TestCategory(Cat0)>
@@ -157,22 +173,32 @@ Public Class FSDv2_UnitTests
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard)
     Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
     Dim Text = ParseResult.AsString()
-    Dim Expected =
-"(  0:  7)  FormatString
+    Dim Expected = "(  0:  7)  FormatString
   [ 0]  (  0:  1)  Text
-  [ 1]  (  1:  2)  ArgHole
+  [ 1]  (  1:  5)  ArgHole
     [ 0]  (  1:  1)  Brace_Opening
-    [ 1]  (  2:  0)  ParseError.Partial
-      [ 0]  (  2:  1)  Brace_Closing
-    [ 2]  (  2:  1)  Brace_Closing
-  [ 2]  (  3:  1)  Text
-  [ 3]  (  4:  2)  ArgHole
-    [ 0]  (  4:  1)  Brace_Opening
-    [ 1]  (  5:  0)  ParseError.Partial
+    [ 1]  (  3:  0)  ParseError.NullParse
+      [ 0]  (  2:  1)  ParseError.UnexpectedCharacter
+    [ 2]  (  3:  2)  ParseError.Partial
       [ 0]  (  5:  1)  Brace_Closing
-    [ 2]  (  5:  1)  Brace_Closing
-  [ 4]  (  6:  1)  Text
+    [ 3]  (  5:  1)  Brace_Closing
+  [ 2]  (  6:  1)  Text
 "
+    '"(0:   7)  FormatString
+    '  [ 0]  (  0:  1)  Text
+    '  [ 1]  (  1:  2)  ArgHole
+    '    [ 0]  (  1:  1)  Brace_Opening
+    '    [ 1]  (  2:  0)  ParseError.Partial
+    '      [ 0]  (  2:  1)  Brace_Closing
+    '    [ 2]  (  2:  1)  Brace_Closing
+    '  [ 2]  (  3:  1)  Text
+    '  [ 3]  (  4:  2)  ArgHole
+    '    [ 0]  (  4:  1)  Brace_Opening
+    '    [ 1]  (  5:  0)  ParseError.Partial
+    '      [ 0]  (  5:  1)  Brace_Closing
+    '    [ 2]  (  5:  1)  Brace_Closing
+    '  [ 4]  (  6:  1)  Text
+    '"
     Assert.AreEqual(Expected, Text)
   End Sub
   <TestMethod, TestCategory(Cat0)>
@@ -188,19 +214,15 @@ Public Class FSDv2_UnitTests
     [ 0]  (  0:  1)  Brace_Closing
     [ 1]  (  1:  1)  Brace_Closing
   [ 1]  (  2:  1)  Text
-  [ 2]  (  3:  2)  ArgHole
+  [ 2]  (  3:  5)  ArgHole
     [ 0]  (  3:  1)  Brace_Opening
-    [ 1]  (  4:  0)  ParseError.Partial
-      [ 0]  (  4:  1)  Brace_Closing
-    [ 2]  (  4:  1)  Brace_Closing
-  [ 3]  (  5:  1)  Text
-  [ 4]  (  6:  2)  ArgHole
-    [ 0]  (  6:  1)  Brace_Opening
-    [ 1]  (  7:  0)  ParseError.Partial
+    [ 1]  (  5:  0)  ParseError.NullParse
+      [ 0]  (  4:  1)  ParseError.UnexpectedCharacter
+    [ 2]  (  5:  2)  ParseError.Partial
       [ 0]  (  7:  1)  Brace_Closing
-    [ 2]  (  7:  1)  Brace_Closing
-  [ 5]  (  8:  1)  Text
-  [ 6]  (  9:  2)  Esc_Brace_Opening
+    [ 3]  (  7:  1)  Brace_Closing
+  [ 3]  (  8:  1)  Text
+  [ 4]  (  9:  2)  Esc_Brace_Opening
     [ 0]  (  9:  1)  Brace_Opening
     [ 1]  ( 10:  1)  Brace_Opening
 "
@@ -214,13 +236,16 @@ Public Class FSDv2_UnitTests
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard)
     Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
     Dim Text = ParseResult.AsString()
+    ' This should have a parse error of unexpected characters span (  1: 1).
     Dim Expected =
 "(  0:  3)  FormatString
   [ 0]  (  0:  3)  ArgHole
     [ 0]  (  0:  1)  Brace_Opening
-    [ 1]  (  1:  1)  ParseError.Partial
+    [ 1]  (  2:  0)  ParseError.NullParse
+      [ 0]  (  1:  1)  ParseError.UnexpectedCharacter
+    [ 2]  (  2:  0)  ParseError.Partial
       [ 0]  (  2:  1)  Brace_Closing
-    [ 2]  (  2:  1)  Brace_Closing
+    [ 3]  (  2:  1)  Brace_Closing
 "
     Assert.AreEqual(Expected, Text)
   End Sub

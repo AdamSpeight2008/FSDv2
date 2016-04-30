@@ -32,8 +32,8 @@
     Public Shared Function EoT(ix As Source.Position) As ParseError
       Return New EoT(ix.ToZeroSpan, Tokens.Empty)
     End Function
-    Public Shared Function NullParse(ix As Source.Position) As ParseError
-      Return New NullParse(ix.ToZeroSpan, Tokens.Empty)
+    Public Shared Function NullParse(ix As Source.Position, Optional Inner As Tokens = Nothing) As ParseError
+      Return New NullParse(ix.ToZeroSpan, Inner)
     End Function
     Public Shared Function Invalid(ix As Source.Position, Tx As Tokens, Optional Additional As String = Nothing) As ParseError
       Return New Invalid(ix.ToZeroSpan, Tx, Additional)
