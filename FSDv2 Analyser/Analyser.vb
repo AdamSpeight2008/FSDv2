@@ -74,6 +74,7 @@ Public Class Analyser
     Public Property Arg As Arg
     Public ReadOnly Property Args As Args
     Public Property Result As Result
+
     Public Sub New()
       Me.Result = New Result
     End Sub
@@ -83,11 +84,14 @@ Public Class Analyser
   Public Function Analyse(FS As FSDv2.FormatString, q As Parameters) As Parameters
     For Each t As Token In FS.InnerTokens.GetEnumerator
       Select Case t.Kind
-        Case TokenKind.ArgHole
+        Case TokenKind.ArgHole : q = ArgHole(DirectCast(t, FormatString.ArgHole), q)
+        Case TokenKind.Text : q = Text(DirectCast(t, FormatString.Text), q)
+        Case TokenKind.ParseError : q = ParseError(DirectCast(t, ParseError), q)
+        Case Else
+          q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, t.Span, "")
       End Select
-
     Next
-
+    Return q
   End Function
 
   Private Function Text(Txt As FormatString.Text, Q As Parameters) As Parameters
@@ -95,10 +99,24 @@ Public Class Analyser
     Dim en = Txt.InnerTokens.GetEnumerator.GetEnumerator
     While en.MoveNext
       Select Case en.Current.Kind
-        Case TokenKind.ParseError
+        Case TokenKind.ParseError : Q = ParseError(DirectCast(en.Current, ParseError), Q)
+        Case TokenKind.Esc_Brace_Closing,
+             TokenKind.Esc_Brace_Opening
         Case Else
+          Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span, "")
+
       End Select
     End While
+    Return Q
+  End Function
+
+  Private Function ArgAlign(AA As FormatString.ArgHole.Align, Q As Parameters) As Parameters
+    ' TODO:
+    Return Q
+  End Function
+
+  Private Function ArgFormat(AA As FormatString.ArgHole.Format, Q As Parameters) As Parameters
+    ' TODO:
     Return Q
   End Function
 
@@ -106,23 +124,67 @@ Public Class Analyser
     Dim en = AH.InnerTokens.GetEnumerator.GetEnumerator
 
 Expecting_Opening_Brace:
-    If en.MoveNext = False Then GoTo
+    If en.MoveNext = False Then Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing) : GoTo state_end
     Select Case en.Current.Kind
       Case TokenKind.Esc_Brace_Opening
       Case Else
+        Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span)
+        GoTo Expecting_Opening_Brace
     End Select
-Expecting_Arghole_Index:
-    If en.MoveNext = False Then GoTo
-    Select Case en.Current.Kind
-      Case TokenKind.ArgHole_Index : ArgIndex(DirectCast(en.Current, Index), Q)
-      Case TokenKind.ParseError
 
+Expecting_Arghole_Index:
+    If en.MoveNext = False Then Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing) : GoTo state_end
+    Select Case en.Current.Kind
+      Case TokenKind.ArgHole_Index : Q = ArgIndex(DirectCast(en.Current, Index), Q) : GoTo Expection_Arghole_Align
+      Case TokenKind.ArgHole_Align : GoTo Expection_Arghole_Align_1
+      Case TokenKind.ArgHole_Format : GoTo Expecting_Arghole_Format_1
+      Case TokenKind.Brace_Closing
+        Q.Result.Issues += New Issue(Issue.Kinds.Arg_Index_Missing, Nothing)
+        GoTo Expecting_Closing_Brace_1
+      Case TokenKind.ParseError
+        Q = ParseError(DirectCast(en.Current, ParseError), Q)
       Case Else
+        Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span)
         GoTo Expecting_Arghole_Index
     End Select
+
 Expection_Arghole_Align:
+    If en.MoveNext = False Then Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing) : GoTo state_end
+Expection_Arghole_Align_1:
+    Select Case en.Current.Kind
+      Case TokenKind.ArgHole_Align : Q = ArgAlign(DirectCast(en.Current, FormatString.ArgHole.Align), Q) : GoTo Expecting_Closing_Brace
+      Case TokenKind.Brace_Closing : GoTo Expecting_Closing_Brace_1
+      Case Else
+        Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span)
+        GoTo Expecting_Closing_Brace
+    End Select
+
 Expecting_Arghole_Format:
+    If en.MoveNext = False Then Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing) : GoTo state_end
+Expecting_Arghole_Format_1:
+    Select Case en.Current.Kind
+      Case TokenKind.ArgHole_Format : Q = ArgFormat(DirectCast(en.Current, FSDv2.FormatString.ArgHole.Format), Q) : GoTo Expecting_Closing_Brace
+      Case TokenKind.Brace_Closing : GoTo Expecting_Closing_Brace_1
+      Case Else
+        Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span)
+        GoTo Expecting_Arghole_Format
+    End Select
+
 Expecting_Closing_Brace:
+    If en.MoveNext = False Then Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing) : GoTo state_end
+Expecting_Closing_Brace_1:
+    Select Case en.Current.Kind
+      Case TokenKind.Brace_Closing : GoTo Expecting_Done
+      Case Else
+        Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span)
+        GoTo Expecting_Closing_Brace
+    End Select
+
+Expecting_Done:
+    While en.MoveNext
+      Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span, "")
+    End While
+state_end:
     Return Q
   End Function
 
@@ -141,7 +203,7 @@ Expecting_Closing_Brace:
     Dim en = ai.InnerTokens.GetEnumerator.GetEnumerator
 
 Expecting_Digits:
-    If en.MoveNext = False Then results.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing) : GoTo state_end
+    If en.MoveNext = False Then Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing) : GoTo state_end
     Select Case en.Current.Kind
       Case TokenKind.Digits
         Dim digits = DirectCast(en.Current, FSDv2.FormatString.Common.Digits).GetValue
@@ -187,7 +249,7 @@ state_end:
     Dim en = ai.InnerTokens.GetEnumerator.GetEnumerator
 
 Expecting_Comma:
-    If en.MoveNext = False Then Q.results += New Issue(Issue.Kinds.Unexpected_End, Nothing) : GoTo state_end
+    If en.MoveNext = False Then Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing) : GoTo state_end
     Select Case en.Current.Kind
       Case TokenKind.Comma : GoTo Execting_Possible_Whitespace_0
       Case Else
@@ -226,8 +288,8 @@ Expecting_Digits_1:
         If Q.Arg.Align.HasValue = False Then
           Q.Result.Issues += New Issue(Issue.Kinds.Arg_Align_Missing, en.Current.Span)
         Else
-          If Q.Arg.Align.Value >= Framework.UpperLimit Then results.Issues += New Issue(Issue.Kinds.Arg_Align_Framework_Upper_Limit_Exceeded, en.Current.Span)
-          If Q.Arg.Align.Value <= Framework.LowerLimit Then results.Issues += New Issue(Issue.Kinds.Arg_Align_Framework_Lower_Limit_Exceeded, en.Current.Span)
+          If Q.Arg.Align.Value >= Framework.UpperLimit Then Q.Result.Issues += New Issue(Issue.Kinds.Arg_Align_Framework_Upper_Limit_Exceeded, en.Current.Span)
+          If Q.Arg.Align.Value <= Framework.LowerLimit Then Q.Result.Issues += New Issue(Issue.Kinds.Arg_Align_Framework_Lower_Limit_Exceeded, en.Current.Span)
         End If
         GoTo Expecting_Possible_Whitespace_1
       Case Else
