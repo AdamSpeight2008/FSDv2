@@ -54,6 +54,22 @@
         End Select
       End Function
 
+      Public Function GetValue() As Numerics.BigInteger?
+        Select Case Me.Span.Start.Value
+          Case "0"c : Return Numerics.BigInteger.Zero
+          Case "1"c : Return Numerics.BigInteger.One
+          Case "2"c : Return New Numerics.BigInteger(2)
+          Case "3"c : Return New Numerics.BigInteger(3)
+          Case "4"c : Return New Numerics.BigInteger(4)
+          Case "5"c : Return New Numerics.BigInteger(5)
+          Case "6"c : Return New Numerics.BigInteger(6)
+          Case "7"c : Return New Numerics.BigInteger(7)
+          Case "8"c : Return New Numerics.BigInteger(8)
+          Case "9"c : Return New Numerics.BigInteger(9)
+        End Select
+        Return Nothing
+      End Function
+
     End Class
 
     Public Class Digits : Inherits Token
@@ -74,6 +90,20 @@
         Dim s = Sx.To(Ix)
         If s.HasValue = False OrElse s.Value.Size = 0 Then Return ParseError.Make.NullParse(Ix)
         Return New Digits(s.Value, Txn)
+      End Function
+
+      Private _Value As Numerics.BigInteger?
+      Private _First As Boolean = False
+      Public Function GetValue() As Numerics.BigInteger?
+        If Not _First Then
+          Dim output = Numerics.BigInteger.Zero
+          For Each d As FSDv2.FormatString.Common.Digit In Me.InnerTokens.GetEnumerator
+            output = (10 * output) + d.GetValue
+          Next
+          _Value = output
+          _First = True
+        End If
+        Return _Value
       End Function
 
     End Class
