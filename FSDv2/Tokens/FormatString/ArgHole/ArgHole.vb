@@ -94,13 +94,18 @@ Done:
 
 #Region "TryToResync"
 TryToResync:
+        Dim qx = Ix
         Dim r = RPX.TryToResync(Ix)
         Dim pe = TryCast(r, ParseError)
         If pe IsNot Nothing Then
           Select Case pe.Why
             Case ParseError.Reason.Partial
-              Dim tmp As ParseError = ParseError.Make.UnexpectedChars(sx.To(r.Span.Start.Next), Tokens.Empty, "")
-              Txn = Common.AddThenNext(tmp, Txn, Ix)
+              If r.Span.Size > 0 Then
+                Dim tmp As ParseError = ParseError.Make.UnexpectedChars(sx.To(r.Span.Start.Next), Tokens.Empty, "")
+                ' Don't include the token
+                'If tmp.Span.Size > 0 Then
+                Txn = Common.AddThenNext(tmp, Txn, Ix)
+              End If
               Select Case pe(0).Kind
                 Case TokenKind.Digits : GoTo AreThereDigits
                 Case TokenKind.Whitespaces : GoTo AreThereWhitespace

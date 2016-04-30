@@ -168,6 +168,17 @@ Expecting_Arghole_Index:
               Case Else
                 Q = ParseError(pe, Q)
             End Select
+          Case FSDv2.ParseError.Reason.NullParse
+            If pe.InnerTokens.Count > 0 Then
+              Dim pe0 = TryCast(pe(0), ParseError)
+              If pe0 IsNot Nothing Then
+                If pe0.Why = FSDv2.ParseError.Reason.UnexpectedCharacter Then
+                  Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Characters, pe0.Span)
+                End If
+              End If
+              End If
+            Q.Result.Issues += New Issue(Issue.Kinds.Arg_Index_Missing, pe.Span.Start.ToZeroSpan)
+            GoTo Expecting_Closing_Brace
           Case Else
             Q = ParseError(pe, Q)
         End Select
@@ -205,6 +216,10 @@ Expecting_Closing_Brace_1:
     Select Case en.Current.Kind
       Case TokenKind.Brace_Closing : GoTo Expecting_Done
       Case Else
+        Dim pe = TryCast(en.Current, ParseError)
+        If pe IsNot Nothing AndAlso pe(0).Kind = TokenKind.Brace_Closing Then
+          GoTo Expecting_Closing_Brace
+        End If
         Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span)
         GoTo Expecting_Closing_Brace
     End Select
@@ -222,6 +237,7 @@ state_end:
       Case FSDv2.ParseError.Reason.UnexpectedCharacter : Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Characters, pe.Span)
       Case FSDv2.ParseError.Reason.Invalid : Q.Result.Issues += New Issue(Issue.Kinds.Invalid, pe.Span)
       Case FSDv2.ParseError.Reason.EoT : Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, pe.Span)
+
       Case FSDv2.ParseError.Reason.Partial
 
       Case Else

@@ -60,9 +60,10 @@ Public Class ArgHole_UnitTests
     Dim Expected =
 "(  0:  2)  ArgHole
   [ 0]  (  0:  1)  Brace_Opening
-  [ 1]  (  1:  0)  ParseError.Partial
+  [ 1]  (  1:  0)  ParseError.NullParse
+  [ 2]  (  1:  0)  ParseError.Partial
     [ 0]  (  1:  1)  Brace_Closing
-  [ 2]  (  1:  1)  Brace_Closing
+  [ 3]  (  1:  1)  Brace_Closing
 "
     Assert.AreEqual(Expected, Actual)
 

@@ -187,8 +187,8 @@ Public Class FSDv2_UnitTests
     ' Should ultimatley:
     '   Unexpected_Characters
     '   Invalid Missing Arg Index. Would the missing arg.index at index 1 or 2?
-    Dim Expected = "(  1:  1) Unexpected_Character
-(  1:  0) Arg_Index_Missing
+    Dim Expected = "(  1:  1) Unexpected_Characters
+(  2:  0) Arg_Index_Missing
 "
     Assert.AreEqual(Expected, Text)
   End Sub
