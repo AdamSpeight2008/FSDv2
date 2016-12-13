@@ -8,8 +8,8 @@ Public Class Tokens_Common_HexDigits_UnitTest
   <TestMethod, TestCategory("Tokens.Common.HexDigits")>
   Public Sub _00_()
     Dim Text = ""
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.HexDigits.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(FormatString.Common.HexDigit))
@@ -22,8 +22,8 @@ Public Class Tokens_Common_HexDigits_UnitTest
   <TestMethod, TestCategory("Tokens.Common.HexDigits")>
   Public Sub _01_()
     Dim Text = "0123456789ABCDEFabcdef"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.HexDigits.TryParse(FirstPos)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigits))
     Assert.AreEqual(TokenKind.HexDigits, res.Kind)

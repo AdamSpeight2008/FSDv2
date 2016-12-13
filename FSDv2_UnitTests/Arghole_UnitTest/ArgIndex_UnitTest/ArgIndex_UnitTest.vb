@@ -11,8 +11,8 @@ Public Class ArgIndex_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>
   Public Sub _00_()
     Dim Text = ""
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Index.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(FormatString.ArgHole.Index))
@@ -23,8 +23,8 @@ Public Class ArgIndex_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>
   Public Sub _01_()
     Dim Text = "0"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Index.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Index))
@@ -38,8 +38,8 @@ Public Class ArgIndex_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>
   Public Sub _02_()
     Dim Text = "01"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Index.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Index))
@@ -57,8 +57,8 @@ Public Class ArgIndex_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>
   Public Sub _03_()
     Dim Text = "0  "
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Index.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Index))
@@ -81,8 +81,8 @@ Public Class ArgIndex_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>
   Public Sub _04_()
     Dim Text = "01  "
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Index.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Index))
@@ -106,12 +106,12 @@ Public Class ArgIndex_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>
   Public Sub _05_()
     Dim Text = " 0"
-    ' (0:2) ArgIndex
-    ' [0] (0:1) ParseError (Why:= UnexpectedChacters)
-    '   [0] (0:1) Digits ?
-    ' [1] (1:1) Digits
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        ' (0:2) ArgIndex
+        ' [0] (0:1) ParseError (Why:= UnexpectedChacters)
+        '   [0] (0:1) Digits ?
+        ' [1] (1:1) Digits
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim ParseResult = FormatString.ArgHole.Index.TryParse(FirstPos)
     Assert.IsNotNull(ParseResult)
     Assert.IsInstanceOfType(ParseResult, GetType(FormatString.ArgHole.Index))
@@ -129,12 +129,12 @@ Public Class ArgIndex_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>
   Public Sub _06_()
     Dim Text = " 0  "
-    ' (0:2) ArgIndex
-    ' [0] (0:1) ParseError (Why:= UnexpectedChacters)
-    '   [0] (0:1) Digits ?
-    ' [1] (1:1) Digits
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        ' (0:2) ArgIndex
+        ' [0] (0:1) ParseError (Why:= UnexpectedChacters)
+        '   [0] (0:1) Digits ?
+        ' [1] (1:1) Digits
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim ParseResult = FormatString.ArgHole.Index.TryParse(FirstPos)
     Assert.IsNotNull(ParseResult)
     Assert.IsInstanceOfType(ParseResult, GetType(FormatString.ArgHole.Index))

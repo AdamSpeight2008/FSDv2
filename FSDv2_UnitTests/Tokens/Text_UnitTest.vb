@@ -12,8 +12,8 @@ Public Class Text_UnitTests
   <TestMethod, TestCategory(Cat)>
   Public Sub _00_()
     Dim Text = ""
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Text.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
@@ -24,8 +24,8 @@ Public Class Text_UnitTests
   <TestMethod, TestCategory(Cat)>
   Public Sub _01_()
     Dim Text = "abc"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Text.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
@@ -35,8 +35,8 @@ Public Class Text_UnitTests
   <TestMethod, TestCategory(Cat)>
   Public Sub _02_()
     Dim Text = "abc\b"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Text.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
@@ -46,8 +46,8 @@ Public Class Text_UnitTests
   <TestMethod, TestCategory(Cat)>
   Public Sub _03_()
     Dim Text = "abc\b"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Text.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
@@ -61,8 +61,8 @@ Public Class Text_UnitTests
   <TestMethod, TestCategory(Cat)>
   Public Sub _04_()
     Dim Text = "abc\q"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Text.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
@@ -75,8 +75,8 @@ Public Class Text_UnitTests
   <TestMethod, TestCategory(Cat)>
   Public Sub _05_()
     Dim Text = "abc\x"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Text.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
@@ -90,8 +90,8 @@ Public Class Text_UnitTests
   <TestMethod, TestCategory(Cat)>
   Public Sub _06_()
     Dim Text = "abc\x0000f"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Text.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))

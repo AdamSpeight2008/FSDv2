@@ -8,8 +8,8 @@ Public Class Tokens_Common_Digits_UnitTest
   <TestMethod, TestCategory("Tokens.Common.Digits")>
   Public Sub _00_()
     Dim Text = ""
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Digits.TryParse(FirstPos)
 
 
@@ -18,8 +18,8 @@ Public Class Tokens_Common_Digits_UnitTest
   <TestMethod, TestCategory("Tokens.Common.Digits")>
   Public Sub _01_()
     Dim Text = "0123456789"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Digits.TryParse(FirstPos)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Digits))
     Assert.AreEqual(TokenKind.Digits, res.Kind)

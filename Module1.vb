@@ -8,8 +8,8 @@ Module Module1
     '           0         1         2         3         4         5         6         7         8
     '           012345678901234567890123456789012345678901234567890123456789012345678901234567890
     Dim Text = "{}"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
-    Dim Ix = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
+        Dim Ix = TheSource.First
     'Dim sw = Diagnostics.Stopwatch.StartNew
     Dim ParseResult = FormatString.TryParse(Ix)
     Console.WriteLine($"Input:=[{Text}]")

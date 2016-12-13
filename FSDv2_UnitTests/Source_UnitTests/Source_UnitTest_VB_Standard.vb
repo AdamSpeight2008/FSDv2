@@ -11,8 +11,8 @@ Public Class Source_UnitTests_VB_Standard
   <TestMethod, TestCategory(Cat0)>
   Public Sub _00_NullText()
     Dim Text = Nothing
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Assert.AreEqual(0, TheSource.Length)
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Assert.AreEqual(0, TheSource.Length)
     Assert.AreEqual(Source.SourceKind.VB_Standard, TheSource.Kind)
     Assert.AreEqual("", TheSource.Text)
   End Sub
@@ -20,8 +20,8 @@ Public Class Source_UnitTests_VB_Standard
   <TestMethod, TestCategory(Cat0)>
   Public Sub _01_StringEmpty()
     Dim Text = String.Empty
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Assert.AreEqual(0, TheSource.Length)
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Assert.AreEqual(0, TheSource.Length)
     Assert.AreEqual(Source.SourceKind.VB_Standard, TheSource.Kind)
     Assert.AreEqual("", TheSource.Text)
   End Sub
@@ -29,8 +29,8 @@ Public Class Source_UnitTests_VB_Standard
   <TestMethod, TestCategory(Cat0)>
   Public Sub _02_EmptyStringLiteral()
     Dim Text = Nothing
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Assert.AreEqual(0, TheSource.Length)
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Assert.AreEqual(0, TheSource.Length)
     Assert.AreEqual(Source.SourceKind.VB_Standard, TheSource.Kind)
     Assert.AreEqual("", TheSource.Text)
   End Sub
@@ -38,8 +38,8 @@ Public Class Source_UnitTests_VB_Standard
   <TestMethod, TestCategory(Cat0)>
   Public Sub _03_SourceChar_Checks()
     Dim Text = "A"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Assert.AreEqual(1, TheSource.Length)
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Assert.AreEqual(1, TheSource.Length)
     Assert.AreEqual(Source.SourceKind.VB_Standard, TheSource.Kind)
     Assert.AreEqual("A", TheSource.Text)
     Dim res As Char?
