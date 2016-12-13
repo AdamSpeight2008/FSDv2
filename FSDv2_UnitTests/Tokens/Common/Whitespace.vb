@@ -8,8 +8,8 @@ Public Class Tokens_Common_Whitespace_UnitTest
   <TestMethod, TestCategory("Tokens.Common.Whitespace")>
   Public Sub _00_()
     Dim Text = ""
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Whitespace.TryParse(FirstPos)
 
 
@@ -18,8 +18,8 @@ Public Class Tokens_Common_Whitespace_UnitTest
   <TestMethod, TestCategory("Tokens.Common.Whitespace")>
   Public Sub _01_()
     Dim Text = " "
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Whitespace.TryParse(FirstPos)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Whitespace))
     Assert.AreEqual(TokenKind.Whitespace, res.Kind)

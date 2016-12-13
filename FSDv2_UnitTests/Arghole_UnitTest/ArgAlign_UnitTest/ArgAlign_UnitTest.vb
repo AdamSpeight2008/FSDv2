@@ -13,8 +13,8 @@ Public Class ArgAlign_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgAlign")>
   Public Sub _00_()
     Dim Text = ""
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Align.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
@@ -24,8 +24,8 @@ Public Class ArgAlign_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgAlign")>
   Public Sub _01_()
     Dim Text = ",1"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Align.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Align))
@@ -67,8 +67,8 @@ Public Class ArgAlign_UnitTest
   Public Sub _02_()
     '           0123
     Dim Text = ",  1"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Align.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Align))
@@ -107,8 +107,8 @@ Public Class ArgAlign_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgAlign")>
   Public Sub _03_()
     Dim Text = ",-1"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Align.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Align))
@@ -152,8 +152,8 @@ Public Class ArgAlign_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgAlign")>
   Public Sub _04_()
     Dim Text = ", -1"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Align.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Align))
@@ -197,8 +197,8 @@ Public Class ArgAlign_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgAlign")>
   Public Sub _05_()
     Dim Text = ",1 "
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Align.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Align))
@@ -236,8 +236,8 @@ Public Class ArgAlign_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgAlign")>
   Public Sub _06_()
     Dim Text = ", -1 "
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Align.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Align))
@@ -282,8 +282,8 @@ Public Class ArgAlign_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgAlign")>
   Public Sub _07_()
     Dim Text = ", -1"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Align.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Align))
@@ -326,8 +326,8 @@ Public Class ArgAlign_UnitTest
   <TestMethod, TestCategory("Tokens.Arghole.ArgAlign")>
   Public Sub _08_()
     Dim Text = ", 1 "
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Align.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Align))

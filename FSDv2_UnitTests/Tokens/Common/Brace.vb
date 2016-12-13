@@ -7,8 +7,8 @@ Imports FSDv2
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _00_()
     Dim Text = ""
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Brace.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
@@ -30,8 +30,8 @@ Imports FSDv2
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _02_()
     Dim Text = "}"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Brace.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Closing))
@@ -43,8 +43,8 @@ Imports FSDv2
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _03_()
     Dim Text = "{{"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Brace.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Esc.Opening))
@@ -62,8 +62,8 @@ Imports FSDv2
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _04_()
     Dim Text = "}}"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Brace.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Esc.Closing))
@@ -82,8 +82,8 @@ Imports FSDv2
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _05_()
     Dim Text = "{ "
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Brace.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Opening))
@@ -95,8 +95,8 @@ Imports FSDv2
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _06_()
     Dim Text = "} "
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Brace.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Closing))
@@ -108,8 +108,8 @@ Imports FSDv2
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _07_()
     Dim Text = "{{ "
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Brace.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Esc.Opening))
@@ -127,8 +127,8 @@ Imports FSDv2
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _08_()
     Dim Text = "}} "
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Brace.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Esc.Closing))
