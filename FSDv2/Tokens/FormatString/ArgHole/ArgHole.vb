@@ -1,4 +1,5 @@
-﻿Partial Public Class FormatString
+﻿Imports System.Globalization
+Partial Public Class FormatString
 
   Public Class ArgHole : Inherits Token
 #Region "Resync Points"
@@ -68,7 +69,7 @@ TryToResync:
     Public Class Index : Inherits Token
 #Region "ResyncPoints"
       Private Shared RPX As ResyncPoints = New ResyncPoint(AddressOf Common.Digits.TryParse) + New ResyncPoint(AddressOf Align.Comma.TryParse) +
-                                           New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
+                                     New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
 #End Region
 
       Private Sub New(Span As Source.Span, Inner As Tokens)
@@ -116,6 +117,188 @@ Null:
         Return ParseError.Make.NullParse(Ix, Txn)
       End Function
 
+    End Class
+
+    Public Class Identifier : Inherits Token
+#Region "ResyncPoints"
+      'Private Shared RPX As ResyncPoints = New ResyncPoint(AddressOf Common.Digits.TryParse) + New ResyncPoint(AddressOf Align.Comma.TryParse) +
+      '                               New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
+#End Region
+      Private Sub New(Span As Source.Span, Inner As Tokens)
+        MyBase.New(TokenKind.Identifier, Span, Inner)
+      End Sub
+#Region "Grammar Definitions"
+#Region "C# Identifer grammar"
+      '                  identifier  ::=  available-identifier  |  "@" identifier-Or-keyword
+      '        available-identifier  ::=  An identifier-Or-keyword that Is Not a keyword
+      '       identifier-Or-keyword  ::=  identifier-start-character identifier-part-character*
+      '  identifier-start-character  ::=  letter-character  |  "_"
+      '   identifier-part-character  ::=  letter-character  |  Decimal-digit-character  |  connecting-character  |  combining-character  |  FormattingCharacter
+      '            letter-character  ::=  AlphaCharacter       |  < A unicode-character-escape-sequence representing a character Of classes Lu, Ll, Lt, Lm, Lo, Or Nl >
+      '         combining-character  ::=  CombiningCharacter   |  < A unicode-character-escape-sequence representing a character Of classes Mn Or Mc
+      '     Decimal-digit-character  ::=  NumericCharacter     |  < A unicode-character-escape-sequence representing a character Of the Class Nd >
+      '        connecting-character  ::=  UnderscoreCharacter  |  < A unicode-character-escape-sequence representing a character Of the Class Pc >
+      '        formatting-character  ::=  FormattingCharacter  |  < A unicode-character-escape-sequence representing a character Of the Class Cf >
+#End Region
+#Region "VB Identifier Grammar"
+      '            Identifier  ::=  NonEscapedIdentifier [ TypeCharacter ]  |  EscapedIdentifier
+      '  NonEscapedIdentifier  ::=  < IdentifierName but Not Keyword >
+      '     EscapedIdentifier  ::=  [ IdentifierName ] 
+      '        IdentifierName  ::=  IdentifierStart [ IdentifierCharacter+ ]
+      '       IdentifierStart  ::=  AlphaCharacter |  UnderscoreCharacter IdentifierCharacter
+      '   IdentifierCharacter  ::=  UnderscoreCharacter  |  AlphaCharacter  |  NumericCharacter  |  CombiningCharacter   |  FormattingCharacter
+#End Region
+#Region "Common Grammar"
+      '        AlphaCharacter  ::=  < Unicode alphabetic character (classes Lu, Ll, Lt, Lm, Lo, Nl) >
+      '      NumericCharacter  ::=  < Unicode decimal digit character (class Nd) >
+      '    CombiningCharacter  ::=  < Unicode combining character (classes Mn, Mc) >
+      '   FormattingCharacter  ::=  < Unicode formatting character (class Cf) >
+      '   UnderscoreCharacter  ::=  < Unicode connection character (class Pc) >
+      '   IdentifierOrKeyword  ::=  Identifier | Keyword
+#End Region
+#End Region
+
+      Private Shared Function AlphaCharacter(ch As Char) As Boolean
+        '  AlphaCharacter::=  <Unicode alphabetic character (classes Lu, Ll, Lt, Lm, Lo, Nl) >
+        Dim category = Char.GetUnicodeCategory(ch)
+        Select Case category
+          Case UnicodeCategory.UppercaseLetter, UnicodeCategory.LowercaseLetter, UnicodeCategory.TitlecaseLetter,
+               UnicodeCategory.ModifierLetter, UnicodeCategory.OtherLetter, UnicodeCategory.LetterNumber
+            Return True
+        End Select
+        Return False
+      End Function
+      Private Shared Function NumericCharacter(ch As Char) As Boolean
+        '  NumericCharacter::= < Unicode decimal digit character (class Nd) >
+        Dim category = Char.GetUnicodeCategory(ch)
+        Select Case category
+          Case UnicodeCategory.DecimalDigitNumber
+            Return True
+        End Select
+        Return False
+      End Function
+      Private Shared Function CombiningCharacter(ch As Char) As Boolean
+        '  CombiningCharacter::= < Unicode combining character (classes Mn, Mc) >
+        Dim category = Char.GetUnicodeCategory(ch)
+        Select Case category
+          Case UnicodeCategory.NonSpacingMark, UnicodeCategory.SpacingCombiningMark
+            Return True
+        End Select
+        Return False
+      End Function
+      Private Shared Function FormattingCharacter(ch As Char) As Boolean
+        '  FormattingCharacter::= < Unicode formatting character (class Cf) >
+        Dim category = Char.GetUnicodeCategory(ch)
+        Select Case category
+          Case UnicodeCategory.Format
+            Return True
+        End Select
+        Return False
+      End Function
+      Private Shared Function UnderscoreCharacter(ch As Char) As Boolean
+        '  UnderscoreCharacter::= < Unicode connection character (class Pc) >
+        Dim category = Char.GetUnicodeCategory(ch)
+        Select Case category
+          Case UnicodeCategory.ConnectorPunctuation
+            Return True
+        End Select
+        Return False
+      End Function
+
+      Private Shared Function IdentifierCharacter(ch As Char) As Boolean
+        '  IdentifierCharacter::=  UnderscoreCharacter |  AlphaCharacter |  NumericCharacter  |  CombiningCharacter  |  FormattingCharacter
+        Return UnderscoreCharacter(ch) OrElse AlphaCharacter(ch) OrElse NumericCharacter(ch) OrElse CombiningCharacter(ch) OrElse FormattingCharacter(ch)
+      End Function
+      Private Shared Function FirstIdentifierCharacter(ch As Char) As Boolean
+        Return (ch = "_"c) OrElse IdentifierCharacter(ch)
+      End Function
+
+      Private Shared Function TryParse_VBIdentifer(Ix As Source.Position) As Token
+        Debug.Assert(Ix.Source.KindOfString = Source.StringKind.StringInterpolation)
+        Debug.Assert(Ix.Source.Kind = Source.SourceKind.VB_Standard)
+        If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
+        Dim Txn = Tokens.Empty, T As Token, sx = Ix
+FirstCharacter:
+        If FirstIdentifierCharacter(Ix.Value.Value) Then
+RestCharacters:
+          Ix = Ix.Next
+          While Ix.IsValid AndAlso IdentifierCharacter(Ix.Value.Value)
+            Ix = Ix.Next
+          End While
+        End If
+Done:
+        Return New Identifier(sx.To(Ix), Txn)
+#Region "TryToResync"
+TryToResync:
+        'Dim qx = Ix
+        'Dim r = RPX.TryToResync(Ix)
+        'Dim pe = TryCast(r, ParseError)
+        'If pe IsNot Nothing Then
+        '    Select Case pe.Why
+        '        Case ParseError.Reason.Partial
+        '            If r.Span.Size > 0 Then
+        '                Dim tmp As ParseError = ParseError.Make.UnexpectedChars(sx.To(r.Span.Start.Next), Tokens.Empty, "")
+        '                Txn = Common.AddThenNext(tmp, Txn, Ix)
+        '            End If
+        '            Select Case pe(0).Kind
+        '                Case TokenKind.Digits : GoTo AreThereDigits
+        '                Case TokenKind.Whitespaces : GoTo AreThereWhitespace
+        '                Case TokenKind.Brace_Closing : GoTo Null
+        '            End Select
+        '    End Select
+        'End If
+#End Region
+Null:
+        Return ParseError.Make.NullParse(Ix, Tokens.Empty)
+      End Function
+      Private Shared Function TryParse_CSIdentifer(Ix As Source.Position) As Token
+        Debug.Assert(Ix.Source.KindOfString = Source.StringKind.StringInterpolation)
+        Debug.Assert(Ix.Source.Kind = Source.SourceKind.CS_Standard)
+        If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
+        Dim Txn = Tokens.Empty, T As Token, sx = Ix
+FirstCharacter:
+        If FirstIdentifierCharacter(Ix.Value.Value) Then
+RestCharacters:
+          Ix = Ix.Next
+          While Ix.IsValid AndAlso IdentifierCharacter(Ix.Value.Value)
+            Ix = Ix.Next
+          End While
+        End If
+Done:
+        Return New Identifier(sx.To(Ix), Txn)
+#Region "TryToResync"
+TryToResync:
+        'Dim qx = Ix
+        'Dim r = RPX.TryToResync(Ix)
+        'Dim pe = TryCast(r, ParseError)
+        'If pe IsNot Nothing Then
+        '    Select Case pe.Why
+        '        Case ParseError.Reason.Partial
+        '            If r.Span.Size > 0 Then
+        '                Dim tmp As ParseError = ParseError.Make.UnexpectedChars(sx.To(r.Span.Start.Next), Tokens.Empty, "")
+        '                Txn = Common.AddThenNext(tmp, Txn, Ix)
+        '            End If
+        '            Select Case pe(0).Kind
+        '                Case TokenKind.Digits : GoTo AreThereDigits
+        '                Case TokenKind.Whitespaces : GoTo AreThereWhitespace
+        '                Case TokenKind.Brace_Closing : GoTo Null
+        '            End Select
+        '    End Select
+        'End If
+#End Region
+Null:
+        Return ParseError.Make.NullParse(Ix, Tokens.Empty)
+      End Function
+      Public Shared Function TryParse(Ix As Source.Position) As Token
+        Debug.Assert(Ix.Source.KindOfString = Source.StringKind.StringInterpolation)
+        If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
+        Select Case Ix.Source.Kind
+          Case Source.SourceKind.VB_Standard : Return TryParse_VBIdentifer(Ix)
+          Case Source.SourceKind.CS_Standard : Return TryParse_CSIdentifer(Ix)
+          Case Source.SourceKind.CS_Verbatum
+        End Select
+        Return ParseError.Make.NullParse(Ix, Tokens.Empty)
+      End Function
     End Class
 
     Public Class Align : Inherits Token
@@ -299,15 +482,27 @@ TryToResyncBody:
           Dim sx = Ix
           Dim T As Token
           While Ix.IsValid
-            'T = Common.Brace.Opening.TryParse(Ix)
-            'If T.Kind = TokenKind.Brace_Opening Then
-            '  Dim pe As New ParseError(T.Span, ParseError.Reason.Invalid, T)
-            '  Txn = Common.AddThenNext(pe, Txn, Ix)
-            '  Continue While
-            'End If
-            T = Common.Brace.Closing.TryParse(Ix) : If T.Kind = TokenKind.Brace_Closing Then Exit While
-            T = Text._TryParse(Ix, True) : If T.Kind = TokenKind.ParseError Then Exit While
+
+            T = Common.Brace.Opening.TryParse(Ix)
+            Select Case T.Kind
+              Case TokenKind.Brace_Opening : T = ParseError.Make.Invalid(T.Span, T) : GoTo OnToNext
+              Case TokenKind.Esc_Brace_Opening : GoTo OnToNext
+            End Select
+
+            T = Common.Brace.Closing.TryParse(Ix)
+            Select Case T.Kind
+              Case TokenKind.Brace_Closing : Exit While
+              Case TokenKind.Esc_Brace_Closing : GoTo OnToNext
+            End Select
+
+            T = Text._TryParse(Ix, True)
+            Select Case T.Kind
+              Case TokenKind.ParseError : Exit While
+            End Select
+
+OnToNext:
             Txn = Common.AddThenNext(T, Txn, Ix)
+
           End While
           Return New Format.Body(sx.To(Ix), Txn)
         End Function

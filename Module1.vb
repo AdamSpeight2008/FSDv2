@@ -7,8 +7,8 @@ Module Module1
   Sub Main()
     '           0         1         2         3         4         5         6         7         8
     '           012345678901234567890123456789012345678901234567890123456789012345678901234567890
-    Dim Text = "{}"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
+    Dim Text = "{0,1:{{}}x4}"
+    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim Ix = TheSource.First
     'Dim sw = Diagnostics.Stopwatch.StartNew
     Dim ParseResult = FormatString.TryParse(Ix)
@@ -33,7 +33,7 @@ Public Module Exts
   End Function
 
   Private Sub _AsString(Tk As Token, sb As Text.StringBuilder, level As Integer)
-    sb.AppendLine($"{Space(level * 2)}{Tk.Span.ToString} {Tk.GetType.FullName}")
+    sb.AppendLine($"{Space(level * 2)}{Tk.Span.ToString} {Tk.Kind.ToString()}")
     For i = 0 To Tk.InnerTokens.Count - 1
       sb.Append(Space(level * 2))
       sb.Append($"[{i,2}]")

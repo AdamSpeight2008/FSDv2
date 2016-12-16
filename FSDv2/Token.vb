@@ -63,4 +63,5 @@ Public Enum TokenKind As Integer
   Backslash_UpperU
   Backslash_LowerU
   [Partial]
+    Identifier
 End Enum
