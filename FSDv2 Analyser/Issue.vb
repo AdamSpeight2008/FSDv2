@@ -35,6 +35,9 @@ Partial Public Class Analyser
         Public Shared Function Missing(Span As Source.Span) As Issue
           Return New Issue(Kinds.Arg_Index_Missing, Span)
         End Function
+        Public Shared Function OutOfRange(Span As Source.Span) As Issue
+          Return New Issue(Kinds.Arg_Index_OutOfRange, Span, "")
+        End Function
         Public Class Framework
           Public Shared Function Upper_Limit_Exceeded(Span As Source.Span) As Issue
             Return New Issue(Kinds.Arg_Index_FrameWork_Lower_Limit_Exceeded, Span)
@@ -44,7 +47,19 @@ Partial Public Class Analyser
           End Function
         End Class
       End Class
-
+      Public Class Align
+        Public Shared Function Missing(Span As Source.Span) As Issue
+          Return New Issue(Kinds.Arg_Align_Missing, Span)
+        End Function
+        Public Class Framework
+          Public Shared Function Upper_Limit_Exceeded(Span As Source.Span) As Issue
+            Return New Issue(Kinds.Arg_Align_Framework_Lower_Limit_Exceeded, Span)
+          End Function
+          Public Shared Function Lower_Limit_Exceeded(Span As Source.Span) As Issue
+            Return New Issue(Kinds.Arg_Index_Framework_Upper_Limit_Exceeded, Span)
+          End Function
+        End Class
+      End Class
 
     End Class
 
@@ -59,6 +74,12 @@ Partial Public Class Analyser
 
       Public Shared Function EoT(span As Source.Span) As Issue
         Return New Issue(Kinds.Unexpected_End, span)
+      End Function
+    End Class
+
+    Public Class Missing
+      Public Shared Function ClosingBrace(Span As Source.Span) As Issue
+        Return New Issue(Kinds.Missing_Closing_Brace, Span)
       End Function
     End Class
   End Class

@@ -15,19 +15,19 @@ Expecting_Digits:
         Dim digits = DirectCast(en.Current, FSDv2.FormatString.Common.Digits).GetValue
         Q.Arg.Index = digits
         If Q.Arg.Index.HasValue = False Then
-          Q.Result.Issues += New Issue(Issue.Kinds.Arg_Index_Missing, en.Current.Span)
+          Q.Result.Issues += Issue.Arg.Index.Missing(en.Current.Span)
         Else
-          If Q.Arg.Index.Value >= Framework.UpperLimit Then Q.Result.Issues += New Issue(Issue.Kinds.Arg_Index_Framework_Upper_Limit_Exceeded, en.Current.Span)
-          If Q.Arg.Index.Value >= Q.Args.Count Then Q.Result.Issues += New Issue(Issue.Kinds.Arg_Index_OutOfRange, en.Current.Span)
+          If Q.Arg.Index.Value >= Framework.UpperLimit Then Q.Result.Issues += Issue.Arg.Index.Framework.Lower_Limit_Exceeded(en.Current.Span)
+          If Q.Arg.Index.Value >= Q.Args.Count Then Q.Result.Issues += Issue.Arg.Index.OutOfRange(en.Current.Span)
           Q.Args.MarkAsUsed(Q.Arg.Index.Value)
         End If
       Case TokenKind.Whitespaces
         ' An easy mistake to make is to have whitespaces after the opening brace.
         ' Eg: { 0}
-        Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span, "")
+        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
         GoTo Expecting_Digits
       Case Else
-        Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span, "")
+        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
         GoTo Expecting_Digits
     End Select
     GoTo Expecting_Possible_Whitespace
@@ -37,13 +37,13 @@ Expecting_Possible_Whitespace:
     Select Case en.Current.Kind
       Case TokenKind.Whitespaces : GoTo state_check_no_more_tokens
       Case Else
-        Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span, "")
+        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
         GoTo state_check_no_more_tokens
     End Select
 
 state_check_no_more_tokens:
     While en.MoveNext
-      Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, en.Current.Span, "")
+      Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
     End While
 state_end:
     Return Q

@@ -31,7 +31,7 @@ Expecting_Arghole_Index:
         Select Case pe.Why
 
           Case FSDv2.ParseError.Reason.EoT
-            Q.Result.Issues += Issue.Arg.Index.Missing(pe.Span.Start.ToZeroSpan) + New Issue(Issue.Kinds.Missing_Closing_Brace, pe.Span.Start.ToZeroSpan)
+            Q.Result.Issues += Issue.Arg.Index.Missing(pe.Span.Start.ToZeroSpan) + Issue.Missing.ClosingBrace(pe.Span.Start.ToZeroSpan)
             GoTo Expecting_Done
 
           Case FSDv2.ParseError.Reason.Partial
