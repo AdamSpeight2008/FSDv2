@@ -2,14 +2,17 @@
 
   Public Class Text : Inherits Token
 
+    <DebuggerStepperBoundary>
     Friend Sub New(Span As Source.Span, Inner As Tokens)
       MyBase.New(TokenKind.Text, Span, Inner)
     End Sub
 
+    <DebuggerStepperBoundary>
     Public Shared Function TryParse(Ix As Source.Position) As Token
       Return _TryParse(Ix, False)
     End Function
 
+    <DebuggerStepperBoundary>
     Friend Shared Function _TryParse(Ix As Source.Position, Optional ParsingArgFormatText As Boolean = False) As Token
       Dim Txn = Tokens.Empty, sx = Ix, T As Token
       Dim TextStart As New Source.Position?

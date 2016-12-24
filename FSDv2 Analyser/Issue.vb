@@ -2,6 +2,7 @@
 
 Partial Public Class Analyser
 
+  <DebuggerStepThrough>
   Public Class Issue
     Public ReadOnly Property Kind As Issue.Kinds
     Public ReadOnly Property Span As Source.Span

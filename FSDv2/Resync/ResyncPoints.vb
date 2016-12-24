@@ -2,19 +2,23 @@
   Private _ResyncPoints As ResyncPoint()
   Public ReadOnly Property Count As Integer
 
+  <DebuggerStepperBoundary>
   Private Sub New(Optional ResyncPoints As IEnumerable(Of ResyncPoint) = Nothing)
     Me._ResyncPoints = ResyncPoints.ToArray
     Me.Count = Me._ResyncPoints.Count
   End Sub
 
+  <DebuggerStepperBoundary>
   Public Shared Operator +(Rpx As ResyncPoints, Rp As ResyncPoint) As ResyncPoints
     Return New ResyncPoints(Rpx._ResyncPoints.AsEnumerable.Concat(Enumerable.Repeat(Rp, 1)))
   End Operator
 
+  <DebuggerStepperBoundary>
   Public Shared Function CreateNew(Rp0 As ResyncPoint, Rp1 As ResyncPoint) As ResyncPoints
     Return New ResyncPoints(Enumerable.Repeat(Rp0, 1).Concat(Enumerable.Repeat(Rp1, 1)))
   End Function
 
+  <DebuggerStepperBoundary>
   Public Function TryToResync(ix As Source.Position) As Token
     Dim c = Count - 1
     If c < 0 Then Return Nothing

@@ -6,10 +6,12 @@ Partial Public Class FormatString
     Private Shared RPX0 As ResyncPoints = New ResyncPoint(AddressOf Align.Comma.TryParse) + New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
 #End Region
 
+    <DebuggerStepperBoundary>
     Private Sub New(Span As Source.Span, Inner As Tokens)
       MyBase.New(TokenKind.ArgHole, Span, Inner)
     End Sub
 
+    <DebuggerStepperBoundary>
     Public Shared Function TryParse(Ix As Source.Position) As Token
       '
       '  ArgHole ::= Brace.Opening ArgHole.Index?
@@ -78,10 +80,12 @@ TryToResync:
                                      New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
 #End Region
 
+      <DebuggerStepperBoundary>
       Private Sub New(Span As Source.Span, Inner As Tokens)
         MyBase.New(TokenKind.ArgHole_Index, Span, Inner)
       End Sub
 
+      <DebuggerStepperBoundary>
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         Dim Txn = Tokens.Empty, T As Token, sx = Ix
@@ -312,10 +316,13 @@ Null:
       Private Shared RPX0 As ResyncPoints = New ResyncPoint(AddressOf Head.TryParse) + New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
       Private Shared RPX1 As ResyncPoints = New ResyncPoint(AddressOf Body.TryParse) + New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
 #End Region
+
+      <DebuggerStepperBoundary>
       Private Sub New(Span As Source.Span, Inner As Tokens)
         MyBase.New(TokenKind.ArgHole_Align, Span, Inner)
       End Sub
 
+      <DebuggerStepperBoundary>
       Public Shared Function TryParse(Ix As Source.Position) As Token
         '
         '  ArgHole.Index ::= ArgHole.Align.Head ArgHole.Align.Body
@@ -379,10 +386,12 @@ TryToResyncBody:
 
       Public Class Comma : Inherits Token
 
+        <DebuggerStepperBoundary>
         Private Sub New(Span As Source.Span)
           MyBase.New(TokenKind.Comma, Span)
         End Sub
 
+        <DebuggerStepperBoundary>
         Public Shared Function TryParse(Ix As Source.Position) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           If (Ix.Value <> ","c) Then Return ParseError.Make.NullParse(Ix)
@@ -393,10 +402,12 @@ TryToResyncBody:
 
       Public Class MinusSign : Inherits Token
 
+        <DebuggerStepperBoundary>
         Private Sub New(Span As Source.Span)
           MyBase.New(TokenKind.MinusSign, Span)
         End Sub
 
+        <DebuggerStepperBoundary>
         Public Shared Function TryParse(Ix As Source.Position) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           If (Ix.Value <> "-"c) Then Return ParseError.Make.NullParse(Ix)
@@ -407,10 +418,12 @@ TryToResyncBody:
 
       Public Class Head : Inherits Token
 
+        <DebuggerStepperBoundary>
         Private Sub New(Span As Source.Span, Inner As Tokens)
           MyBase.New(TokenKind.ArgHole_Align_Head, Span, Inner)
         End Sub
 
+        <DebuggerStepperBoundary>
         Public Shared Function TryParse(Ix As Source.Position) As Token
           '
           ' ArgHole.Align.Head ::= Comma Whitespaces?
@@ -428,10 +441,12 @@ TryToResyncBody:
 
       Public Class Body : Inherits Token
 
+        <DebuggerStepperBoundary>
         Private Sub New(Span As Source.Span, Inner As Tokens)
           MyBase.New(TokenKind.ArgHole_Align_Body, Span, Inner)
         End Sub
 
+        <DebuggerStepperBoundary>
         Public Shared Function TryParse(Ix As Source.Position) As Token
           '
           '  ArgHole.Align.Body ::= MinusSign? Digits Whitespaces?
@@ -454,10 +469,13 @@ TryToResyncBody:
 
     Public Class Format : Inherits Token
 
+      <DebuggerStepperBoundary>
       Private Sub New(Span As Source.Span, Inner As Tokens)
         MyBase.New(TokenKind.ArgHole_Format, Span, Inner)
       End Sub
 
+
+      <DebuggerStepperBoundary>
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         Dim T As Token = Format.Head.TryParse(Ix)
@@ -474,10 +492,14 @@ TryToResyncBody:
       Public Class Head
         Inherits Token
 
+
+        <DebuggerStepperBoundary>
         Private Sub New(Span As Source.Span, Inner As Tokens)
           MyBase.New(TokenKind.ArgHole_Format_Head, Span, Inner)
         End Sub
 
+
+        <DebuggerStepperBoundary>
         Public Shared Function TryParse(Ix As Source.Position) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim T As Token = Colon.TryParse(Ix)
@@ -490,10 +512,12 @@ TryToResyncBody:
       Public Class Body
         Inherits Token
 
+        <DebuggerStepperBoundary>
         Private Sub New(Span As Source.Span, Inner As Tokens)
           MyBase.New(TokenKind.ArgHole_Format_Body, Span, Inner)
         End Sub
 
+        <DebuggerStepperBoundary>
         Public Shared Function TryParse(Ix As Source.Position) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim Txn = Tokens.Empty
@@ -529,10 +553,12 @@ OnToNext:
 
       Public Class Colon : Inherits Token
 
+        <DebuggerStepperBoundary>
         Private Sub New(Span As Source.Span)
           MyBase.New(TokenKind.Colon, Span)
         End Sub
 
+        <DebuggerStepperBoundary>
         Public Shared Function TryParse(Ix As Source.Position) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           If (Ix <> ":"c) Then Return ParseError.Make.NullParse(Ix)

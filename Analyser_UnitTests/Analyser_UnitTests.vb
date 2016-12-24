@@ -228,5 +228,36 @@ Public Class FSDv2_UnitTests
                    "(  2:  2) Arg_Index_OutOfRange" & vbCrLf
     Assert.AreEqual(Expected, Text)
   End Sub
+  <TestMethod, TestCategory(Cat0)>
+  Public Sub _13_()
+    '              0123456
+    Dim TheText = "{ 1000000}"
+    Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
 
+    Dim Analyser As New FSDv2_Analyser.Analyser()
+    Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
+    Dim Result = Analyser.Analyse(ParseResult, Parameters)
+    Dim Text = Result.Result.Issues.AsString
+    Dim Expected = "(  1:  1) Unexpected_Token" & vbCrLf &
+                   "(  2:  7) Arg_Index_Framework_Upper_Limit_Exceeded" & vbCrLf &
+                   "(  2:  7) Arg_Index_OutOfRange" & vbCrLf
+    Assert.AreEqual(Expected, Text)
+  End Sub
+  <TestMethod, TestCategory(Cat0)>
+  Public Sub _14_()
+    '              0123456
+    Dim TheText = "{ ,1000000}"
+    Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+
+    Dim Analyser As New FSDv2_Analyser.Analyser()
+    Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
+    Dim Result = Analyser.Analyse(ParseResult, Parameters)
+    Dim Text = Result.Result.Issues.AsString
+    Dim Expected = "(  1:  1) Unexpected_Characters
+(  2:  0) Arg_Index_Missing
+(  2:  8) Unexpected_Token"
+    Assert.AreEqual(Expected, Text)
+  End Sub
 End Class

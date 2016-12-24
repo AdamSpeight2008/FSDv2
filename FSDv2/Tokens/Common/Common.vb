@@ -4,10 +4,12 @@
 
     Public Class Whitespace : Inherits Token
 
+      <DebuggerStepperBoundary>
       Private Sub New(Span As Source.Span)
         MyBase.New(TokenKind.Whitespace, Span)
       End Sub
 
+      <DebuggerStepperBoundary>
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         If (Ix <> " "c) Then Return ParseError.Make.NullParse(Ix)
@@ -18,10 +20,12 @@
 
     Public Class Whitespaces : Inherits Token
 
+      <DebuggerStepperBoundary>
       Private Sub New(Span As Source.Span, Inner As Tokens)
         MyBase.New(TokenKind.Whitespaces, Span, Inner)
       End Sub
 
+      <DebuggerStepperBoundary>
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         Dim Txn = Tokens.Empty
@@ -40,10 +44,12 @@
 
     Public Class Digit : Inherits Token
 
+      <DebuggerStepperBoundary>
       Private Sub New(Span As Source.Span)
         MyBase.New(TokenKind.Digit, Span)
       End Sub
 
+      <DebuggerStepperBoundary>
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid OrElse Ix.Value.HasValue = False Then Return ParseError.Make.EoT(Ix)
         Select Case Ix.Value.Value
@@ -82,12 +88,14 @@
 
     Public Class Digits : Inherits Token
 
+      <DebuggerStepperBoundary>
       Private Sub New(Span As Source.Span, Inner As Tokens)
         MyBase.New(TokenKind.Digits, Span, Inner)
       End Sub
 
       Private Shared ReadOnly _Ten As New Numerics.BigInteger(10)
 
+      <DebuggerStepperBoundary>
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         Dim Txn = Tokens.Empty()
@@ -104,6 +112,8 @@
 
       Private _Value As Numerics.BigInteger?
       Private _First As Boolean = False
+
+      <DebuggerStepperBoundary>
       Public Function GetValue() As Numerics.BigInteger?
         If Not _First Then
           Dim output = Numerics.BigInteger.Zero
@@ -120,10 +130,12 @@
 
     Public Class HexDigit : Inherits Token
 
+      <DebuggerStepperBoundary>
       Private Sub New(Span As Source.Span)
         MyBase.New(TokenKind.HexDigit, Span)
       End Sub
 
+      <DebuggerStepperBoundary>
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid OrElse Ix.Value.HasValue = False Then Return ParseError.Make.EoT(Ix)
         Select Case Ix.Value.Value
@@ -138,10 +150,12 @@
 
     Public Class HexDigits : Inherits Token
 
+      <DebuggerStepperBoundary>
       Friend Sub New(Span As Source.Span, Inner As Tokens)
         MyBase.New(TokenKind.HexDigits, Span, Inner)
       End Sub
 
+      <DebuggerStepperBoundary>
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         Dim Txn = Tokens.Empty()
@@ -161,10 +175,12 @@
 
     MustInherit Class Brace : Inherits Token
 
+      <DebuggerStepperBoundary>
       Friend Sub New(Kind As TokenKind, Span As Source.Span, Optional Inner As Tokens = Nothing)
         MyBase.New(Kind, Span, Inner)
       End Sub
 
+      <DebuggerStepperBoundary>
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid OrElse Ix.Value.HasValue = False Then Return ParseError.Make.EoT(Ix)
         Dim nx = Ix.Next
@@ -181,10 +197,12 @@
 
       Public Class Opening : Inherits Brace
 
+        <DebuggerStepperBoundary>
         Friend Sub New(Span As Source.Span)
           MyBase.New(TokenKind.Brace_Opening, Span)
         End Sub
 
+        <DebuggerStepperBoundary>
         Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim res = Brace.TryParse(Ix)
@@ -196,10 +214,13 @@
 
       Public Class Closing : Inherits Brace
 
+
+        <DebuggerStepperBoundary>
         Friend Sub New(Span As Source.Span)
           MyBase.New(TokenKind.Brace_Closing, Span)
         End Sub
 
+        <DebuggerStepperBoundary>
         Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim res = Brace.TryParse(Ix)
@@ -213,10 +234,12 @@
 
         Public Class Opening : Inherits Brace
 
+          <DebuggerStepperBoundary>
           Friend Sub New(Span As Source.Span, Inner As Tokens)
             MyBase.New(TokenKind.Esc_Brace_Opening, Span, Inner)
           End Sub
 
+          <DebuggerStepperBoundary>
           Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
             If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
             Dim res = Brace.TryParse(Ix)
@@ -228,10 +251,12 @@
 
         Public Class Closing : Inherits Brace
 
+          <DebuggerStepperBoundary>
           Friend Sub New(Span As Source.Span, Inner As Tokens)
             MyBase.New(TokenKind.Esc_Brace_Closing, Span, Inner)
           End Sub
 
+          <DebuggerStepperBoundary>
           Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
             If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
             Dim res = Brace.TryParse(Ix)
@@ -245,6 +270,8 @@
 
     End Class
 
+
+    <DebuggerStepperBoundary>
     Public Shared Function AddThenNext(T As Token, Tx As Tokens, ByRef Ix As Source.Position, Optional ByRef TextStart As Source.Position? = Nothing) As Tokens
       If TextStart IsNot Nothing Then Tx += New Text(TextStart.Value.To(Ix), Tokens.Empty) : TextStart = Nothing
       If T IsNot Nothing Then Ix = T.Span.Next : Tx = Tx.Add(T)
@@ -255,6 +282,7 @@
 
       Public Class SeqHead : Inherits Token
 
+        <DebuggerStepperBoundary>
         Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
           MyBase.New(TokenKind.Esc_Seq_Head, Span, Inner)
         End Sub
@@ -263,10 +291,12 @@
 
       Public MustInherit Class Sequence : Inherits Token
 
+        <DebuggerStepperBoundary>
         Friend Sub New(Kind As TokenKind, Span As Source.Span, Optional Inner As Tokens = Nothing)
           MyBase.New(Kind, Span, Inner)
         End Sub
 
+        <DebuggerStepperBoundary>
         Public Shared Function TryParse(Ix As Source.Position) As Token
           If Ix.Source.Kind <> Source.SourceKind.CS_Standard Then Return ParseError.Make.Unsupported(Ix, $"{Ix.Source.Kind} doesn't support escape sequences")
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
@@ -287,6 +317,8 @@
         End Function
 
         Public Class Simple : Inherits Esc.Sequence
+
+          <DebuggerStepperBoundary>
           Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
             MyBase.New(TokenKind.Esc_Seq_Simple, Span, Inner)
           End Sub
@@ -294,10 +326,12 @@
 
         Public Class Unicode : Inherits Esc.Sequence
 
+          <DebuggerStepperBoundary>
           Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
             MyBase.New(TokenKind.Esc_Seq_Unicode, Span, Inner)
           End Sub
 
+          <DebuggerStepperBoundary>
           Private Shared Function Parse_HexDigits(sx As Source.Position, ix As Source.Position, RequiredLength As Integer) As Token
             Dim T As Token, Hx = Tokens.Empty
             While ix.IsValid AndAlso Hx.Count < RequiredLength
@@ -309,6 +343,7 @@
             Return New HexDigits(Hx.First.Span.Start.To(Hx.Last.Span.Next), Hx)
           End Function
 
+          <DebuggerStepperBoundary>
           Private Shared Function Backslash_UpperU(Ix As Source.Position) As Token
             ' unicode_escape_sequence ::= \U hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit
             Dim Txn = Tokens.Empty, sx = Ix
@@ -327,6 +362,7 @@
             Return Parse_HexDigits(sx, Ix, 4)
           End Function
 
+          <DebuggerStepperBoundary>
           Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
             '
             ' unicode_escape_sequence ::= \u hex_digit hex_digit hex_digit hex_digit
@@ -355,10 +391,12 @@
 
         Public Class HexaDecimal : Inherits Esc.Sequence
 
+          <DebuggerStepperBoundary>
           Friend Sub New(Span As Source.Span, Optional Inner As Tokens = Nothing)
             MyBase.New(TokenKind.Esc_Seq_Unicode, Span, Inner)
           End Sub
 
+          <DebuggerStepperBoundary>
           Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
             If Ix.Source.Kind <> Source.SourceKind.CS_Standard Then Return ParseError.Make.Unsupported(Ix, $"{Ix.Source.Kind} doesn't support escape sequences")
             If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)

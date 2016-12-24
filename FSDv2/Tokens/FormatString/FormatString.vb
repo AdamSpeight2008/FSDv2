@@ -1,9 +1,11 @@
 ﻿Partial Public Class FormatString : Inherits Token
 
+  <DebuggerStepperBoundary>
   Friend Sub New(Span As Source.Span, Inner As Tokens)
     MyBase.New(TokenKind.FormatString, Span, Inner)
   End Sub
 
+  <DebuggerStepperBoundary>
   Public Shared Function TryParse(Ix As Source.Position) As Token
     If Ix.IsInvalid Then Return ParseError.Make.NullParse(Ix)
     Dim sx = Ix

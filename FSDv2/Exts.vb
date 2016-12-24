@@ -2,11 +2,13 @@
 
 Public Module Exts
 
+  <DebuggerStepperBoundary>
   <Extension>
   Public Function IsNotNullParse(T As Token) As Boolean
     Return TryCast(T, ParseError)?.Why <> ParseError.Reason.Invalid
   End Function
 
+  <DebuggerStepperBoundary>
   <Extension>
   Public Function IsKindOrIsNotNullParse(T As Token, k As TokenKind) As Boolean
     Return (T.Kind = k) OrElse T.IsNotNullParse

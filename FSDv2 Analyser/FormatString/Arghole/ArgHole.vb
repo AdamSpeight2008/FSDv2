@@ -51,7 +51,7 @@ Expecting_Arghole_Index:
               End If
             End If
             Q.Result.Issues += Issue.Arg.Index.Missing(pe.Span.Start.ToZeroSpan)
-            GoTo Expecting_Closing_Brace
+            GoTo Expection_Arghole_Align
 
           Case Else
             Q = ParseError(pe, Q)
@@ -67,19 +67,25 @@ Expection_Arghole_Align:
     If en.MoveNext = False Then Q.Result.Issues += Issue.Unexpected.EoT(Nothing) : GoTo state_end
 Expection_Arghole_Align_1:
     Select Case en.Current.Kind
-      Case TokenKind.ArgHole_Align : Q = ArgAlign(DirectCast(en.Current, FormatString.ArgHole.Align), Q) : GoTo Expecting_Closing_Brace
-      Case TokenKind.Brace_Closing : GoTo Expecting_Closing_Brace_1
+      Case TokenKind.ArgHole_Align
+        Q = ArgAlign(DirectCast(en.Current, FormatString.ArgHole.Align), Q)
+        GoTo Expecting_Arghole_Format
+      Case TokenKind.Brace_Closing
+        GoTo Expecting_Closing_Brace_1
       Case Else
         Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
-        GoTo Expecting_Closing_Brace
+        GoTo Expecting_Arghole_Format
     End Select
 
 Expecting_Arghole_Format:
     If en.MoveNext = False Then Q.Result.Issues += Issue.Unexpected.EoT(Nothing) : GoTo state_end
 Expecting_Arghole_Format_1:
     Select Case en.Current.Kind
-      Case TokenKind.ArgHole_Format : Q = ArgFormat(DirectCast(en.Current, FSDv2.FormatString.ArgHole.Format), Q) : GoTo Expecting_Closing_Brace
-      Case TokenKind.Brace_Closing : GoTo Expecting_Closing_Brace_1
+      Case TokenKind.ArgHole_Format
+        Q = ArgFormat(DirectCast(en.Current, FSDv2.FormatString.ArgHole.Format), Q)
+        GoTo Expecting_Closing_Brace
+      Case TokenKind.Brace_Closing
+        GoTo Expecting_Closing_Brace_1
       Case Else
         Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
         GoTo Expecting_Arghole_Format
