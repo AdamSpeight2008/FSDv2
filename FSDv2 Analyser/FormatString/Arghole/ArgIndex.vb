@@ -13,6 +13,7 @@ Expecting_Digits:
     Select Case en.Current.Kind
       Case TokenKind.Digits
         Dim digits = DirectCast(en.Current, FSDv2.FormatString.Common.Digits).GetValue
+        If Q.Arg Is Nothing Then Q.Arg = New Arg()
         Q.Arg.Index = digits
         If Q.Arg.Index.HasValue = False Then
           Q.Result.Issues += Issue.Arg.Index.Missing(en.Current.Span)
@@ -24,10 +25,10 @@ Expecting_Digits:
       Case TokenKind.Whitespaces
         ' An easy mistake to make is to have whitespaces after the opening brace.
         ' Eg: { 0}
-        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
+        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
         GoTo Expecting_Digits
       Case Else
-        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
+        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
         GoTo Expecting_Digits
     End Select
     GoTo Expecting_Possible_Whitespace
@@ -37,13 +38,13 @@ Expecting_Possible_Whitespace:
     Select Case en.Current.Kind
       Case TokenKind.Whitespaces : GoTo state_check_no_more_tokens
       Case Else
-        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
+        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
         GoTo state_check_no_more_tokens
     End Select
 
 state_check_no_more_tokens:
     While en.MoveNext
-      Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
+      Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
     End While
 state_end:
     Return Q

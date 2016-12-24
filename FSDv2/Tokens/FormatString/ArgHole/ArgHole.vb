@@ -58,9 +58,15 @@ TryToResync:
       Dim rp1 = RPX0.TryToResync(Ix), pe = TryCast(rp1, ParseError)
       If pe Is Nothing OrElse pe.Why = ParseError.Reason.NullParse Then GoTo Find_Brace_Closing
       Select Case rp1(0).Kind
-        Case TokenKind.Comma : txn = Common.AddThenNext(rp1, txn, Ix) : GoTo Find_Align
-        Case TokenKind.Colon : txn = Common.AddThenNext(rp1, txn, Ix) : GoTo Find_Format
-        Case TokenKind.Brace_Closing : txn = Common.AddThenNext(rp1, txn, Ix) : GoTo Find_Brace_Closing
+        Case TokenKind.Comma
+          If Ix <> rp1.Span.Start Then txn = Common.AddThenNext(rp1, txn, Ix)
+          GoTo Find_Align
+        Case TokenKind.Colon
+          If Ix <> rp1.Span.Start Then txn = Common.AddThenNext(rp1, txn, Ix)
+          GoTo Find_Format
+        Case TokenKind.Brace_Closing
+          If Ix <> rp1.Span.Start Then txn = Common.AddThenNext(rp1, txn, Ix)
+          GoTo Find_Brace_Closing
       End Select
       GoTo Find_Brace_Closing
 #End Region
@@ -334,12 +340,22 @@ Done:
 TryToResyncHead:
         Dim rp0 = RPX0.TryToResync(Ix)
         Select Case rp0.Kind
-          Case TokenKind.ArgHole_Align_Head : Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0) : GoTo IsThereAHead
-          Case TokenKind.Colon : Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0) : GoTo IsThereABody
-          Case TokenKind.ArgHole_Align_Body : Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0) : GoTo IsThereABody
-          Case TokenKind.Brace_Closing : Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0) : GoTo Done
+          Case TokenKind.ArgHole_Align_Head
+            If Ix <> rp0.Span.Start Then Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
+            GoTo IsThereAHead
+          Case TokenKind.Colon
+            If Ix <> rp0.Span.Start Then Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
+            GoTo IsThereABody
+          Case TokenKind.ArgHole_Align_Body
+            If Ix <> rp0.Span.Start Then Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
+            GoTo IsThereABody
+          Case TokenKind.Brace_Closing
+            If Ix <> rp0.Span.Start Then Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
+            GoTo Done
           Case TokenKind.ParseError
-            If TypeOf rp0 Is ParseError.Partial Then Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
+            If TypeOf rp0 Is ParseError.Partial Then
+              If Ix <> rp0.Span.Start Then Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
+            End If
         End Select
         Return ParseError.Make.Invalid(Ix, Txn)
 
@@ -354,7 +370,7 @@ TryToResyncBody:
                TokenKind.Colon,
                TokenKind.ArgHole_Align_Body,
                TokenKind.Brace_Closing
-            Txn += New ParseError.Resync(sx.To(rp1.Span.Start), rp1)
+            If Ix <> rp0.Span.Start Then Txn += New ParseError.Resync(sx.To(rp1.Span.Start), rp1)
             GoTo Done
         End Select
         GoTo Done

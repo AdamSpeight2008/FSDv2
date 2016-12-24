@@ -11,6 +11,9 @@ Partial Public Class Analyser
       Me.Kind = Kind : Me.Span = Span : Me.Additional = If(Additional, String.Empty)
     End Sub
 
+    Public Overrides Function ToString() As String
+      Return $"{Span.ToString} {Kind.ToString} {Me.Additional}".TrimEnd(" "c)
+    End Function
     Public Enum Kinds As Integer
       Unexpected_End
       Unexpected_Characters
@@ -68,8 +71,8 @@ Partial Public Class Analyser
         Return New Issue(Kinds.Unexpected_Characters, Span)
       End Function
 
-      Public Shared Function Token(Span As Source.Span) As Issue
-        Return New Issue(Kinds.Unexpected_Token, Span)
+      Public Shared Function Token(Span As Source.Span, Tkn As Token) As Issue
+        Return New Issue(Kinds.Unexpected_Token, Span, Tkn.ToString)
       End Function
 
       Public Shared Function EoT(span As Source.Span) As Issue

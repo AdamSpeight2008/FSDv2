@@ -2,7 +2,7 @@
 
   Public Class Parameters
     Public Property Arg As Arg
-    Public ReadOnly Property Args As Args
+    Public ReadOnly Property Args As New Args
     Public Property Result As Result
 
     Public Sub New()

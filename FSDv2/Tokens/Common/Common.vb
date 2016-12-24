@@ -53,19 +53,27 @@
             Return ParseError.Make.NullParse(Ix)
         End Select
       End Function
+      Private Shared ReadOnly _Two As New Numerics.BigInteger(2)
+      Private Shared ReadOnly _Three As New Numerics.BigInteger(3)
+      Private Shared ReadOnly _Four As New Numerics.BigInteger(4)
+      Private Shared ReadOnly _Five As New Numerics.BigInteger(5)
+      Private Shared ReadOnly _Six As New Numerics.BigInteger(6)
+      Private Shared ReadOnly _Seven As New Numerics.BigInteger(7)
+      Private Shared ReadOnly _Eight As New Numerics.BigInteger(8)
+      Private Shared ReadOnly _Nine As New Numerics.BigInteger(9)
 
       Public Function GetValue() As Numerics.BigInteger?
         Select Case Me.Span.Start.Value
           Case "0"c : Return Numerics.BigInteger.Zero
           Case "1"c : Return Numerics.BigInteger.One
-          Case "2"c : Return New Numerics.BigInteger(2)
-          Case "3"c : Return New Numerics.BigInteger(3)
-          Case "4"c : Return New Numerics.BigInteger(4)
-          Case "5"c : Return New Numerics.BigInteger(5)
-          Case "6"c : Return New Numerics.BigInteger(6)
-          Case "7"c : Return New Numerics.BigInteger(7)
-          Case "8"c : Return New Numerics.BigInteger(8)
-          Case "9"c : Return New Numerics.BigInteger(9)
+          Case "2"c : Return _Two
+          Case "3"c : Return _Three
+          Case "4"c : Return _Four
+          Case "5"c : Return _Five
+          Case "6"c : Return _Six
+          Case "7"c : Return _Seven
+          Case "8"c : Return _Eight
+          Case "9"c : Return _Nine
         End Select
         Return Nothing
       End Function
@@ -77,6 +85,8 @@
       Private Sub New(Span As Source.Span, Inner As Tokens)
         MyBase.New(TokenKind.Digits, Span, Inner)
       End Sub
+
+      Private Shared ReadOnly _Ten As New Numerics.BigInteger(10)
 
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
@@ -98,7 +108,7 @@
         If Not _First Then
           Dim output = Numerics.BigInteger.Zero
           For Each d As FSDv2.FormatString.Common.Digit In Me.InnerTokens.GetEnumerator
-            output = (10 * output) + d.GetValue
+            output = (_Ten * output) + d.GetValue
           Next
           _Value = output
           _First = True

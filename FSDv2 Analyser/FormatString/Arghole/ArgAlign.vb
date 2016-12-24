@@ -14,7 +14,7 @@ Expecting_Comma:
     Select Case en.Current.Kind
       Case TokenKind.Comma : GoTo Execting_Possible_Whitespace_0
       Case Else
-        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
+        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
         GoTo Expecting_Comma
     End Select
 
@@ -25,7 +25,7 @@ Execting_Possible_Whitespace_0:
       Case TokenKind.MinusSign : GoTo Expecting_Digits
       Case TokenKind.Digits : GoTo Expecting_Digits_1
       Case Else
-        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
+        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
         GoTo Execting_Possible_Whitespace_0
     End Select
 
@@ -35,7 +35,7 @@ Expecting_Possible_MinusSign:
       Case TokenKind.MinusSign : GoTo Expecting_Digits
       Case TokenKind.Digit : GoTo Expecting_Digits_1
       Case Else
-        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
+        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
         GoTo Expecting_Possible_MinusSign
     End Select
 
@@ -54,7 +54,7 @@ Expecting_Digits_1:
         End If
         GoTo Expecting_Possible_Whitespace_1
       Case Else
-        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
+        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
         GoTo Expecting_Digits
     End Select
 
@@ -62,7 +62,7 @@ Expecting_Possible_Whitespace_1:
     If en.MoveNext = False Then GoTo state_end
 state_check_for_more_tokens:
     Do
-      Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
+      Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
     Loop While en.MoveNext
 state_end:
     Return Q

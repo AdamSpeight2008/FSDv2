@@ -11,7 +11,7 @@ Partial Public Class Analyser
         Case TokenKind.Esc_Brace_Closing,
              TokenKind.Esc_Brace_Opening
         Case Else
-          Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span)
+          Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
 
       End Select
     End While
