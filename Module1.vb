@@ -7,7 +7,7 @@ Module Module1
   Sub Main()
     '           0         1         2         3         4         5         6         7         8
     '           012345678901234567890123456789012345678901234567890123456789012345678901234567890
-    Dim Text = "{0,1:{{}}x4}"
+    Dim Text = "{0 , -123 :{{}}x4}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim Ix = TheSource.First
     'Dim sw = Diagnostics.Stopwatch.StartNew

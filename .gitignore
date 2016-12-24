@@ -243,3 +243,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/FSDv2_UnitTests/FSDv2_UnitTests.v3.ncrunchproject
+/FSDv2.v3.ncrunchsolution
+*.ncrunchproject

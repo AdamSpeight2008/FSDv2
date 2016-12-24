@@ -16,8 +16,8 @@ Public Class ArgHole_UnitTests
   <TestMethod, TestCategory(Cat)>
   Public Sub _00_()
     Dim Text = ""
-        Dim TheSource = Source.Create(Text, Source.SourceKind., Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))

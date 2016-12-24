@@ -449,7 +449,9 @@ TryToResyncBody:
         Dim sx = Ix
         Dim Txn = Tokens.Empty : Txn = Common.AddThenNext(T, Txn, Ix)
         T = ArgHole.Format.Body.TryParse(Ix)
-        If T.Kind = TokenKind.ArgHole_Format_Body Then Txn = Common.AddThenNext(T, Txn, Ix)
+        If T.Kind = TokenKind.ArgHole_Format_Body Then
+          Txn = Common.AddThenNext(T, Txn, Ix)
+        End If
         Return New Format(sx.To(Ix), Txn)
       End Function
 
