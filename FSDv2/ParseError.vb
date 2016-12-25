@@ -7,6 +7,7 @@
     Invalid
     Unsupported
     [Partial]
+    ResyncSkipped
   End Enum
 
   Public ReadOnly Property Why As ParseError.Reason
@@ -103,7 +104,7 @@
 
     <DebuggerStepperBoundary>
     Public Sub New(Span As Source.Span, Txn As Tokens, Optional Additional As String = Nothing)
-      MyBase.New(Span, Reason.Partial, Txn, Additional)
+      MyBase.New(Span, Reason.ResyncSkipped, Txn, Additional)
     End Sub
 
   End Class

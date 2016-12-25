@@ -12,82 +12,99 @@ Partial Public Class FormatString
       MyBase.New(TokenKind.ArgHole, Span, Inner)
     End Sub
 
-    Private Shared Function TryFind_OpeningBrace(Ix As Source.Position, DoingResync As Boolean) As Token
-      If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
-      Dim tkn = Common.Brace.Opening.TryParse(Ix, DoingResync)
-      If tkn.Kind = TokenKind.ArgHole_Index Then
-        Return tkn
-      Else
-        Throw New Exception()
+    Private Shared Function TryFind_Brace_Opening(ByRef idx As Source.Position, ByRef txn As Tokens, DoingResync As Boolean) As Boolean
+      Dim t As Token = Common.Brace.Opening.TryParse(idx, DoingResync)
+      If t.Kind = TokenKind.Brace_Opening Then
+        txn = Common.AddThenNext(t, txn, idx) : Return True
       End If
+      Return False
+    End Function
+
+    Private Shared Function TryFind_ArgIndex(ByRef idx As Source.Position, ByRef txn As Tokens, DoingResync As Boolean) As Boolean
+      Dim T As Token = ArgHole.Index.TryParse(idx, DoingResync)
+      If TypeOf T Is ParseError.EoT Then
+        txn += T
+        Return False
+      ElseIf T.Kind <> TokenKind.ArgHole_Index Then
+        Return False
+      Else
+        txn = Common.AddThenNext(T, txn, idx)
+      End If
+      Return True
+    End Function
+
+    Private Shared Function TryFind_ArgAlign(ByRef idx As Source.Position, ByRef txn As Tokens, DoingResync As Boolean) As Boolean
+      Dim T = ArgHole.Align.TryParse(idx, DoingResync)
+      If TypeOf T Is ParseError.EoT Then txn += T : Return False
+      If T.Kind <> TokenKind.ArgHole_Align Then Return False
+      txn = Common.AddThenNext(T, txn, idx)
+      Return True
+    End Function
+
+    Private Shared Function TryFind_ArgFormat(ByRef idx As Source.Position, txn As Tokens, DoingResync As Boolean) As Boolean
+      Dim T As Token = ArgHole.Format.TryParse(idx, DoingResync)
+      If TypeOf T Is ParseError.EoT Then txn += T : Return False
+      If T.Kind <> TokenKind.ArgHole_Format Then Return False
+      txn = Common.AddThenNext(T, txn, idx)
+      Return True
+    End Function
+
+    Private Shared Function TryFind_Brace_Closing(ByRef idx As Source.Position, ByRef txn As Tokens, DoingResync As Boolean) As Boolean
+      Dim T = Common.Brace.Closing.TryParse(idx, DoingResync)
+      If TypeOf T Is ParseError.EoT Then txn += T : Return False
+      If T.Kind <> TokenKind.Brace_Closing Then Return False
+      txn = Common.AddThenNext(T, txn, idx)
+      Return True
     End Function
 
     '<DebuggerStepperBoundary>
-    Public Shared Function TryParse(
-                                     Ix As Source.Position,
-                            Optional DoingResync As Boolean = False
-                                   ) As Token
+    Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
       '
       '  ArgHole ::= Brace.Opening ArgHole.Index?
       '
       If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
-#Region "Find Brace Opening"
 Find_Brace_Opening:
-      Dim sx = Ix, txn = Tokens.Empty, T As Token = Common.Brace.Opening.TryParse(Ix, DoingResync)
-      If T.Kind = TokenKind.Brace_Opening Then
-        txn = Common.AddThenNext(T, txn, Ix)
-      End If
-#End Region
-#Region "Find Index"
-Find_Index:
-      T = ArgHole.Index.TryParse(Ix, DoingResync)
-      If TypeOf T Is ParseError.EoT Then txn += T : GoTo Done
-      If T.Kind <> TokenKind.ArgHole_Index Then GoTo TryToResync
-      txn = Common.AddThenNext(T, txn, Ix)
+      Dim sx = Ix, txn = Tokens.Empty, T As Token
+      If Not TryFind_Brace_Opening(Ix, txn, DoingResync) Then GoTo TryToResync
 
-#End Region
-#Region "Find Align"
+Find_Index:
+      If Not TryFind_ArgIndex(Ix, txn, DoingResync) Then GoTo TryToResync
+
 Find_Align:
-      T = ArgHole.Align.TryParse(Ix, DoingResync)
-      If TypeOf T Is ParseError.EoT Then txn += T : GoTo Done
-      If T.Kind <> TokenKind.ArgHole_Align Then GoTo TryToResync
-      txn = Common.AddThenNext(T, txn, Ix)
-#End Region
-#Region "Find Format"
+      If Not TryFind_ArgAlign(Ix, txn, DoingResync) Then GoTo TryToResync
+
 Find_Format:
-      T = ArgHole.Format.TryParse(Ix, DoingResync)
-      If TypeOf T Is ParseError.EoT Then txn += T : GoTo Done
-      If T.Kind <> TokenKind.ArgHole_Format Then GoTo TryToResync
-      txn = Common.AddThenNext(T, txn, Ix)
-#End Region
-#Region "Find Brace Closing"
+      If Not TryFind_ArgFormat(Ix, txn, DoingResync) Then GoTo TryToResync
+
 Find_Brace_Closing:
-      T = Common.Brace.Closing.TryParse(Ix, DoingResync)
-      If TypeOf T Is ParseError.EoT Then txn += T : GoTo Done
-      If T.Kind <> TokenKind.Brace_Closing Then GoTo TryToResync
-      txn = Common.AddThenNext(T, txn, Ix)
-#End Region
+      If Not TryFind_Brace_Closing(Ix, txn, DoingResync) Then GoTo TryToResync
+
 Done:
       Return New ArgHole(sx.To(Ix), txn)
       ' Checking for the valid tokens is left the Analysis (TODO)
 #Region "TryToResync"
 TryToResync:
+      If Ix.IsInvalid Then GoTo Done
       If Not DoingResync Then
-        Dim rp1 = RPX0.TryToResync(Ix, True), pe = TryCast(rp1, ParseError)
+        Dim ResultOfResyncing = RPX0.TryToResync(Ix, True)
+        Dim pe = TryCast(ResultOfResyncing, ParseError)
         If pe Is Nothing OrElse pe.Why = ParseError.Reason.NullParse Then GoTo Find_Brace_Closing
-        Select Case rp1(0).Kind
-          Case TokenKind.Comma
-            If Ix <> rp1.Span.Start Then txn = Common.AddThenNext(rp1, txn, Ix)
-            GoTo Find_Align
-          Case TokenKind.Colon
-            If Ix <> rp1.Span.Start Then txn = Common.AddThenNext(rp1, txn, Ix)
-            GoTo Find_Format
-          Case TokenKind.Brace_Closing
-            If Ix <> rp1.Span.Start Then txn = Common.AddThenNext(rp1, txn, Ix)
-            GoTo Find_Brace_Closing
-        End Select
-      End If
-      GoTo Find_Brace_Closing
+        Dim size = ResultOfResyncing.Span.Size
+        If size > 0 Then
+          txn = Common.AddThenNext(ResultOfResyncing, txn, Ix)
+        End If
+        Select Case ResultOfResyncing(0).Kind
+            Case TokenKind.Comma
+              GoTo Find_Align
+            Case TokenKind.Colon
+              GoTo Find_Format
+            Case TokenKind.Brace_Closing
+              GoTo Find_Brace_Closing
+            Case Else
+              Debug.Assert(False, "Unsupported Kind: " & ResultOfResyncing(0).Kind)
+          End Select
+        End If
+        GoTo Find_Brace_Closing
 #End Region
     End Function
 

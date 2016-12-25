@@ -18,7 +18,7 @@ Public Class ArgHole_UnitTests
     Dim Text = ""
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim res = FormatString.ArgHole.TryParse(FirstPos)
+    Dim res = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Assert.AreEqual(ParseError.Reason.EoT, DirectCast(res, ParseError).Why)
@@ -29,7 +29,7 @@ Public Class ArgHole_UnitTests
     Dim Input = "{"
     Dim TheSource = Source.Create(Input, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -48,7 +48,7 @@ Public Class ArgHole_UnitTests
     Dim Text = "{}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -71,7 +71,7 @@ Public Class ArgHole_UnitTests
     Dim Text = "{0}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -105,7 +105,7 @@ Public Class ArgHole_UnitTests
     Dim Text = "{0 }"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -134,7 +134,7 @@ Public Class ArgHole_UnitTests
     Dim Text = "{0 ,}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -160,7 +160,7 @@ Public Class ArgHole_UnitTests
     Dim Text = "{0 , :}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -193,7 +193,7 @@ Public Class ArgHole_UnitTests
     Dim Text = "{0 , 1}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -224,7 +224,7 @@ Public Class ArgHole_UnitTests
     Dim Text = "{0 , -1}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -255,7 +255,7 @@ Public Class ArgHole_UnitTests
     Dim Text = "{0 :{{}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))

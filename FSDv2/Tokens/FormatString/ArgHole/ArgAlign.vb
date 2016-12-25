@@ -38,24 +38,23 @@ Done:
 #Region "TryToResyncHead"
 TryToResyncHead:
         If Not DoingResync Then
-          Dim rp0 = RPX0.TryToResync(Ix, True)
-          Select Case rp0.Kind
+          Dim ResultOfResyncing = RPX0.TryToResync(Ix, True)
+          Dim Size = ResultOfResyncing.Span.Size
+          If Size > 0 Then
+            Txn += New ParseError.Resync(sx.To(ResultOfResyncing.Span.Start), ResultOfResyncing)
+          End If
+          Select Case ResultOfResyncing.Kind
             Case TokenKind.ArgHole_Align_Head
-              If Ix <> rp0.Span.Start Then Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
               GoTo IsThereAHead
             Case TokenKind.Colon
-              If Ix <> rp0.Span.Start Then Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
               GoTo IsThereABody
             Case TokenKind.ArgHole_Align_Body
-              If Ix <> rp0.Span.Start Then Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
               GoTo IsThereABody
             Case TokenKind.Brace_Closing
-              If Ix <> rp0.Span.Start Then Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
               GoTo Done
             Case TokenKind.ParseError
-              If TypeOf rp0 Is ParseError.Partial Then
-                If Ix <> rp0.Span.Start Then Txn += New ParseError.Resync(sx.To(rp0.Span.Start), rp0)
-              End If
+            Case Else
+              Debug.Assert(False, "Unsupported Kind: " & ResultOfResyncing.Kind)
           End Select
         End If
         'Return ParseError.Make.Invalid(Ix, Txn)
@@ -65,15 +64,22 @@ TryToResyncHead:
 #Region "TryToResyncBody"
 TryToResyncBody:
         If Not DoingResync Then
-          Dim rp1 = RPX1.TryToResync(Ix, True)
-          Select Case rp1.Kind
+          Dim ResultOfResyncing = RPX1.TryToResync(Ix, True)
+          Dim size = ResultOfResyncing.Span.Size
+          If size > 0 Then
+            Txn += New ParseError.Resync(sx.To(ResultOfResyncing.Span.Start), ResultOfResyncing)
+            GoTo Done
+          End If
+          Select Case ResultOfResyncing.Kind
             Case TokenKind.ParseError
             Case TokenKind.ArgHole_Align_Head,
                TokenKind.Colon,
                TokenKind.ArgHole_Align_Body,
                TokenKind.Brace_Closing
-              If Ix <> rp1.Span.Start Then Txn += New ParseError.Resync(sx.To(rp1.Span.Start), rp1)
               GoTo Done
+            Case Else
+              Debug.Assert(False, "Unsupported Kind: " & ResultOfResyncing.Kind)
+
           End Select
         End If
         GoTo Done

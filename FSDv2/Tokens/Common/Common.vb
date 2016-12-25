@@ -217,9 +217,7 @@
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Shadows Function TryParse(Ix As Source.Position,
-                           DoingResync As Boolean
-                                 ) As Token
+        Public Shared Shadows Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim res = Brace.TryParse(Ix, DoingResync)
           If res.Kind <> TokenKind.Brace_Opening Then Return ParseError.Make.NullParse(Ix)
@@ -237,9 +235,7 @@
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Shadows Function TryParse(Ix As Source.Position,
-                           DoingResync As Boolean
-                                 ) As Token
+        Public Shared Shadows Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim res = Brace.TryParse(Ix, DoingResync)
           If res.Kind <> TokenKind.Brace_Closing Then Return ParseError.Make.NullParse(Ix)

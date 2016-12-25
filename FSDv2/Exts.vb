@@ -22,13 +22,14 @@ Public Module Exts
       Return sb.ToString
     End Function
 
-    Private Sub _AsString(Tk As Token, sb As Text.StringBuilder, level As Integer)
-      sb.AppendLine($"{Space(level * 2)}{Tk.Span.ToString} {Tk.Kind.ToString()}")
-      For i = 0 To Tk.InnerTokens.Count - 1
-        sb.Append(Space(level * 2))
-        sb.Append($"[{i,2}]")
-        _AsString(Tk(i), sb, level + 1)
-      Next
-    End Sub
+  Private Sub _AsString(Tk As Token, sb As Text.StringBuilder, level As Integer)
+    sb.AppendLine($" {Tk.Span.ToString} {Tk.Kind.ToString()}")
+    For i = 0 To Tk.InnerTokens.Count - 1
+      sb.Append(Space(level * 3))
+      sb.Append($"[{i,2}]")
+      _AsString(Tk(i), sb, level + 1)
+    Next
+  End Sub
+
 
 End Module
