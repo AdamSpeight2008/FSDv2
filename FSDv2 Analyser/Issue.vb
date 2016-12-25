@@ -44,10 +44,10 @@ Partial Public Class Analyser
         End Function
         Public Class Framework
           Public Shared Function Upper_Limit_Exceeded(Span As Source.Span) As Issue
-            Return New Issue(Kinds.Arg_Index_FrameWork_Lower_Limit_Exceeded, Span)
+            Return New Issue(Kinds.Arg_Index_Framework_Upper_Limit_Exceeded, Span)
           End Function
           Public Shared Function Lower_Limit_Exceeded(Span As Source.Span) As Issue
-            Return New Issue(Kinds.Arg_Index_Framework_Upper_Limit_Exceeded, Span)
+            Return New Issue(Kinds.Arg_Index_FrameWork_Lower_Limit_Exceeded, Span)
           End Function
         End Class
       End Class
@@ -57,10 +57,10 @@ Partial Public Class Analyser
         End Function
         Public Class Framework
           Public Shared Function Upper_Limit_Exceeded(Span As Source.Span) As Issue
-            Return New Issue(Kinds.Arg_Align_Framework_Lower_Limit_Exceeded, Span)
+            Return New Issue(Kinds.Arg_Align_Framework_Upper_Limit_Exceeded, Span)
           End Function
           Public Shared Function Lower_Limit_Exceeded(Span As Source.Span) As Issue
-            Return New Issue(Kinds.Arg_Index_Framework_Upper_Limit_Exceeded, Span)
+            Return New Issue(Kinds.Arg_Index_FrameWork_Lower_Limit_Exceeded, Span)
           End Function
         End Class
       End Class

@@ -14,4 +14,21 @@ Public Module Exts
     Return (T.Kind = k) OrElse T.IsNotNullParse
   End Function
 
+  <Extension>
+    Public Function AsString(Tk As Token) As String
+      If Tk Is Nothing Then Return "{Nothing}"
+      Dim sb As New Text.StringBuilder
+      _AsString(Tk, sb, 0)
+      Return sb.ToString
+    End Function
+
+    Private Sub _AsString(Tk As Token, sb As Text.StringBuilder, level As Integer)
+      sb.AppendLine($"{Space(level * 2)}{Tk.Span.ToString} {Tk.Kind.ToString()}")
+      For i = 0 To Tk.InnerTokens.Count - 1
+        sb.Append(Space(level * 2))
+        sb.Append($"[{i,2}]")
+        _AsString(Tk(i), sb, level + 1)
+      Next
+    End Sub
+
 End Module

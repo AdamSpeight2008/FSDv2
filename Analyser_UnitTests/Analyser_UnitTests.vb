@@ -113,6 +113,7 @@ Public Class FSDv2_UnitTests
     Dim TheText = "{}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat )
     Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Debug.WriteLine(ParseResult.AsString)
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
     Dim Result = Analyser.Analyse(ParseResult, Parameters)
@@ -140,10 +141,10 @@ Public Class FSDv2_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat0)>
-  Public Sub _08_()
+  Public Sub _08_TwoEmpty_ArgHoles()
     '              0123456
     Dim TheText = " {} {} "
-    Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat )
+    Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
@@ -174,11 +175,13 @@ Public Class FSDv2_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat0)>
-  Public Sub _10_()
+  Public Sub _10_UnexpectedCharacterPreceeding_MissingArgIndex()
     '              0123456
     Dim TheText = "{x}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Debug.WriteLine(ParseResult.AsString)
+    Debug.WriteLine("")
     ' Why isn't the unexpected characters being propergated ?
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
@@ -194,7 +197,7 @@ Public Class FSDv2_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat0)>
-  Public Sub _11_()
+  Public Sub _11_WS_ArgIndexMissing()
     '              0123456
     Dim TheText = "{ }"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
@@ -214,22 +217,24 @@ Public Class FSDv2_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat0)>
-  Public Sub _12_()
+  Public Sub _12_ArgIndexOutOfRange()
     '              0123456
     Dim TheText = "{ 12}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
-
+    Debug.WriteLine(ParseResult.AsString)
+    Debug.WriteLine("")
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
     Dim Result = Analyser.Analyse(ParseResult, Parameters)
     Dim Text = Result.Result.Issues.AsString
-    Dim Expected = "(  1:  1) Unexpected_Token" & vbCrLf &
-                   "(  2:  2) Arg_Index_OutOfRange" & vbCrLf
+    Dim Expected = "(  1:  1) Unexpected_Characters
+(  2:  0) Arg_Index_Missing
+(  3:  7) Arg_Align_Framework_Upper_Limit_Exceeded"
     Assert.AreEqual(Expected, Text)
   End Sub
   <TestMethod, TestCategory(Cat0)>
-  Public Sub _13_()
+  Public Sub _13_ArgIndexExceeding()
     '              0123456
     Dim TheText = "{ 1000000}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
@@ -244,8 +249,9 @@ Public Class FSDv2_UnitTests
                    "(  2:  7) Arg_Index_OutOfRange" & vbCrLf
     Assert.AreEqual(Expected, Text)
   End Sub
+
   <TestMethod, TestCategory(Cat0)>
-  Public Sub _14_()
+  Public Sub _14_EmptyArgIndex_ArgAlignExceeding()
     '              0123456
     Dim TheText = "{ ,1000000}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
@@ -257,7 +263,8 @@ Public Class FSDv2_UnitTests
     Dim Text = Result.Result.Issues.AsString
     Dim Expected = "(  1:  1) Unexpected_Characters
 (  2:  0) Arg_Index_Missing
-(  2:  8) Unexpected_Token"
+(  3:  7) Arg_Align_Framework_Upper_Limit_Exceeded
+"
     Assert.AreEqual(Expected, Text)
   End Sub
 End Class
