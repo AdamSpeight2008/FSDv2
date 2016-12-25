@@ -27,7 +27,7 @@ Public Class FSDv2_UnitTests
   Public Sub _00_EmptyString()
     Dim TheText = ""
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat )
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
     Dim Result = Analyser.Analyse(ParseResult, Parameters)
@@ -40,7 +40,7 @@ Public Class FSDv2_UnitTests
   Public Sub _01_JustText()
     Dim TheText = "abc"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat )
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
     Dim Result = Analyser.Analyse(ParseResult, Parameters)
@@ -54,7 +54,7 @@ Public Class FSDv2_UnitTests
   Public Sub _02_Text_Brace_Closing()
     Dim TheText = "}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat )
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
     Dim Result = Analyser.Analyse(ParseResult, Parameters)
@@ -69,7 +69,7 @@ Public Class FSDv2_UnitTests
   Public Sub _03_Text_Brace_Opening()
     Dim TheText = "{"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat )
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
     Dim Result = Analyser.Analyse(ParseResult, Parameters)
@@ -86,7 +86,7 @@ Public Class FSDv2_UnitTests
   Public Sub _04_EscapedOpening()
     Dim TheText = "{{"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat )
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
     Dim Result = Analyser.Analyse(ParseResult, Parameters)
@@ -99,7 +99,7 @@ Public Class FSDv2_UnitTests
   Public Sub _05_EscapedClosing()
     Dim TheText = "}}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat )
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
     Dim Result = Analyser.Analyse(ParseResult, Parameters)
@@ -112,7 +112,7 @@ Public Class FSDv2_UnitTests
   Public Sub _06_EmptyArgHole()
     Dim TheText = "{}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat )
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Debug.WriteLine(ParseResult.AsString)
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
@@ -128,7 +128,7 @@ Public Class FSDv2_UnitTests
   Public Sub _07_EmptyArgHoles()
     Dim TheText = "{}{}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat )
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
     Dim Result = Analyser.Analyse(ParseResult, Parameters)
@@ -145,7 +145,7 @@ Public Class FSDv2_UnitTests
     '              0123456
     Dim TheText = " {} {} "
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
     Dim Result = Analyser.Analyse(ParseResult, Parameters)
@@ -162,7 +162,7 @@ Public Class FSDv2_UnitTests
     '              01234567890
     Dim TheText = "}} {} {} {{"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat )
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
     Dim Result = Analyser.Analyse(ParseResult, Parameters)
@@ -179,7 +179,7 @@ Public Class FSDv2_UnitTests
     '              0123456
     Dim TheText = "{x}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Debug.WriteLine(ParseResult.AsString)
     Debug.WriteLine("")
     ' Why isn't the unexpected characters being propergated ?
@@ -201,7 +201,7 @@ Public Class FSDv2_UnitTests
     '              0123456
     Dim TheText = "{ }"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     ' Why isn't the unexpected characters being propergated ?
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
@@ -221,7 +221,7 @@ Public Class FSDv2_UnitTests
     '              0123456
     Dim TheText = "{ 12}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Debug.WriteLine(ParseResult.AsString)
     Debug.WriteLine("")
     Dim Analyser As New FSDv2_Analyser.Analyser()
@@ -238,7 +238,7 @@ Public Class FSDv2_UnitTests
     '              0123456
     Dim TheText = "{ 1000000}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
 
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
@@ -255,7 +255,7 @@ Public Class FSDv2_UnitTests
     '              0123456
     Dim TheText = "{ ,1000000}"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-    Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
 
     Dim Analyser As New FSDv2_Analyser.Analyser()
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()

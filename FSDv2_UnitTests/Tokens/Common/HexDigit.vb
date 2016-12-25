@@ -10,7 +10,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = ""
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
   End Sub
 
   <TestMethod, TestCategory("Tokens.Common.HexDigit")>
@@ -18,7 +18,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "0"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -30,7 +30,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "1"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -42,7 +42,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "2"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -54,7 +54,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "3"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -66,7 +66,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "4"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -78,7 +78,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "5"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -90,7 +90,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "6"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -102,7 +102,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "7"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -114,7 +114,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "8"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -126,7 +126,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "9"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -139,7 +139,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "A"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -151,7 +151,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "B"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -163,7 +163,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "C"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -175,7 +175,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "D"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -187,7 +187,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "E"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -199,7 +199,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "F"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -212,7 +212,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "a"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -224,7 +224,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "b"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -236,7 +236,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "c"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -248,7 +248,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "d"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -260,7 +260,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "e"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -272,7 +272,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "f"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.AreEqual(TokenKind.HexDigit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -285,7 +285,7 @@ Public Class Tokens_Common_HexDigit_UnitTest
     Dim Text = "X"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigit.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.IsInstanceOfType(res, GetType(ParseError))

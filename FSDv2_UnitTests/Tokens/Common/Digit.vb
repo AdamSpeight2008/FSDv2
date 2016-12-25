@@ -10,7 +10,7 @@ Public Class Tokens_Common_Digit_UnitTest
     Dim Text = ""
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digit.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digit.TryParse(FirstPos, False)
   End Sub
 
   <TestMethod, TestCategory("Tokens.Common.Digit")>
@@ -18,7 +18,7 @@ Public Class Tokens_Common_Digit_UnitTest
     Dim Text = "0"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digit.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Digit))
     Assert.AreEqual(TokenKind.Digit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -31,7 +31,7 @@ Public Class Tokens_Common_Digit_UnitTest
     Dim Text = "1"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digit.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Digit))
     Assert.AreEqual(TokenKind.Digit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -44,7 +44,7 @@ Public Class Tokens_Common_Digit_UnitTest
     Dim Text = "2"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digit.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Digit))
     Assert.AreEqual(TokenKind.Digit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -57,7 +57,7 @@ Public Class Tokens_Common_Digit_UnitTest
     Dim Text = "3"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digit.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Digit))
     Assert.AreEqual(TokenKind.Digit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -70,7 +70,7 @@ Public Class Tokens_Common_Digit_UnitTest
     Dim Text = "4"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digit.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Digit))
     Assert.AreEqual(TokenKind.Digit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -83,7 +83,7 @@ Public Class Tokens_Common_Digit_UnitTest
     Dim Text = "5"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digit.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Digit))
     Assert.AreEqual(TokenKind.Digit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -96,7 +96,7 @@ Public Class Tokens_Common_Digit_UnitTest
     Dim Text = "6"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digit.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Digit))
     Assert.AreEqual(TokenKind.Digit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -109,7 +109,7 @@ Public Class Tokens_Common_Digit_UnitTest
     Dim Text = "7"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digit.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Digit))
     Assert.AreEqual(TokenKind.Digit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -122,7 +122,7 @@ Public Class Tokens_Common_Digit_UnitTest
     Dim Text = "8"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digit.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Digit))
     Assert.AreEqual(TokenKind.Digit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -135,7 +135,7 @@ Public Class Tokens_Common_Digit_UnitTest
     Dim Text = "9"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digit.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digit.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Digit))
     Assert.AreEqual(TokenKind.Digit, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)
@@ -148,7 +148,7 @@ Public Class Tokens_Common_Digit_UnitTest
     Dim Text = "X"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digit.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digit.TryParse(FirstPos, False)
     Assert.IsNotInstanceOfType(res, GetType(FormatString.Common.Digit))
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Assert.AreEqual(ParseError.Reason.NullParse, DirectCast(res, ParseError).Why)

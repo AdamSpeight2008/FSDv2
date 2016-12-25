@@ -10,7 +10,7 @@ Public Class Tokens_Common_Digits_UnitTest
     Dim Text = ""
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digits.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digits.TryParse(FirstPos, False)
 
 
   End Sub
@@ -20,7 +20,7 @@ Public Class Tokens_Common_Digits_UnitTest
     Dim Text = "0123456789"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Digits.TryParse(FirstPos)
+    Dim res = FormatString.Common.Digits.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Digits))
     Assert.AreEqual(TokenKind.Digits, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)

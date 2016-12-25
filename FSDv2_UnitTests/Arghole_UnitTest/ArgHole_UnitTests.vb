@@ -89,6 +89,13 @@ Public Class ArgHole_UnitTests
       [ 0]  (  1:  1)  Digit
   [ 2]  (  2:  1)  Brace_Closing
 "
+    '"(  0:  3)  ArgHole" & vbCrLf & 
+    '"  [ 0]  (  0:  1)  Brace_Opening" & vbCrLf & 
+    '"  [ 1]  (  1:  1)  ArgHole_Index" & vbCrLf & 
+    '"    [ 0]  (  1:  1)  Digits" & vbCrLf & 
+    '"      [ 0]  (  1:  1)  Digit" & vbCrLf & 
+    '"  [ 2]  (  2:  0)  ParseError.Invalid" & vbCrLf &
+    '"  [ 3]  (  2:  1)  Brace_Closing" & vbCrLf
     Assert.AreEqual(Expected, Actual)
 
   End Sub

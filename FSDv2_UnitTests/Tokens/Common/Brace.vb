@@ -9,7 +9,7 @@ Imports FSDv2
     Dim Text = ""
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Assert.AreEqual(ParseError.Reason.EoT, DirectCast(res, ParseError).Why)
@@ -19,7 +19,7 @@ Imports FSDv2
     Dim Text = "{"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Opening))
     Assert.AreEqual(TokenKind.Brace_Opening, res.Kind)
@@ -32,7 +32,7 @@ Imports FSDv2
     Dim Text = "}"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Closing))
     Assert.AreEqual(TokenKind.Brace_Closing, res.Kind)
@@ -45,7 +45,7 @@ Imports FSDv2
     Dim Text = "{{"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Esc.Opening))
     Assert.AreEqual(TokenKind.Esc_Brace_Opening, res.Kind)
@@ -64,7 +64,7 @@ Imports FSDv2
     Dim Text = "}}"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Esc.Closing))
     Assert.AreEqual(TokenKind.Esc_Brace_Closing, res.Kind)
@@ -84,7 +84,7 @@ Imports FSDv2
     Dim Text = "{ "
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Opening))
     Assert.AreEqual(TokenKind.Brace_Opening, res.Kind)
@@ -97,7 +97,7 @@ Imports FSDv2
     Dim Text = "} "
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Closing))
     Assert.AreEqual(TokenKind.Brace_Closing, res.Kind)
@@ -110,7 +110,7 @@ Imports FSDv2
     Dim Text = "{{ "
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Esc.Opening))
     Assert.AreEqual(TokenKind.Esc_Brace_Opening, res.Kind)
@@ -129,7 +129,7 @@ Imports FSDv2
     Dim Text = "}} "
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Brace.TryParse(FirstPos)
+    Dim res = FormatString.Common.Brace.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Brace.Esc.Closing))
     Assert.AreEqual(TokenKind.Esc_Brace_Closing, res.Kind)

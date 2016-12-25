@@ -10,7 +10,7 @@ Public Class Tokens_Common_Whitespace_UnitTest
     Dim Text = ""
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Whitespace.TryParse(FirstPos)
+    Dim res = FormatString.Common.Whitespace.TryParse(FirstPos, False)
 
 
   End Sub
@@ -20,7 +20,7 @@ Public Class Tokens_Common_Whitespace_UnitTest
     Dim Text = " "
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Whitespace.TryParse(FirstPos)
+    Dim res = FormatString.Common.Whitespace.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.Whitespace))
     Assert.AreEqual(TokenKind.Whitespace, res.Kind)
     Assert.AreEqual(0, res.Span.Start.Index)

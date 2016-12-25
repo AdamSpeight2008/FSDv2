@@ -12,7 +12,7 @@ Public Class EscSeq_Compound_HexaDecimal
     Dim Text = "\x"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Assert.AreEqual(ParseError.Reason.Unsupported, DirectCast(res, ParseError).Why)
@@ -23,7 +23,7 @@ Public Class EscSeq_Compound_HexaDecimal
     Dim Text = "\x"
     Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Verbatum, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Assert.AreEqual(ParseError.Reason.Unsupported, DirectCast(res, ParseError).Why)
@@ -34,7 +34,7 @@ Public Class EscSeq_Compound_HexaDecimal
     Dim Text = "\x"
     Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Dim pe As ParseError = DirectCast(res, ParseError)
@@ -46,7 +46,7 @@ Public Class EscSeq_Compound_HexaDecimal
     Dim Text = "\x0"
     Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.HexaDecimal))
@@ -63,7 +63,7 @@ Public Class EscSeq_Compound_HexaDecimal
     Dim Text = "\x00"
     Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.HexaDecimal))
@@ -80,7 +80,7 @@ Public Class EscSeq_Compound_HexaDecimal
     Dim Text = "\x000"
     Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.HexaDecimal))
@@ -97,7 +97,7 @@ Public Class EscSeq_Compound_HexaDecimal
     Dim Text = "\x0000"
     Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.HexaDecimal))
@@ -114,7 +114,7 @@ Public Class EscSeq_Compound_HexaDecimal
     Dim Text = "\x0000F"
     Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.HexaDecimal))

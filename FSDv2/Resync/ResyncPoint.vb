@@ -1,8 +1,8 @@
 ﻿Public Structure ResyncPoint
-  Public ReadOnly Property TryParse As Func(Of Source.Position, Token)
+  Public ReadOnly Property TryParse As Func(Of Source.Position, Boolean, Token)
 
   <DebuggerStepperBoundary>
-  Public Sub New(TryParse As Func(Of Source.Position, Token))
+  Public Sub New(TryParse As Func(Of Source.Position, Boolean, Token))
     Me.TryParse = TryParse
   End Sub
 

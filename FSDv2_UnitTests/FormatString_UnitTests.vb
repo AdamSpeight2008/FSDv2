@@ -32,7 +32,7 @@ Public Class FSDv2_UnitTests
   Public Sub _00_EmptyString()
     Dim TheText = ""
         Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-        Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "( -1:  0)  ParseError.NullParse
@@ -44,7 +44,7 @@ Public Class FSDv2_UnitTests
   Public Sub _01_JustText()
     Dim TheText = "abc"
         Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-        Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "(  0:  3)  FormatString
@@ -57,7 +57,7 @@ Public Class FSDv2_UnitTests
   Public Sub _02_Text_Brace_Closing()
     Dim TheText = "}"
         Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-        Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "(  0:  1)  FormatString
@@ -71,7 +71,7 @@ Public Class FSDv2_UnitTests
   Public Sub _03_Text_Brace_Opening()
     Dim TheText = "{"
         Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-        Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "(  0:  1)  FormatString
@@ -86,7 +86,7 @@ Public Class FSDv2_UnitTests
   Public Sub _04_EscapedOpening()
     Dim TheText = "{{"
         Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-        Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "(  0:  2)  FormatString
@@ -101,7 +101,7 @@ Public Class FSDv2_UnitTests
   Public Sub _05_EscapedClosing()
     Dim TheText = "}}"
         Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-        Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "(  0:  2)  FormatString
@@ -116,7 +116,7 @@ Public Class FSDv2_UnitTests
   Public Sub _06_EmptyArgHole()
     Dim TheText = "{}"
         Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-        Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "(  0:  2)  FormatString
@@ -131,7 +131,7 @@ Public Class FSDv2_UnitTests
   Public Sub _07_EmptyArgHoles()
     Dim TheText = "{}{}"
         Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-        Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "(  0:  4)  FormatString
@@ -150,7 +150,7 @@ Public Class FSDv2_UnitTests
     '              0123456
     Dim TheText = " {} {} "
         Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-        Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Text = ParseResult.AsString()
     Dim Expected = "(  0:  7)  FormatString
   [ 0]  (  0:  1)  Text
@@ -171,7 +171,7 @@ Public Class FSDv2_UnitTests
     '              0123456
     Dim TheText = "}} {} {} {{"
         Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-        Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Text = ParseResult.AsString()
     Dim Expected =
 "(  0: 11)  FormatString
@@ -199,7 +199,7 @@ Public Class FSDv2_UnitTests
     '              0123456
     Dim TheText = "{x}"
         Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-        Dim ParseResult = FormatString.TryParse(TheSource.First.Value)
+    Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Text = ParseResult.AsString()
     ' This should have a parse error of unexpected characters span (  1: 1).
     Dim Expected =

@@ -10,13 +10,13 @@ Partial Public Class FormatString
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position) As Token
+      Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
-        Dim T As Token = Format.Head.TryParse(Ix)
+        Dim T As Token = Format.Head.TryParse(Ix, DoingResync)
         If TypeOf T Is ParseError Then Return T
         Dim sx = Ix
         Dim Txn = Tokens.Empty : Txn = Common.AddThenNext(T, Txn, Ix)
-        T = ArgHole.Format.Body.TryParse(Ix)
+        T = ArgHole.Format.Body.TryParse(Ix, DoingResync)
         If T.Kind = TokenKind.ArgHole_Format_Body Then
           Txn = Common.AddThenNext(T, Txn, Ix)
         End If
@@ -34,9 +34,9 @@ Partial Public Class FormatString
 
 
         <DebuggerStepperBoundary>
-        Public Shared Function TryParse(Ix As Source.Position) As Token
+        Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
-          Dim T As Token = Colon.TryParse(Ix)
+          Dim T As Token = Colon.TryParse(Ix, DoingResync)
           If T.Kind = TokenKind.ParseError Then Return ParseError.Make.NullParse(Ix)
           Return New Head(T.Span, Tokens.Empty + T)
         End Function
@@ -52,26 +52,26 @@ Partial Public Class FormatString
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Function TryParse(Ix As Source.Position) As Token
+        Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim Txn = Tokens.Empty
           Dim sx = Ix
           Dim T As Token
           While Ix.IsValid
 
-            T = Common.Brace.Opening.TryParse(Ix)
+            T = Common.Brace.Opening.TryParse(Ix, DoingResync)
             Select Case T.Kind
               Case TokenKind.Brace_Opening : T = ParseError.Make.Invalid(T.Span, T) : GoTo OnToNext
               Case TokenKind.Esc_Brace_Opening : GoTo OnToNext
             End Select
 
-            T = Common.Brace.Closing.TryParse(Ix)
+            T = Common.Brace.Closing.TryParse(Ix, DoingResync)
             Select Case T.Kind
               Case TokenKind.Brace_Closing : Exit While
               Case TokenKind.Esc_Brace_Closing : GoTo OnToNext
             End Select
 
-            T = Text._TryParse(Ix, True)
+            T = Text._TryParse(Ix, True, DoingResync)
             Select Case T.Kind
               Case TokenKind.ParseError : Exit While
             End Select
@@ -93,7 +93,7 @@ OnToNext:
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Function TryParse(Ix As Source.Position) As Token
+        Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           If (Ix <> ":"c) Then Return ParseError.Make.NullParse(Ix)
           Return New Colon(Source.Span.Create_UnitSpan(Ix))

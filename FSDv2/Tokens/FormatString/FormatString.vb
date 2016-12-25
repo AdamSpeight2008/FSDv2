@@ -6,14 +6,14 @@
   End Sub
 
   <DebuggerStepperBoundary>
-  Public Shared Function TryParse(Ix As Source.Position) As Token
+  Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
     If Ix.IsInvalid Then Return ParseError.Make.NullParse(Ix)
     Dim sx = Ix
     Dim Txn = Tokens.Empty
     Dim T As Token
     Dim TextStart As Source.Position? = Nothing
     While Ix.IsValid
-      T = Common.Brace.TryParse(Ix)
+      T = Common.Brace.TryParse(Ix, DoingResync)
       Select Case T.Kind
 
         Case TokenKind.Esc_Brace_Opening, TokenKind.Esc_Brace_Closing
@@ -23,7 +23,7 @@
           Txn = Common.AddThenNext(ParseError.Make.Invalid(T.Span, T), Txn, Ix, TextStart)
 
         Case TokenKind.Brace_Opening
-          Dim res = ArgHole.TryParse(Ix)
+          Dim res = ArgHole.TryParse(Ix, DoingResync)
           If res.Kind = TokenKind.ArgHole Then
             Txn = Common.AddThenNext(res, Txn, Ix, TextStart)
           Else

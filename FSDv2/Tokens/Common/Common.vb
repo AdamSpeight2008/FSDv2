@@ -10,7 +10,9 @@
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position) As Token
+      Public Shared Function TryParse(Ix As Source.Position,
+                           DoingResync As Boolean
+                                 ) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         If (Ix <> " "c) Then Return ParseError.Make.NullParse(Ix)
         Return New Whitespace(Ix.ToUnitSpan)
@@ -26,12 +28,14 @@
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position) As Token
+      Public Shared Function TryParse(Ix As Source.Position,
+                           DoingResync As Boolean
+                                 ) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         Dim Txn = Tokens.Empty
         Dim Sx = Ix
         While Ix.IsValid
-          Dim T = Whitespace.TryParse(Ix)
+          Dim T = Whitespace.TryParse(Ix, DoingResync)
           If T.Kind = TokenKind.ParseError Then Exit While
           Txn = Common.AddThenNext(T, Txn, Ix)
         End While
@@ -50,7 +54,9 @@
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position) As Token
+      Public Shared Function TryParse(Ix As Source.Position,
+                           DoingResync As Boolean
+                                 ) As Token
         If Ix.IsInvalid OrElse Ix.Value.HasValue = False Then Return ParseError.Make.EoT(Ix)
         Select Case Ix.Value.Value
           Case "0"c To "9"c
@@ -96,12 +102,14 @@
       Private Shared ReadOnly _Ten As New Numerics.BigInteger(10)
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position) As Token
+      Public Shared Function TryParse(Ix As Source.Position,
+                           DoingResync As Boolean
+                                 ) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         Dim Txn = Tokens.Empty()
         Dim Sx = Ix
         While Ix.IsValid
-          Dim T = Digit.TryParse(Ix)
+          Dim T = Digit.TryParse(Ix, DoingResync)
           If T.Kind = TokenKind.ParseError Then Exit While
           Txn = Common.AddThenNext(T, Txn, Ix)
         End While
@@ -136,7 +144,9 @@
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position) As Token
+      Public Shared Function TryParse(Ix As Source.Position,
+                           DoingResync As Boolean
+                                 ) As Token
         If Ix.IsInvalid OrElse Ix.Value.HasValue = False Then Return ParseError.Make.EoT(Ix)
         Select Case Ix.Value.Value
           Case "0"c To "9"c, "a"c To "f"c, "A"c To "F"c
@@ -156,12 +166,14 @@
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position) As Token
+      Public Shared Function TryParse(Ix As Source.Position,
+                           DoingResync As Boolean
+                                 ) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         Dim Txn = Tokens.Empty()
         Dim Sx = Ix
         While Ix.IsValid
-          Dim T = HexDigit.TryParse(Ix)
+          Dim T = HexDigit.TryParse(Ix, DoingResync)
           If TypeOf T Is ParseError Then Exit While
           Txn = Common.AddThenNext(T, Txn, Ix)
         End While
@@ -181,7 +193,9 @@
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position) As Token
+      Public Shared Function TryParse(Ix As Source.Position,
+                           DoingResync As Boolean
+                                 ) As Token
         If Ix.IsInvalid OrElse Ix.Value.HasValue = False Then Return ParseError.Make.EoT(Ix)
         Dim nx = Ix.Next
         If Ix.Value.Value = "{"c Then
@@ -203,9 +217,11 @@
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
+        Public Shared Shadows Function TryParse(Ix As Source.Position,
+                           DoingResync As Boolean
+                                 ) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
-          Dim res = Brace.TryParse(Ix)
+          Dim res = Brace.TryParse(Ix, DoingResync)
           If res.Kind <> TokenKind.Brace_Opening Then Return ParseError.Make.NullParse(Ix)
           Return res
         End Function
@@ -221,9 +237,11 @@
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
+        Public Shared Shadows Function TryParse(Ix As Source.Position,
+                           DoingResync As Boolean
+                                 ) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
-          Dim res = Brace.TryParse(Ix)
+          Dim res = Brace.TryParse(Ix, DoingResync)
           If res.Kind <> TokenKind.Brace_Closing Then Return ParseError.Make.NullParse(Ix)
           Return res
         End Function
@@ -240,9 +258,11 @@
           End Sub
 
           <DebuggerStepperBoundary>
-          Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
+          Public Shared Shadows Function TryParse(Ix As Source.Position,
+                           DoingResync As Boolean
+                                 ) As Token
             If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
-            Dim res = Brace.TryParse(Ix)
+            Dim res = Brace.TryParse(Ix, DoingResync)
             If res.Kind <> TokenKind.Esc_Brace_Opening Then Return ParseError.Make.NullParse(Ix)
             Return res
           End Function
@@ -257,9 +277,9 @@
           End Sub
 
           <DebuggerStepperBoundary>
-          Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
+          Public Shared Shadows Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
             If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
-            Dim res = Brace.TryParse(Ix)
+            Dim res = Brace.TryParse(Ix, DoingResync)
             If res.Kind <> TokenKind.Esc_Brace_Closing Then Return ParseError.Make.NullParse(Ix)
             Return res
           End Function
@@ -297,7 +317,7 @@
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Function TryParse(Ix As Source.Position) As Token
+        Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
           If Ix.Source.Kind <> Source.SourceKind.CS_Standard Then Return ParseError.Make.Unsupported(Ix, $"{Ix.Source.Kind} doesn't support escape sequences")
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           If Ix <> "\"c Then Return ParseError.Make.NullParse(Ix)
@@ -309,9 +329,9 @@
                  "t"c, "v"c, """"c
               Return New Simple(Ix.To(nx.Next))
             Case "x"c
-              Return HexaDecimal.TryParse(Ix)
+              Return HexaDecimal.TryParse(Ix, DoingResync)
             Case "u"c, "U"c
-              Return Unicode.TryParse(Ix)
+              Return Unicode.TryParse(Ix, DoingResync)
           End Select
           Return ParseError.Make.Unsupported(sx.To(nx.Next), "")
         End Function
@@ -332,10 +352,15 @@
           End Sub
 
           <DebuggerStepperBoundary>
-          Private Shared Function Parse_HexDigits(sx As Source.Position, ix As Source.Position, RequiredLength As Integer) As Token
+          Private Shared Function Parse_HexDigits(
+                                                   sx As Source.Position,
+                                                   ix As Source.Position,
+                                                   RequiredLength As Integer,
+                                                   DoingResync As Boolean
+                                                 ) As Token
             Dim T As Token, Hx = Tokens.Empty
             While ix.IsValid AndAlso Hx.Count < RequiredLength
-              T = Common.HexDigit.TryParse(ix)
+              T = Common.HexDigit.TryParse(ix, DoingResync)
               If T.Kind = TokenKind.ParseError Then Exit While
               Hx = Common.AddThenNext(T, Hx, ix)
             End While
@@ -344,26 +369,26 @@
           End Function
 
           <DebuggerStepperBoundary>
-          Private Shared Function Backslash_UpperU(Ix As Source.Position) As Token
+          Private Shared Function Backslash_UpperU(Ix As Source.Position, DoingResync As Boolean) As Token
             ' unicode_escape_sequence ::= \U hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit
             Dim Txn = Tokens.Empty, sx = Ix
             ' OK. At this stage we hace the start of a escape sequence for a unicode characeter \U
             If Ix.IsInvalid Then Return ParseError.Make.Invalid(sx.To(Ix), Txn, "Expecting 8 Hexadecimal Digits")
             ' Try and parse 4 HexaDecimal characters.
-            Return Parse_HexDigits(sx, Ix, 8)
+            Return Parse_HexDigits(sx, Ix, 8, DoingResync)
           End Function
 
-          Private Shared Function Backslash_LowerU(Ix As Source.Position) As Token
+          Private Shared Function Backslash_LowerU(Ix As Source.Position, DoingResync As Boolean) As Token
             ' unicode_escape_sequence ::= \u hex_digit hex_digit hex_digit hex_digit
             Dim Txn = Tokens.Empty, sx = Ix
             ' OK. At this stage we hace the start of a escape sequence for a unicode characeter \u
             If Ix.IsInvalid Then Return ParseError.Make.Invalid(sx.To(Ix), Txn, "Expecting 4 Hexadecimal Digits")
             ' Try and parse 4 HexaDecimal characters.
-            Return Parse_HexDigits(sx, Ix, 4)
+            Return Parse_HexDigits(sx, Ix, 4, DoingResync)
           End Function
 
           <DebuggerStepperBoundary>
-          Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
+          Public Shared Shadows Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
             '
             ' unicode_escape_sequence ::= \u hex_digit hex_digit hex_digit hex_digit
             '
@@ -375,12 +400,12 @@
             If Ix.IsInvalid Then Return ParseError.Make.NullParse(sx) ' A lone backslash (\) at the end of the text.
             If Ix = "u"c Then
               txn = FormatString.Common.AddThenNext(New Esc.SeqHead(sx.To(Ix.Next)), txn, Ix)
-              Dim hx = Backslash_LowerU(Ix)
+              Dim hx = Backslash_LowerU(Ix, DoingResync)
               If hx.Kind = TokenKind.HexDigits Then Return New Unicode(sx.To(hx.Span.Next), txn + hx)
               Return ParseError.Make.Invalid(sx.To(hx.Span.Next), txn + hx, "")
             ElseIf Ix = "U"c Then
               txn = FormatString.Common.AddThenNext(New Esc.SeqHead(sx.To(Ix.Next)), txn, Ix)
-              Dim hx = Backslash_UpperU(Ix)
+              Dim hx = Backslash_UpperU(Ix, DoingResync)
               If hx.Kind = TokenKind.HexDigits Then Return New Unicode(sx.To(hx.Span.Next), txn + hx)
               Return ParseError.Make.Invalid(sx.To(hx.Span.Next), txn + hx, "")
             End If
@@ -397,7 +422,7 @@
           End Sub
 
           <DebuggerStepperBoundary>
-          Public Shared Shadows Function TryParse(Ix As Source.Position) As Token
+          Public Shared Shadows Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
             If Ix.Source.Kind <> Source.SourceKind.CS_Standard Then Return ParseError.Make.Unsupported(Ix, $"{Ix.Source.Kind} doesn't support escape sequences")
             If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
             If Ix <> "\"c Then Return ParseError.Make.NullParse(Ix)
@@ -410,11 +435,13 @@
             If Ix.IsInvalid Then Return New ParseError.[Partial](TokenKind.Esc_Seq_HexaDecimal, sx.To(Ix), txn, "Expecting 4 Hexadecimal Digits")
             Dim Hx = Tokens.Empty
             While Ix.IsValid AndAlso Hx.Count < 4
-              T = Common.HexDigit.TryParse(Ix)
+              T = Common.HexDigit.TryParse(Ix, DoingResync)
               If T.Kind = TokenKind.ParseError Then Exit While
               Hx = Common.AddThenNext(T, Hx, Ix)
             End While
-            If Hx.Count = 0 Then Return New ParseError.[Partial](TokenKind.Esc_Seq_HexaDecimal, sx.To(Ix), txn + Hx, "Expecting 4 Hexadecimal Digits")
+            If Hx.Count = 0 Then
+              Return New ParseError.[Partial](TokenKind.Esc_Seq_HexaDecimal, sx.To(Ix), txn + Hx, "Expecting 4 Hexadecimal Digits")
+            End If
             Return New Esc.Sequence.HexaDecimal(sx.To(Ix), txn + New HexDigits(Hx.First.Span.Start.To(Hx.Last.Span.Next), Hx))
           End Function
 

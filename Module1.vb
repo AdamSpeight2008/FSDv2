@@ -11,7 +11,7 @@ Module Module1
     Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim Ix = TheSource.First
     'Dim sw = Diagnostics.Stopwatch.StartNew
-    Dim ParseResult = FormatString.TryParse(Ix)
+    Dim ParseResult = FormatString.TryParse(Ix, False)
     Console.WriteLine($"Input:=[{Text}]")
     Dim Actual = ParseResult.AsString
     Console.WriteLine($"Output:= {Actual}")
