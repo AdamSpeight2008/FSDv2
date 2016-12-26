@@ -4,51 +4,74 @@ Imports System.Numerics
 
 Partial Public Class Analyser
 
-  Private Function ArgIndex(ai As Index, Q As Parameters) As Analyser.Parameters
-    ' Arg.Index ::= Digits Whitespaces?
-    Dim en = ai.InnerTokens.GetEnumerator.GetEnumerator
-
-Expecting_Digits:
-    If en.MoveNext = False Then Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing) : GoTo state_end
-    Select Case en.Current.Kind
-      Case TokenKind.Digits
-        Dim digits = DirectCast(en.Current, FSDv2.FormatString.Common.Digits).GetValue
-        If Q.Arg Is Nothing Then Q.Arg = New Arg()
-        Q.Arg.Index = digits
-        If Q.Arg.Index.HasValue = False Then
-          Q.Result.Issues += Issue.Arg.Index.Missing(en.Current.Span)
-        Else
-          If Q.Arg.Index.Value >= Framework.UpperLimit Then Q.Result.Issues += Issue.Arg.Index.Framework.Lower_Limit_Exceeded(en.Current.Span)
-          If Q.Arg.Index.Value >= Q.Args.Count Then Q.Result.Issues += Issue.Arg.Index.OutOfRange(en.Current.Span)
-          Q.Args.MarkAsUsed(Q.Arg.Index.Value)
-        End If
-      Case TokenKind.Whitespaces
-        ' An easy mistake to make is to have whitespaces after the opening brace.
-        ' Eg: { 0}
-        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
-        GoTo Expecting_Digits
-      Case Else
-        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
-        GoTo Expecting_Digits
-    End Select
-    GoTo Expecting_Possible_Whitespace
-
-Expecting_Possible_Whitespace:
-    If en.MoveNext = False Then GoTo state_end
-    Select Case en.Current.Kind
-      Case TokenKind.Whitespaces : GoTo state_check_no_more_tokens
-      Case Else
-        Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
-        GoTo state_check_no_more_tokens
-    End Select
-
-state_check_no_more_tokens:
-    While en.MoveNext
-      Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
-    End While
-state_end:
-    Return Q
+  Private Function Validate_ArgIndex(tkn As Token, Results As Parameters) As Parameters
+    Dim ValueOfArgIndex = DirectCast(tkn, FSDv2.FormatString.Common.Digits).GetValue
+    Results.Arg = If(Results.Arg, New Arg())
+    Results.Arg.Index = ValueOfArgIndex
+    If Results.Arg.Index.HasValue = False Then
+      Results.Result.Issues += Issue.Arg.Index.Missing(tkn.Span)
+    Else
+      If Results.Arg.Index.Value >= Framework.UpperLimit Then
+        Results.Result.Issues += Issue.Arg.Index.Framework.Lower_Limit_Exceeded(tkn.Span)
+      End If
+      If Results.Arg.Index.Value >= Results.Args.Count Then
+        Results.Result.Issues += Issue.Arg.Index.OutOfRange(tkn.Span)
+      End If
+      Results.Args.MarkAsUsed(Results.Arg.Index.Value)
+    End If
+    Return Results
   End Function
 
+  Private Function Expecting_Digits(
+                               ByRef idx As Integer,
+                                     edx As Integer,
+                                     src As Index,
+                                 results As Parameters
+                                   ) As Parameters
+Expecting_Digits:
+    If idx >= edx Then
+      'Results.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing)
+      Return results
+    End If
+    If src(idx).Kind = TokenKind.Digits Then
+      results = Validate_ArgIndex(src(idx), results)
+    Else
+      ' An easy mistake to make is to have whitespaces after the opening brace.
+      ' Eg: { 0}
+      results.Result.Issues += Issue.Unexpected.Token(src(idx).Span, src(idx))
+      idx += 1
+      GoTo Expecting_Digits
+    End If
+    Return results
+  End Function
+
+
+  Private Function Expecting_Possible_Whitespaces(
+                                                 ByRef idx As Integer,
+                                                 edx As Integer,
+                                                 src As Index,
+                                                 Results As Parameters
+                                                 ) As Parameters
+    idx += 1 : If idx >= edx Then Return Results
+    If src(idx).Kind = TokenKind.Whitespaces Then idx += 1
+    Return Results
+  End Function
+
+  Private Function ArgIndex(src As Index, Results As Parameters) As Analyser.Parameters
+    ' Arg.Index ::= Digits Whitespaces?
+    Dim idx = 0, edx = src.InnerTokens.Count
+    Results = Expecting_Digits(idx, edx, src, Results)
+    Results = Expecting_Possible_Whitespaces(idx, edx, src, Results)
+    Results = AnyMoreTokensAreUnexpected(idx, edx, src, Results)
+    Return Results
+  End Function
+
+  Private Function AnyMoreTokensAreUnexpected(idx As Integer, edx As Integer, src As Token, Results As Parameters) As Parameters
+    While idx < edx
+      Results.Result.Issues += Issue.Unexpected.Token(src(idx).Span, src(idx))
+      idx += 1
+    End While
+    Return Results
+  End Function
 
 End Class
