@@ -23,7 +23,14 @@ Public Module Exts
     End Function
 
   Private Sub _AsString(Tk As Token, sb As Text.StringBuilder, level As Integer)
-    sb.AppendLine($" {Tk.Span.ToString} {Tk.Kind.ToString()}")
+    If TypeOf Tk Is ParseError Then
+      Dim pe = DirectCast(Tk, ParseError)
+      sb.AppendLine($" {Tk.Span.ToString} {Tk.Kind.ToString()}({pe.Why})")
+    Else
+      sb.AppendLine($" {Tk.Span.ToString} {Tk.Kind.ToString()}")
+
+    End If
+
     For i = 0 To Tk.InnerTokens.Count - 1
       sb.Append(Space(level * 3))
       sb.Append($"[{i,2}]")

@@ -206,8 +206,8 @@ Public Class FSDv2_UnitTests
 "(  0:  3)  FormatString
   [ 0]  (  0:  3)  ArgHole
     [ 0]  (  0:  1)  Brace_Opening
-    [ 1]  (  2:  0)  ParseError.NullParse
-      [ 0]  (  1:  1)  ParseError.UnexpectedCharacter
+    [ 1]  (  1:  1)  ParseError.ResyncSkipped
+      [ 0]  (  2:  1)  Brace_Closing
     [ 2]  (  2:  1)  Brace_Closing
 "
     Assert.AreEqual(Expected, Text)

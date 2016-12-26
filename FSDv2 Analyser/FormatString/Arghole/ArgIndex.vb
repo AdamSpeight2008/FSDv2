@@ -13,8 +13,7 @@ Partial Public Class Analyser
     Else
       If Results.Arg.Index.Value >= Framework.UpperLimit Then
         Results.Result.Issues += Issue.Arg.Index.Framework.Lower_Limit_Exceeded(tkn.Span)
-      End If
-      If Results.Arg.Index.Value >= Results.Args.Count Then
+      ElseIf Results.Arg.Index.Value >= Results.Args.Count Then
         Results.Result.Issues += Issue.Arg.Index.OutOfRange(tkn.Span)
       End If
       Results.Args.MarkAsUsed(Results.Arg.Index.Value)
@@ -33,15 +32,14 @@ Expecting_Digits:
       'Results.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing)
       Return results
     End If
-    If src(idx).Kind = TokenKind.Digits Then
-      results = Validate_ArgIndex(src(idx), results)
-    Else
+    If src(idx).Kind <> TokenKind.Digits Then
       ' An easy mistake to make is to have whitespaces after the opening brace.
       ' Eg: { 0}
       results.Result.Issues += Issue.Unexpected.Token(src(idx).Span, src(idx))
       idx += 1
       GoTo Expecting_Digits
     End If
+    results = Validate_ArgIndex(src(idx), results)
     Return results
   End Function
 
@@ -66,7 +64,10 @@ Expecting_Digits:
     Return Results
   End Function
 
-  Private Function AnyMoreTokensAreUnexpected(idx As Integer, edx As Integer, src As Token, Results As Parameters) As Parameters
+  Private Function AnyMoreTokensAreUnexpected(
+                                         ByRef idx As Integer, edx As Integer,
+                                               src As Token, Results As Parameters
+                                             ) As Parameters
     While idx < edx
       Results.Result.Issues += Issue.Unexpected.Token(src(idx).Span, src(idx))
       idx += 1

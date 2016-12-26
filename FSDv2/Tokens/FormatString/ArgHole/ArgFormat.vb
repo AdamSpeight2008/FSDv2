@@ -9,7 +9,7 @@ Partial Public Class FormatString
         MyBase.New(TokenKind.ArgHole_Format, Span, Inner)
       End Sub
 
-      <DebuggerStepperBoundary>
+      '  <DebuggerStepperBoundary>
       Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         Dim T As Token = Format.Head.TryParse(Ix, DoingResync)
@@ -26,14 +26,13 @@ Partial Public Class FormatString
       Public Class Head
         Inherits Token
 
-
         <DebuggerStepperBoundary>
         Private Sub New(Span As Source.Span, Inner As Tokens)
           MyBase.New(TokenKind.ArgHole_Format_Head, Span, Inner)
         End Sub
 
 
-        <DebuggerStepperBoundary>
+        ' <DebuggerStepperBoundary>
         Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim T As Token = Colon.TryParse(Ix, DoingResync)
@@ -51,7 +50,7 @@ Partial Public Class FormatString
           MyBase.New(TokenKind.ArgHole_Format_Body, Span, Inner)
         End Sub
 
-        <DebuggerStepperBoundary>
+        ' <DebuggerStepperBoundary>
         Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
           If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim Txn = Tokens.Empty

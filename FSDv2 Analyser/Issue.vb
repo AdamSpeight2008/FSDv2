@@ -28,6 +28,7 @@ Partial Public Class Analyser
       Arg_Align_Framework_Lower_Limit_Exceeded
       Invalid
       Missing_Closing_Brace
+      ResyncSkipped
     End Enum
 
     Public Shared Operator +(Issue0 As Issue, Issue1 As Issue) As Issues

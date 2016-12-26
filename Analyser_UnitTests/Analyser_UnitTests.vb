@@ -228,9 +228,9 @@ Public Class FSDv2_UnitTests
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
     Dim Result = Analyser.Analyse(ParseResult, Parameters)
     Dim Text = Result.Result.Issues.AsString
-    Dim Expected = "(  1:  1) Unexpected_Characters
-(  2:  0) Arg_Index_Missing
-(  3:  7) Arg_Align_Framework_Upper_Limit_Exceeded"
+    Dim Expected = "(  1:  1) Unexpected_Token
+(  2:  2) Arg_Index_OutOfRange
+"
     Assert.AreEqual(Expected, Text)
   End Sub
   <TestMethod, TestCategory(Cat0)>
@@ -244,9 +244,9 @@ Public Class FSDv2_UnitTests
     Dim Parameters As New FSDv2_Analyser.Analyser.Parameters()
     Dim Result = Analyser.Analyse(ParseResult, Parameters)
     Dim Text = Result.Result.Issues.AsString
-    Dim Expected = "(  1:  1) Unexpected_Token" & vbCrLf &
-                   "(  2:  7) Arg_Index_Framework_Upper_Limit_Exceeded" & vbCrLf &
-                   "(  2:  7) Arg_Index_OutOfRange" & vbCrLf
+    Dim Expected = "(  1:  1) Unexpected_Token
+(  2:  7) Arg_Index_FrameWork_Lower_Limit_Exceeded
+"
     Assert.AreEqual(Expected, Text)
   End Sub
 

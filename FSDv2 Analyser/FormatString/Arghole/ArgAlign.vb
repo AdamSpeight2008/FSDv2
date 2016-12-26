@@ -63,7 +63,6 @@ Expecting_Comma:
     Return Results
   End Function
 
-
   Private Function ArgAlign_Expecting_PossibleMinusSign(
                                                    ByRef idx As Integer,
                                                          edx As Integer,
@@ -83,47 +82,23 @@ Expecting_Possible_MinusSign:
       '   Results.Result.Issues += Issue.Unexpected.EoT(Nothing)
       Return AnyMoreTokensAreUnexpected(idx, edx, src, Results)
     End If
+
     Dim Current = tkn(idx0)
     Select Case Current.Kind
       Case TokenKind.MinusSign
-        idx0 += 1
-        Return ArgAlign_Expecting_Digits(idx0, edx0, Current, Results)
+        idx0 += 1 : Return ArgAlign_Expecting_Digits(idx0, edx0, Current, Results)
+
       Case TokenKind.Digits
         Return ArgAlign_Expecting_Digits(idx0, edx0, Current, Results)
+
       Case Else
         Results.Result.Issues += Issue.Unexpected.Token(Current.Span, Current)
         idx0 += 1
         GoTo Expecting_Possible_MinusSign
+
     End Select
-
-
+    Return Results
   End Function
-
-  '  Private Function ArgAlign_Expecting_Possible_Whitespace_1(
-  '                                                       ByRef idx As Integer,
-  '                                                             edx As Integer,
-  '                                                             src As Token,
-  '                                                         Results As Parameters) As Parameters
-  'Expecting_Whitespace:
-  '    If idx >= edx Then
-  '      'q.Result.Issues += Issue.Unexpected.EoT(Nothing)
-  '      Return Results
-  '    End If
-  '    Dim Current = src(idx)
-  '    Select Case Current.Kind
-  '      Case TokenKind.Whitespaces
-  '        idx += 1
-  '        Return AnyMoreTokensAreUnexpected(idx, edx, src, Results)
-  '        ' Return ArgAlign_Body_Completed(idx, edx, src, q)
-  '      Case Else
-  '        Debugger.Break()
-  '        Results.Result.Issues += Issue.Unexpected.Token(Current.Span, Current)
-  '        idx += 1
-  '        GoTo Expecting_Whitespace
-  '    End Select
-
-  '    Return Results
-  '  End Function
 
   Private Function Validate_ArgAlign(Current As Token, results As Parameters) As Parameters
     Dim ArgAlignValue = DirectCast(Current, FSDv2.FormatString.Common.Digits).GetValue
@@ -145,15 +120,14 @@ Expecting_Possible_MinusSign:
                                               src As Token,
                                           Results As Parameters
                                             ) As Parameters
-    Dim tkn = TryCast(src, FSDv2.FormatString.Common.Digits)
-    Debug.Assert(tkn IsNot Nothing)
+    Dim Current = TryCast(src, FSDv2.FormatString.Common.Digits)
+    Debug.Assert(Current IsNot Nothing)
 
 Expecting_Digits:
     If idx >= edx Then
       'q.Result.Issues += Issue.Unexpected.EoT(Nothing)
       Return Results
     End If
-    Dim Current = tkn '(idx)
     If Current.Kind <> TokenKind.Digits Then
       ' q.Result.Issues += Issue.Unexpected.Token(Current.Span, Current)
       idx += 1
@@ -164,19 +138,22 @@ Expecting_Digits:
     Return Expecting_Possible_Whitespaces(idx, edx, src, Results)
   End Function
 
-  Private Function ArgAlign_Body(ByRef idx As Integer, edx As Integer, src As Token, Results As Parameters) As Parameters
+  Private Function ArgAlign_Body(
+                            ByRef idx As Integer, edx As Integer,
+                                  src As Token, Results As Parameters
+                                ) As Parameters
     If idx >= edx Then Return Results
-    Dim tkn = TryCast(src, FSDv2.FormatString.ArgHole.Align.Body)
-    Debug.Assert(tkn IsNot Nothing)
-    Dim idx0 = 0, edx0 = tkn.InnerTokens.Count
-    Results = ArgAlign_Expecting_PossibleMinusSign(idx0, edx0, tkn, Results)
-    idx += 1 : If idx >= edx Then Return Results
+    Dim Current = TryCast(src, FSDv2.FormatString.ArgHole.Align.Body)
+    Debug.Assert(Current IsNot Nothing)
+    Dim idx0 = 0, edx0 = Current.InnerTokens.Count
+    Results = ArgAlign_Expecting_PossibleMinusSign(idx0, edx0, Current, Results)
+    idx += 1 ' : If idx >= edx Then Return Results
     Return AnyMoreTokensAreUnexpected(idx, edx, src, Results)
   End Function
 
-  Private Function ArgAlign(ai As Align, Results As Parameters) As Analyser.Parameters
+  Private Function ArgAlign(TheArgAlign As Align, Results As Parameters) As Analyser.Parameters
     ' Arg.Align::= Comma Whitespace? MinusSign? Digits Whitespaces?
-    Dim idx = 0, edx = ai.InnerTokens.Count
+    Dim idx = 0, edx = TheArgAlign.InnerTokens.Count
 
 Expecting_ArgAlign_Head:
     If idx >= edx Then
@@ -184,23 +161,23 @@ Expecting_ArgAlign_Head:
       Return Results
     End If
 
-    Dim current = ai(idx)
+    Dim current = TheArgAlign(idx)
     Select Case current.Kind
       Case TokenKind.ArgHole_Align_Head
         Results = ArgAlign_Head(idx, edx, current, Results)
-        idx += 1
-        If idx >= edx Then Return Results
-        current = ai(idx)
-        Results = ArgAlign_Body(idx, edx, current, Results)
+        idx += 1 : If idx >= edx Then Return Results
+        current = TheArgAlign(idx)
+        Results = ArgAlign_Body(idx, edx, TheArgAlign(idx), Results)
 
       Case TokenKind.ArgHole_Align_Body
         ' missing argalign_head
-        Return ArgAlign_Body(idx, edx, ai, Results)
+        Return ArgAlign_Body(idx, edx, TheArgAlign, Results)
+
       Case Else
         Results.Result.Issues += Issue.Unexpected.Token(current.Span, current)
         idx += 1
-
         GoTo Expecting_ArgAlign_Head
+
     End Select
     Return Results
   End Function

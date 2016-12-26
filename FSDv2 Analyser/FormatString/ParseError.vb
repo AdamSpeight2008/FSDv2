@@ -9,7 +9,8 @@ Partial Public Class Analyser
       Case FSDv2.ParseError.Reason.UnexpectedCharacter : Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Characters, pe.Span)
       Case FSDv2.ParseError.Reason.Invalid : Q.Result.Issues += New Issue(Issue.Kinds.Invalid, pe.Span)
       Case FSDv2.ParseError.Reason.EoT : Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, pe.Span)
-
+      Case FSDv2.ParseError.Reason.ResyncSkipped
+        Q.Result.Issues += New Issue(Issue.Kinds.ResyncSkipped, pe.Span)
       Case FSDv2.ParseError.Reason.Partial
 
       Case Else
