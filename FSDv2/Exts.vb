@@ -5,11 +5,12 @@ Public Module Exts
   <DebuggerStepperBoundary>
   <Extension>
   Public Function IsNotNullParse(T As Token) As Boolean
-    Return TryCast(T, ParseError)?.Why <> ParseError.Reason.Invalid
+    Dim Result = TryCast(T, ParseError)
+    Return (Result IsNot Nothing) AndAlso (Result.Why <> ParseError.Reason.Invalid)
   End Function
 
   <DebuggerStepperBoundary>
-  <Extension>
+              <Extension>
   Public Function IsKindOrIsNotNullParse(T As Token, k As TokenKind) As Boolean
     Return (T.Kind = k) OrElse T.IsNotNullParse
   End Function

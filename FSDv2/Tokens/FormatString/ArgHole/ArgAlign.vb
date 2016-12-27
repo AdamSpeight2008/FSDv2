@@ -9,16 +9,16 @@ Partial Public Class FormatString
 #End Region
 
       <DebuggerStepperBoundary>
-      Private Sub New(Span As Source.Span, Inner As Tokens)
+      Private Sub New(Span As Source.Span?, Inner As Tokens)
         MyBase.New(TokenKind.ArgHole_Align, Span, Inner)
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
+      Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
         '
         '  ArgHole.Index ::= ArgHole.Align.Head ArgHole.Align.Body
         '
-        If Ix.IsInvalid Then Return ParseError.Make.NullParse(Ix)
+        If Ix?.IsInvalid Then Return ParseError.Make.NullParse(Ix)
 #Region "IsThereAHead"
 IsThereAHead:
         Dim Txn = Tokens.Empty, sx = Ix, _Head = Head.TryParse(Ix, DoingResync)
@@ -33,15 +33,15 @@ IsThereABody:
         Txn = Common.AddThenNext(_Body, Txn, Ix)
 #End Region
 Done:
-        Return New Align(Txn.First.Span.Start.To(Txn.Last.Span.Next), Txn)
+        Return New Align(Txn.First.Span?.Start?.To(Txn.Last.Span?.Next), Txn)
 
 #Region "TryToResyncHead"
 TryToResyncHead:
         If Not DoingResync Then
           Dim ResultOfResyncing = RPX0.TryToResync(Ix, True)
-          Dim Size = ResultOfResyncing.Span.Size
+          Dim Size = ResultOfResyncing.Span?.Size
           If Size > 0 Then
-            Txn += New ParseError.Resync(sx.To(ResultOfResyncing.Span.Start), ResultOfResyncing)
+            Txn += New ParseError.Resync(sx?.To(ResultOfResyncing.Span?.Start), ResultOfResyncing)
           End If
           Select Case ResultOfResyncing.Kind
             Case TokenKind.ArgHole_Align_Head
@@ -65,9 +65,9 @@ TryToResyncHead:
 TryToResyncBody:
         If Not DoingResync Then
           Dim ResultOfResyncing = RPX1.TryToResync(Ix, True)
-          Dim size = ResultOfResyncing.Span.Size
+          Dim size = ResultOfResyncing.Span?.Size
           If size > 0 Then
-            Txn += New ParseError.Resync(sx.To(ResultOfResyncing.Span.Start), ResultOfResyncing)
+            Txn += New ParseError.Resync(sx?.To(ResultOfResyncing.Span?.Start), ResultOfResyncing)
             GoTo Done
           End If
           Select Case ResultOfResyncing.Kind
@@ -89,14 +89,14 @@ TryToResyncBody:
       Public Class Comma : Inherits Token
 
         <DebuggerStepperBoundary>
-        Private Sub New(Span As Source.Span)
+        Private Sub New(Span As Source.Span?)
           MyBase.New(TokenKind.Comma, Span)
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
-          If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
-          If (Ix.Value <> ","c) Then Return ParseError.Make.NullParse(Ix)
+        Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
+          If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
+          If (Ix?.Value <> ","c) Then Return ParseError.Make.NullParse(Ix)
           Return New Comma(Source.Span.Create_UnitSpan(Ix))
         End Function
 
@@ -105,14 +105,14 @@ TryToResyncBody:
       Public Class MinusSign : Inherits Token
 
         <DebuggerStepperBoundary>
-        Private Sub New(Span As Source.Span)
+        Private Sub New(Span As Source.Span?)
           MyBase.New(TokenKind.MinusSign, Span)
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
-          If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
-          If (Ix.Value <> "-"c) Then Return ParseError.Make.NullParse(Ix)
+        Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
+          If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
+          If (Ix?.Value <> "-"c) Then Return ParseError.Make.NullParse(Ix)
           Return New MinusSign(Source.Span.Create_UnitSpan(Ix))
         End Function
 
@@ -121,22 +121,22 @@ TryToResyncBody:
       Public Class Head : Inherits Token
 
         <DebuggerStepperBoundary>
-        Private Sub New(Span As Source.Span, Inner As Tokens)
+        Private Sub New(Span As Source.Span?, Inner As Tokens)
           MyBase.New(TokenKind.ArgHole_Align_Head, Span, Inner)
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
+        Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
           '
           ' ArgHole.Align.Head ::= Comma Whitespaces?
           '
-          If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
+          If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim Txn = Tokens.Empty, T = Comma.TryParse(Ix, DoingResync)
           If T.Kind <> TokenKind.Comma Then Return ParseError.Make.NullParse(Ix)
-          Dim sx = Ix : Txn += T : Ix = T.Span.Next
+          Dim sx = Ix : Txn += T : Ix = T.Span?.Next
           T = Common.Whitespaces.TryParse(Ix, DoingResync)
-          If T.Kind = TokenKind.Whitespaces Then Txn += T : Ix = T.Span.Next
-          Return New Head(sx.To(Ix), Txn)
+          If T.Kind = TokenKind.Whitespaces Then Txn += T : Ix = T.Span?.Next
+          Return New Head(sx?.To(Ix), Txn)
         End Function
 
       End Class
@@ -144,16 +144,16 @@ TryToResyncBody:
       Public Class Body : Inherits Token
 
         <DebuggerStepperBoundary>
-        Private Sub New(Span As Source.Span, Inner As Tokens)
+        Private Sub New(Span As Source.Span?, Inner As Tokens)
           MyBase.New(TokenKind.ArgHole_Align_Body, Span, Inner)
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
+        Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
           '
           '  ArgHole.Align.Body ::= MinusSign? Digits Whitespaces?
           '
-          If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
+          If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
           Dim sx = Ix, Txn = Tokens.Empty
           Dim T As Token = MinusSign.TryParse(Ix, DoingResync)
           If T.Kind = TokenKind.MinusSign Then Txn = Common.AddThenNext(T, Txn, Ix)
@@ -162,7 +162,7 @@ TryToResyncBody:
           Txn = Common.AddThenNext(T, Txn, Ix)
           T = Common.Whitespaces.TryParse(Ix, DoingResync)
           If T.Kind = TokenKind.Whitespaces Then Txn = Common.AddThenNext(T, Txn, Ix)
-          Return New Body(sx.To(Ix), Txn)
+          Return New Body(sx?.To(Ix), Txn)
         End Function
 
       End Class

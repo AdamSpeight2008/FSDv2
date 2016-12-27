@@ -19,21 +19,21 @@
   End Function
 
   '  <DebuggerStepperBoundary>
-  Public Function TryToResync(ix As Source.Position, DoingResync As Boolean) As Token
+  Public Function TryToResync(ix As Source.Position?, DoingResync As Boolean) As Token
     Dim sx = ix
     '   If Not DoingResync Then
     Dim c = Count - 1
     If c < 0 Then Return ParseError.Make.NullParse(ix)
-    While ix.IsValid
+    While ix?.IsValid
       Dim s = If(ix = sx, 1, 0)
       For i = s To c
         Dim rp = _ResyncPoints(i)
         Dim q = rp.TryParse(ix, DoingResync)
         If q Is Nothing Then Continue For
-        If q.Kind <> TokenKind.ParseError Then Return New ParseError.Resync(sx.To(ix), q)
+        If q.Kind <> TokenKind.ParseError Then Return New ParseError.Resync(sx?.To(ix), q)
       Next
-      ix = ix.Next
-      End While
+      ix = ix?.Next
+    End While
     ' End If
     Return ParseError.Make.NullParse(sx)
   End Function

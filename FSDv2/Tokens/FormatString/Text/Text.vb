@@ -3,7 +3,7 @@
   Public Class Text : Inherits Token
 
     <DebuggerStepperBoundary>
-    Friend Sub New(Span As Source.Span, Inner As Tokens)
+    Friend Sub New(Span As Source.Span?, Inner As Tokens)
       MyBase.New(TokenKind.Text, Span, Inner)
     End Sub
 
@@ -14,13 +14,13 @@
 
     <DebuggerStepperBoundary>
     Friend Shared Function _TryParse(
-                                      Ix As Source.Position,
+                                      Ix As Source.Position?,
                               ParsingArgFormatText As Boolean,
                               DoingResync As Boolean
                                  ) As Token
       Dim Txn = Tokens.Empty, sx = Ix, T As Token
       Dim TextStart As New Source.Position?
-      While Ix.IsValid
+      While Ix?.IsValid
 #Region " Check to see if it is an escaped Brace Closing or Openind"
         T = Common.Brace.Esc.Closing.TryParse(Ix, DoingResync) : If T.Kind = TokenKind.Esc_Brace_Closing Then Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
         T = Common.Brace.Esc.Opening.TryParse(Ix, DoingResync) : If T.Kind = TokenKind.Esc_Brace_Opening Then Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
@@ -40,7 +40,7 @@
         End If
 #End Region
 #Region "Check to see it is a C# specific escape sequence"
-        If Ix.Source.Kind = Source.SourceKind.CS_Standard AndAlso Ix = "\"c Then
+        If Ix?.Src.Kind = Source.SourceKind.CS_Standard AndAlso Ix = "\"c Then
           T = Common.Esc.Sequence.TryParse(Ix, DoingResync)
           Select Case T.Kind
             Case TokenKind.Esc_Seq_Simple, TokenKind.Esc_Seq_HexaDecimal, TokenKind.Esc_Seq_Unicode
@@ -53,12 +53,12 @@
         End If
 #End Region
 #Region "Otherwise treat it as just a text character."
-        If TextStart Is Nothing Then TextStart = New Source.Position?(Ix)
-        Ix = Ix.Next
+        If TextStart Is Nothing Then TextStart = Ix
+        Ix = Ix?.Next
 #End Region
       End While
       If TextStart IsNot Nothing Then Txn = Common.AddThenNext(Nothing, Txn, Ix, TextStart)
-      Return New Text(sx.To(Ix), Txn)
+      Return New Text(sx?.To(Ix), Txn)
     End Function
 
   End Class

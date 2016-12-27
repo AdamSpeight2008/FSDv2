@@ -46,17 +46,17 @@ Expecting_Arghole_Index:
         Return ArgHole_Expecting_ArgAlign(idx, edx, src, Results)
 
       Case TokenKind.ArgHole_Align
-        Results.Result.Issues += Issue.Arg.Index.Missing(src(idx).Span.Start.ToZeroSpan)
+        Results.Result.Issues += Issue.Arg.Index.Missing(src(idx).Span?.Start?.ToZeroSpan)
         Results = ArgHole_Expecting_ArgAlign(idx, edx, src, Results)
         idx += 1
         Return ArgHole_Expecting_ArgFormat(idx, edx, src, Results)
 
       Case TokenKind.ArgHole_Format
-        Results.Result.Issues += Issue.Arg.Index.Missing(src(idx).Span.Start.ToZeroSpan)
+        Results.Result.Issues += Issue.Arg.Index.Missing(src(idx).Span?.Start?.ToZeroSpan)
         Return ArgHole_Expecting_ArgFormat(idx, edx, src, Results)
 
       Case TokenKind.Brace_Closing
-        Results.Result.Issues += Issue.Arg.Index.Missing(src(idx).Span.Start.ToZeroSpan)
+        Results.Result.Issues += Issue.Arg.Index.Missing(src(idx).Span?.Start?.ToZeroSpan)
         Return ArgHole_Expecting_ClosingBrace(idx, edx, src, Results)
 
       Case TokenKind.ParseError
@@ -64,14 +64,15 @@ Expecting_Arghole_Index:
         Select Case TheParseError.Why
 
           Case FSDv2.ParseError.Reason.EoT
-            Results.Result.Issues += Issue.Arg.Index.Missing(TheParseError.Span.Start.ToZeroSpan) + Issue.Missing.ClosingBrace(TheParseError.Span.Start.ToZeroSpan)
+            Results.Result.Issues += Issue.Arg.Index.Missing(TheParseError.Span?.Start?.ToZeroSpan) +
+                                     Issue.Missing.ClosingBrace(TheParseError.Span?.Start?.ToZeroSpan)
             idx += 1
             Return ArgHole_Completed(idx, edx, src, Results)
 
           Case FSDv2.ParseError.Reason.Partial
             Select Case TheParseError(0).Kind
               Case TokenKind.Brace_Closing
-                Results.Result.Issues += Issue.Arg.Index.Missing(TheParseError(0).Span.Start.ToZeroSpan)
+                Results.Result.Issues += Issue.Arg.Index.Missing(TheParseError(0).Span?.Start?.ToZeroSpan)
                 idx += 1
                 Return ArgHole_Expecting_ClosingBrace(idx, edx, src, Results)
               Case Else
@@ -85,7 +86,7 @@ Expecting_Arghole_Index:
                 Results.Result.Issues += Issue.Unexpected.Characters(pe0.Span)
               End If
             End If
-            Results.Result.Issues += Issue.Arg.Index.Missing(TheParseError.Span.Start.ToZeroSpan)
+            Results.Result.Issues += Issue.Arg.Index.Missing(TheParseError.Span?.Start?.ToZeroSpan)
             idx += 1
             Return ArgHole_Expecting_ArgAlign(idx, edx, src, Results)
 

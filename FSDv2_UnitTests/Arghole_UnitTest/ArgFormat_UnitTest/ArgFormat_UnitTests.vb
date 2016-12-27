@@ -13,10 +13,10 @@ Public Class ArgFormat_UnitTests
   Const Cat = "Tokens.Arghole.ArgFormat"
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _00_()
+  Public Sub Parser_ArgFormat__00__EmptyString()
     Dim Text = ""
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Format.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
@@ -24,31 +24,27 @@ Public Class ArgFormat_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _01_()
+  Public Sub Parser_ArgFormat__01__HeadOnly()
     Dim Text = ":"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Format.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Format))
-    Assert.AreEqual("(  0:  1)", res.Span.ToString)
-    Assert.AreEqual(1, res.InnerTokens.Count)
-    Assert.IsInstanceOfType(res(0), GetType(FormatString.ArgHole.Format.Head))
-#Region "Check Format.Head"
-    Dim Head = res(0)
-    Assert.AreEqual("(  0:  1)", Head.Span.ToString)
-    Assert.AreEqual(1, Head.InnerTokens.Count)
-    Assert.IsInstanceOfType(Head(0), GetType(FormatString.ArgHole.Format.Colon))
-    Assert.AreEqual("(  0:  1)", Head(0).Span.ToString)
-#End Region
+    Dim Actual = res.AsString
+    Dim Expected = "(  0:  1)  ArgHole_Format
+  [ 0]  (  0:  1)  ArgHole_Format_Head
+    [ 0]  (  0:  1)  Colon
+"
+    Assert.AreEqual(Expected, Actual)
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _02_()
+  Public Sub Parser_ArgFormat__02__Head_Body()
     Dim Text = ":{{"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Format.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
@@ -63,6 +59,12 @@ Public Class ArgFormat_UnitTests
     Assert.AreEqual(1, Head.InnerTokens.Count)
     Assert.IsInstanceOfType(Head(0), GetType(FormatString.ArgHole.Format.Colon))
     Assert.AreEqual("(  0:  1)", Head(0).Span.ToString)
+    Dim Actual = Head.AsString
+    Dim Expected =
+"(  0:  1)  ArgHole_Format_Head
+  [ 0]  (  0:  1)  Colon
+"
+    Assert.AreEqual(Expected, Actual)
 #End Region
 #Region "Check Format.Body"
     Dim Body = res(1)
@@ -73,12 +75,20 @@ Public Class ArgFormat_UnitTests
     Assert.AreEqual("(  1:  2)", BodyText.Span.ToString)
     Assert.AreEqual(1, BodyText.InnerTokens.Count)
     Assert.IsInstanceOfType(BodyText(0), GetType(FormatString.Common.Brace.Esc.Opening))
-
+    Actual = Body.AsString
+    Expected =
+"(  1:  2)  ArgHole_Format_Body
+  [ 0]  (  1:  2)  Text
+    [ 0]  (  1:  2)  Esc_Brace_Opening
+      [ 0]  (  1:  1)  Brace_Opening
+      [ 1]  (  2:  1)  Brace_Opening
+"
+    Assert.AreEqual(Expected, Actual)
 #End Region
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _03_()
+  Public Sub Parser_ArgFormat__03__Head_Body_OpeningBrace()
     Dim Text = ":{"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
@@ -119,10 +129,10 @@ Public Class ArgFormat_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _04_()
+  Public Sub Parser_ArgFormat__04__Head_Body_OpeningClosingBrace()
     Dim Text = ":{}"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.Format.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))

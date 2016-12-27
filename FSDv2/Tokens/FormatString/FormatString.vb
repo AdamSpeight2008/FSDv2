@@ -1,18 +1,18 @@
 ﻿Partial Public Class FormatString : Inherits Token
 
   <DebuggerStepperBoundary>
-  Friend Sub New(Span As Source.Span, Inner As Tokens)
+  Friend Sub New(Span As Source.Span?, Inner As Tokens)
     MyBase.New(TokenKind.FormatString, Span, Inner)
   End Sub
 
   <DebuggerStepperBoundary>
-  Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
-    If Ix.IsInvalid Then Return ParseError.Make.NullParse(Ix)
+  Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
+    If Ix?.IsInvalid Then Return ParseError.Make.NullParse(Ix)
     Dim sx = Ix
     Dim Txn = Tokens.Empty
     Dim T As Token
     Dim TextStart As Source.Position? = Nothing
-    While Ix.IsValid
+    While Ix?.IsValid
       T = Common.Brace.TryParse(Ix, DoingResync)
       Select Case T.Kind
 
@@ -27,15 +27,15 @@
           If res.Kind = TokenKind.ArgHole Then
             Txn = Common.AddThenNext(res, Txn, Ix, TextStart)
           Else
-            Txn = Common.AddThenNext(ParseError.Make.UnexpectedChars(Ix.ToUnitSpan, res, ""), Txn, Ix, TextStart)
+            Txn = Common.AddThenNext(ParseError.Make.UnexpectedChars(Ix?.ToUnitSpan, res, ""), Txn, Ix, TextStart)
           End If
         Case Else
-          If TextStart Is Nothing Then TextStart = New Source.Position?(Ix)
-          Ix = Ix.Next
+          If TextStart Is Nothing Then TextStart = Ix
+          Ix = Ix?.Next
       End Select
     End While
     Txn = Common.AddThenNext(Nothing, Txn, Ix, TextStart)
-    Return New FormatString(sx.To(Ix), Txn)
+    Return New FormatString(sx?.To(Ix), Txn)
   End Function
 
 End Class

@@ -10,13 +10,13 @@ Partial Public Class FormatString
 #End Region
 
       <DebuggerStepperBoundary>
-      Private Sub New(Span As Source.Span, Inner As Tokens)
+      Private Sub New(Span As Source.Span?, Inner As Tokens)
         MyBase.New(TokenKind.ArgHole_Index, Span, Inner)
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
-        If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
+      Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
+        If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
         Dim Txn = Tokens.Empty, T As Token, sx = Ix
 #Region "AreThereDigits"
 AreThereDigits:
@@ -30,7 +30,7 @@ AreThereWhitespace:
         If T.Kind = TokenKind.Whitespaces Then Txn = Common.AddThenNext(T, Txn, Ix)
 #End Region
 Done:
-        Return New Index(sx.To(Ix), Txn)
+        Return New Index(sx?.To(Ix), Txn)
 
 #Region "TryToResync"
 TryToResync:
@@ -50,8 +50,8 @@ TryToResync:
           If TheParseError IsNot Nothing Then
             Select Case TheParseError.Why
               Case ParseError.Reason.ResyncSkipped
-                If ResultOfResyncing.Span.Size > 0 Then
-                  Dim tmp As ParseError = ParseError.Make.UnexpectedChars(sx.To(ResultOfResyncing.Span.Start.Next), Tokens.Empty, "")
+                If ResultOfResyncing.Span?.Size > 0 Then
+                  Dim tmp As ParseError = ParseError.Make.UnexpectedChars(sx?.To(ResultOfResyncing.Span?.Start?.Next), Tokens.Empty, "")
                   Txn = Common.AddThenNext(tmp, Txn, Ix)
                 End If
                 Select Case TheParseError(0).Kind

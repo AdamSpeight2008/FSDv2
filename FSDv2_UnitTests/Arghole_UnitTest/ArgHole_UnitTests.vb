@@ -14,7 +14,7 @@ Public Class ArgHole_UnitTests
   Const Cat = "Tokens.Arghole"
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _00_EmptyString()
+  Public Sub Parser_ArgHole__00__EmptyString()
     Dim Text = ""
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
@@ -25,7 +25,7 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _01_OpeningBraceOnly()
+  Public Sub Parser_ArgHole__01__OpeningBraceOnly()
     Dim Input = "{"
     Dim TheSource = Source.Create(Input, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
@@ -44,7 +44,7 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _02_EmptyArgHole()
+  Public Sub Parser_ArgHole__02__EmptyArgHole()
     Dim Text = "{}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
@@ -67,7 +67,7 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _03_ArgIndexOnly()
+  Public Sub Parser_ArgHole__03__ArgIndexOnly()
     Dim Text = "{0}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
@@ -101,7 +101,7 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _04_ArgIndexPlusWS()
+  Public Sub Parser_ArgHole__04__ArgIndexPlusWS()
     Dim Text = "{0 }"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
@@ -130,7 +130,7 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _05_ArgIndex_WS_EmptyArgAlign()
+  Public Sub Parser_ArgHole__05__ArgIndex_WS_EmptyArgAlign()
     Dim Text = "{0 ,}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
@@ -156,7 +156,7 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _06_ArgIndex_WS_ArgAlign_WS_ArgFormat()
+  Public Sub Parser_ArgHole__06__ArgIndex_WS_ArgAlign_WS_ArgFormat()
     Dim Text = "{0 , :}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
@@ -189,7 +189,7 @@ Public Class ArgHole_UnitTests
 
   End Sub
   <TestMethod, TestCategory(Cat)>
-  Public Sub _07_ArgIndex_WS_ArgAlign()
+  Public Sub Parser_ArgHole__07__ArgIndex_WS_ArgAlign()
     Dim Text = "{0 , 1}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
@@ -220,7 +220,7 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _08_ArgIndex_MinusArgAlign()
+  Public Sub Parser_ArgHole__08__ArgIndex_MinusArgAlign()
     Dim Text = "{0 , -1}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
@@ -250,8 +250,9 @@ Public Class ArgHole_UnitTests
 "
     Assert.AreEqual(Expected, Actual)
   End Sub
+
   <TestMethod, TestCategory(Cat)>
-  Public Sub _09_ArgIndex_ArgFormat()
+  Public Sub Parser_ArgHole__09__ArgIndex_ArgFormat()
     Dim Text = "{0 :{{}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First

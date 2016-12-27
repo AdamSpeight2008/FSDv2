@@ -49,7 +49,7 @@ Public Class ArgIndex_UnitTest
     Assert.AreEqual(TokenKind.Digits, res(0).Kind)
     Assert.AreEqual(2, res(0).InnerTokens.Count)
     Assert.AreEqual("(  0:  2)", res(0).Span.ToString)
-    Assert.AreEqual("01", res(0).Span.Text)
+    Assert.AreEqual("01", res(0).Span?.Text)
     Assert.AreEqual(TokenKind.Digit, res(0)(0).Kind)
     Assert.AreEqual(TokenKind.Digit, res(0)(1).Kind)
   End Sub
@@ -68,14 +68,14 @@ Public Class ArgIndex_UnitTest
     Assert.AreEqual(TokenKind.Digits, res(0).Kind)
 
     Assert.AreEqual("(  0:  1)", res(0).Span.ToString)
-    Assert.AreEqual("0", res(0).Span.Text)
+    Assert.AreEqual("0", res(0).Span?.Text)
     Assert.AreEqual(1, res(0).InnerTokens.Count)
     Assert.AreEqual(TokenKind.Digit, res(0)(0).Kind)
 
     Assert.AreEqual(TokenKind.Whitespaces, res(1).Kind)
     Assert.AreEqual("(  1:  2)", res(1).Span.ToString)
     Assert.AreEqual(2, res(1).InnerTokens.Count)
-    Assert.AreEqual("  ", res(1).Span.Text)
+    Assert.AreEqual("  ", res(1).Span?.Text)
   End Sub
 
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>
@@ -92,14 +92,14 @@ Public Class ArgIndex_UnitTest
 
     Assert.AreEqual(TokenKind.Digits, res.InnerTokens(0).Kind)
     Assert.AreEqual("(  0:  2)", res(0).Span.ToString)
-    Assert.AreEqual("01", res(0).Span.Text)
+    Assert.AreEqual("01", res(0).Span?.Text)
     Assert.AreEqual(2, res(0).InnerTokens.Count)
     Assert.AreEqual(TokenKind.Digit, res(0)(0).Kind)
     Assert.AreEqual(TokenKind.Digit, res(0)(1).Kind)
 
     Assert.AreEqual(TokenKind.Whitespaces, res.InnerTokens(1).Kind)
     Assert.AreEqual("(  2:  2)", res(1).Span.ToString)
-    Assert.AreEqual("  ", res(1).Span.Text)
+    Assert.AreEqual("  ", res(1).Span?.Text)
     Assert.AreEqual(2, res(1).InnerTokens.Count)
   End Sub
 

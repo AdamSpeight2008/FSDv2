@@ -1,16 +1,16 @@
-﻿Partial Public Structure Source
+﻿Partial Public Class Source
 
   <DebuggerDisplay("({Start.Index},{Size}) =[{Me.Text}]")>
   Public Structure Span
 
 #Region "ReadOnly Properties"
-    Public ReadOnly Property Start As Position
+    Public ReadOnly Property Start As Position?
     Public ReadOnly Property Size As Integer
 #End Region
 
 
     <DebuggerStepperBoundary>
-    Friend Sub New(Start As Position, Size As Integer)
+    Friend Sub New(Start As Position?, Size As Integer)
       Me.Start = Start : Me.Size = Size
     End Sub
 
@@ -20,17 +20,18 @@
       Return New Span(P, Size)
     End Function
     <DebuggerStepperBoundary>
-    Public Shared Function Create_ZeroSpan(p As Position) As Span
+    Public Shared Function Create_ZeroSpan(p As Position?) As Span
       Return New Span(p, 0)
     End Function
     <DebuggerStepperBoundary>
-    Public Shared Function Create_UnitSpan(p As Position) As Span
+    Public Shared Function Create_UnitSpan(p As Position?) As Span
       Return New Span(p, 1)
     End Function
 #End Region
 
     Public Function [Next]() As Source.Position
-      Return Source.Position.Create(Me.Start.Source, Me.Start.Index + Me.Size)
+      Dim idx = Me.Start?.Index + Me.Size
+      Return Source.Position.Create(Me.Start?.Src, If(idx.HasValue, idx.Value, 0))
     End Function
 
     <DebuggerStepperBoundary>
@@ -43,8 +44,8 @@
       Dim cx = Start
       Dim fs = Me.Next
       While cx < fs
-        Yield cx.Value
-        cx = cx.Next
+        Yield cx?.Value
+        cx = cx?.Next
       End While
     End Function
 
@@ -55,4 +56,4 @@
 
   End Structure
 
-End Structure
+End Class

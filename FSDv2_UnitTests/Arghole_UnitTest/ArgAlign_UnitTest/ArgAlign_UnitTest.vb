@@ -57,7 +57,7 @@ Public Class ArgAlign_UnitTest
     Assert.AreEqual(1, Body.InnerTokens.Count)
     Assert.AreEqual(TokenKind.Digits, Body(0).Kind)
     Assert.AreEqual("(  1:  1)", Body(0).Span.ToString)
-    Assert.AreEqual("1", Body(0).Span.Text)
+    Assert.AreEqual("1", Body(0).Span?.Text)
 
 
 #End Region
@@ -87,7 +87,7 @@ Public Class ArgAlign_UnitTest
     Assert.AreEqual("(  0:  1)", Head(0).Span.ToString)
     ' Check for the optional whitespace, there shouldn be some.
     Assert.AreEqual(TokenKind.Whitespaces, Head(1).Kind)
-    Assert.AreEqual(2, Head(1).Span.Size)
+    Assert.AreEqual(2, Head(1).Span?.Size)
     Assert.AreEqual("(  1:  2)", Head(1).Span.ToString)
 #End Region
 #Region "Check the body part of the Align"
@@ -98,7 +98,7 @@ Public Class ArgAlign_UnitTest
 
     Assert.AreEqual(TokenKind.Digits, Body(0).Kind)
     Assert.AreEqual("(  3:  1)", Body(0).Span.ToString)
-    Assert.AreEqual("1", Body(0).Span.Text)
+    Assert.AreEqual("1", Body(0).Span?.Text)
 
 #End Region
 
@@ -143,7 +143,7 @@ Public Class ArgAlign_UnitTest
 
     Assert.AreEqual(TokenKind.Digits, Body(1).Kind)
     Assert.AreEqual("(  2:  1)", Body(1).Span.ToString)
-    Assert.AreEqual("1", Body(1).Span.Text)
+    Assert.AreEqual("1", Body(1).Span?.Text)
 
 
 #End Region
@@ -173,7 +173,7 @@ Public Class ArgAlign_UnitTest
     Assert.AreEqual("(  0:  1)", Head(0).Span.ToString)
     ' Check for the optional whitespace, there shouldn't be any.
     Assert.AreEqual(TokenKind.Whitespaces, Head(1).Kind)
-    Assert.AreEqual(1, Head(1).Span.Size)
+    Assert.AreEqual(1, Head(1).Span?.Size)
     Assert.AreEqual("(  1:  1)", Head(1).Span.ToString)
 #End Region
 #Region "Check the body part of the Align"
@@ -188,7 +188,7 @@ Public Class ArgAlign_UnitTest
 
     Assert.AreEqual(TokenKind.Digits, Body(1).Kind)
     Assert.AreEqual("(  3:  1)", Body(1).Span.ToString)
-    Assert.AreEqual("1", Body(1).Span.Text)
+    Assert.AreEqual("1", Body(1).Span?.Text)
 
 
 #End Region
@@ -227,7 +227,7 @@ Public Class ArgAlign_UnitTest
     Assert.AreEqual(TokenKind.Digits, Body(0).Kind)
     Assert.AreEqual(TokenKind.Whitespaces, Body(1).Kind)
     Assert.AreEqual("(  1:  1)", Body(0).Span.ToString)
-    Assert.AreEqual("1", Body(0).Span.Text)
+    Assert.AreEqual("1", Body(0).Span?.Text)
     Assert.AreEqual("(  2:  1)", Body(1).Span.ToString)
 
 #End Region
@@ -257,7 +257,7 @@ Public Class ArgAlign_UnitTest
     Assert.AreEqual("(  0:  1)", Head(0).Span.ToString)
     ' Check for the optional whitespace, there shouldn't be any.
     Assert.AreEqual(TokenKind.Whitespaces, Head(1).Kind)
-    Assert.AreEqual(1, Head(1).Span.Size)
+    Assert.AreEqual(1, Head(1).Span?.Size)
     Assert.AreEqual("(  1:  1)", Head(1).Span.ToString)
 #End Region
 #Region "Check the body part of the Align"
@@ -272,7 +272,7 @@ Public Class ArgAlign_UnitTest
 
     Assert.AreEqual(TokenKind.Digits, Body(1).Kind)
     Assert.AreEqual("(  3:  1)", Body(1).Span.ToString)
-    Assert.AreEqual("1", Body(1).Span.Text)
+    Assert.AreEqual("1", Body(1).Span?.Text)
 
     Assert.AreEqual(TokenKind.Whitespaces, Body(2).Kind)
     Assert.AreEqual("(  4:  1)", Body(2).Span.ToString)
@@ -303,7 +303,7 @@ Public Class ArgAlign_UnitTest
     Assert.AreEqual("(  0:  1)", Head(0).Span.ToString)
     ' Check for the optional whitespace, there shouldn't be any.
     Assert.AreEqual(TokenKind.Whitespaces, Head(1).Kind)
-    Assert.AreEqual(1, Head(1).Span.Size)
+    Assert.AreEqual(1, Head(1).Span?.Size)
     Assert.AreEqual("(  1:  1)", Head(1).Span.ToString)
 #End Region
 #Region "Check the body part of the Align"
@@ -318,7 +318,7 @@ Public Class ArgAlign_UnitTest
 
     Assert.AreEqual(TokenKind.Digits, Body(1).Kind)
     Assert.AreEqual("(  3:  1)", Body(1).Span.ToString)
-    Assert.AreEqual("1", Body(1).Span.Text)
+    Assert.AreEqual("1", Body(1).Span?.Text)
 
 #End Region
   End Sub
@@ -348,7 +348,7 @@ Public Class ArgAlign_UnitTest
     Assert.AreEqual("(  0:  1)", Head(0).Span.ToString)
     ' Check for the optional whitespace, there shouldn't be any.
     Assert.AreEqual(TokenKind.Whitespaces, Head(1).Kind)
-    Assert.AreEqual(1, Head(1).Span.Size)
+    Assert.AreEqual(1, Head(1).Span?.Size)
     Assert.AreEqual("(  1:  1)", Head(1).Span.ToString)
 #End Region
 #Region "Check the body part of the Align"
@@ -361,7 +361,7 @@ Public Class ArgAlign_UnitTest
 
     Assert.AreEqual(TokenKind.Digits, Body(0).Kind)
     Assert.AreEqual("(  2:  1)", Body(0).Span.ToString)
-    Assert.AreEqual("1", Body(0).Span.Text)
+    Assert.AreEqual("1", Body(0).Span?.Text)
 
     Assert.AreEqual(TokenKind.Whitespaces, Body(1).Kind)
     Assert.AreEqual("(  3:  1)", Body(1).Span.ToString)

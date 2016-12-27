@@ -1,12 +1,12 @@
 ﻿Imports FSD
 
 Public MustInherit Class Token
-  Public ReadOnly Property Span As Source.Span
+  Public ReadOnly Property Span As Source.Span?
   ReadOnly Property InnerTokens As Tokens = Tokens.Empty
   Public ReadOnly Property Kind As TokenKind
 
   <DebuggerStepperBoundary>
-  Protected Sub New(kind As TokenKind, span As Source.Span, Optional Inner As Tokens = Nothing)
+  Protected Sub New(kind As TokenKind, span As Source.Span?, Optional Inner As Tokens = Nothing)
     Me.Kind = kind : Me.Span = span : Me.InnerTokens = If(Inner, Tokens.Empty)
   End Sub
 
