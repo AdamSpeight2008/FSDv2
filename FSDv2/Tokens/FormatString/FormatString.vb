@@ -6,9 +6,7 @@
 
   Public Shared Function TryParse(Ix As Source.Position) As Token
     If Ix.IsInvalid Then Return ParseError.Make.NullParse(Ix)
-    Dim sx = Ix
-    Dim Txn = Tokens.Empty
-    Dim T As Token
+    Dim sx = Ix, Txn = Tokens.Empty, T As Token
     Dim TextStart As Source.Position? = Nothing
     While Ix.IsValid
       T = Common.Brace.TryParse(Ix)

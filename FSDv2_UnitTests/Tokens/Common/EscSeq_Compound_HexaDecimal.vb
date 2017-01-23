@@ -10,7 +10,7 @@ Public Class EscSeq_Compound_HexaDecimal
   <TestMethod, TestCategory(Cat)>
   Public Sub _00_()
     Dim Text = "\x"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
     Assert.IsNotNull(res)
@@ -21,7 +21,7 @@ Public Class EscSeq_Compound_HexaDecimal
   <TestMethod, TestCategory(Cat)>
   Public Sub _01_()
     Dim Text = "\x"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Verbatum)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Verbatum, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
     Assert.IsNotNull(res)
@@ -32,7 +32,7 @@ Public Class EscSeq_Compound_HexaDecimal
   <TestMethod, TestCategory(Cat)>
   Public Sub _02_()
     Dim Text = "\x"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
     Assert.IsNotNull(res)
@@ -44,7 +44,7 @@ Public Class EscSeq_Compound_HexaDecimal
   <TestMethod, TestCategory(Cat)>
   Public Sub _03_()
     Dim Text = "\x0"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
     Assert.IsNotNull(res)
@@ -61,7 +61,7 @@ Public Class EscSeq_Compound_HexaDecimal
   <TestMethod, TestCategory(Cat)>
   Public Sub _04_()
     Dim Text = "\x00"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
     Assert.IsNotNull(res)
@@ -78,7 +78,7 @@ Public Class EscSeq_Compound_HexaDecimal
   <TestMethod, TestCategory(Cat)>
   Public Sub _05_()
     Dim Text = "\x000"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
     Assert.IsNotNull(res)
@@ -95,7 +95,7 @@ Public Class EscSeq_Compound_HexaDecimal
   <TestMethod, TestCategory(Cat)>
   Public Sub _06_()
     Dim Text = "\x0000"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
     Assert.IsNotNull(res)
@@ -112,7 +112,7 @@ Public Class EscSeq_Compound_HexaDecimal
   <TestMethod, TestCategory(Cat)>
   Public Sub _07_()
     Dim Text = "\x0000F"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
     Assert.IsNotNull(res)

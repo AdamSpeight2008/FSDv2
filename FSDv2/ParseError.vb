@@ -12,11 +12,11 @@
   Public ReadOnly Property Why As ParseError.Reason
   Public ReadOnly Property Additional As String
 
-  Public Sub New(Span As Source.Span, Reason As Reason, T As Token, Optional Additional As String = Nothing)
-    MyBase.New(TokenKind.ParseError, Span, Tokens.Empty + T)
-    Me.Why = Reason
-    Me.Additional = If(Additional, String.Empty)
-  End Sub
+  'Public Sub New(Span As Source.Span, Reason As Reason, T As Token, Optional Additional As String = Nothing)
+  '  MyBase.New(TokenKind.ParseError, Span, T)
+  '  Me.Why = Reason
+  '  Me.Additional = If(Additional, String.Empty)
+  'End Sub
 
   Public Sub New(Span As Source.Span, Reason As Reason, Tx As Tokens, Optional Additional As String = Nothing)
     MyBase.New(TokenKind.ParseError, Span, Tx)

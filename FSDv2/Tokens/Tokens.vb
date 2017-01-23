@@ -28,11 +28,11 @@
   End Function
 
   Public Function First() As Token
-    Return _Tokens.FirstOrDefault
+    Return If(_Tokens.Length = 0, Nothing, _Tokens(0))
   End Function
 
   Public Function Last() As Token
-    Return _Tokens.LastOrDefault
+    Return If(_Tokens.Length = 0, Nothing, _Tokens(Count - 1))
   End Function
 
 #Region "Operator to help with creating Tokens"

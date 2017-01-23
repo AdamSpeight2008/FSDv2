@@ -8,7 +8,6 @@
     Public ReadOnly Property Size As Integer
 #End Region
 
-
     Friend Sub New(Start As Position, Size As Integer)
       Me.Start = Start : Me.Size = Size
     End Sub
