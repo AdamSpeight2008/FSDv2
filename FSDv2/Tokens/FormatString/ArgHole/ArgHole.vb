@@ -25,7 +25,10 @@ Find_Index:
       T = ArgHole.Index.TryParse(Ix)
       If TypeOf T Is ParseError.EoT Then txn += T : GoTo Done
       txn = Common.AddThenNext(T, txn, Ix)
-      If T.Kind <> TokenKind.ArgHole_Index Then GoTo TryToResync
+      If T.Kind <> TokenKind.ArgHole_Index Then
+
+        GoTo TryToResync
+      End If
 #End Region
 #Region "Find Align"
 Find_Align:
@@ -443,7 +446,8 @@ TryToResyncBody:
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
         Dim T As Token = Format.Head.TryParse(Ix)
         If TypeOf T Is ParseError Then Return T
-        Dim sx = Ix, Txn = Common.AddThenNext(T, Tokens.Empty, Ix)
+        Dim sx = Ix
+        Dim Txn = Tokens.Empty : Txn = Common.AddThenNext(T, Txn, Ix)
         T = ArgHole.Format.Body.TryParse(Ix)
         If T.Kind = TokenKind.ArgHole_Format_Body Then Txn = Common.AddThenNext(T, Txn, Ix)
         Return New Format(sx.To(Ix), Txn)

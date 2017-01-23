@@ -17,7 +17,7 @@ Imports FSDv2
   <TestMethod, TestCategory("Tokens.Common.Brace")>
   Public Sub _01_()
     Dim Text = "{"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard)
     Dim FirstPos = TheSource.First
     Dim res = FormatString.Common.Brace.TryParse(FirstPos)
     Assert.IsNotNull(res)

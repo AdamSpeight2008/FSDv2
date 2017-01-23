@@ -14,10 +14,10 @@ Public Class ArgHole_UnitTests
   Const Cat = "Tokens.Arghole"
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _00_Empty()
+  Public Sub _00_()
     Dim Text = ""
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind., Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim res = FormatString.ArgHole.TryParse(FirstPos)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
@@ -25,10 +25,10 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _01_Ob()
+  Public Sub _01_()
     Dim Input = "{"
-    Dim TheSource = Source.Create(Input, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Input, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
@@ -44,10 +44,10 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _02_ObCb()
+  Public Sub _02_()
     Dim Text = "{}"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
@@ -70,10 +70,10 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _03_ObIdxCb()
+  Public Sub _03_()
     Dim Text = "{0}"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
@@ -99,10 +99,10 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _04_ObIdxSpcCb()
+  Public Sub _04_()
     Dim Text = "{0 }"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
@@ -130,10 +130,10 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _05_ObIdxSpcAlgCb()
+  Public Sub _05_()
     Dim Text = "{0 ,}"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
@@ -158,10 +158,10 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _06_ObIdxAlgFrmCb()
+  Public Sub _06_()
     Dim Text = "{0 , :}"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
@@ -191,10 +191,10 @@ Public Class ArgHole_UnitTests
 
   End Sub
   <TestMethod, TestCategory(Cat)>
-  Public Sub _07_ObIdxAlgCb()
+  Public Sub _07_()
     Dim Text = "{0 , 1}"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
@@ -224,10 +224,10 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _08_ObIdxAlgNegOneCb()
+  Public Sub _08_()
     Dim Text = "{0 , -1}"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
@@ -257,10 +257,10 @@ Public Class ArgHole_UnitTests
     Assert.AreEqual(Expected, Actual)
   End Sub
   <TestMethod, TestCategory(Cat)>
-  Public Sub _09_ObIdxFrmEscObCb()
+  Public Sub _09_()
     Dim Text = "{0 :{{}"
-    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-    Dim FirstPos = TheSource.First
+        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+        Dim FirstPos = TheSource.First
     Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))

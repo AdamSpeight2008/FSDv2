@@ -30,8 +30,7 @@ Public MustInherit Class Token
 End Class
 
 Public Enum TokenKind As Integer
-  ParseError = -1
-  None = 0
+  ParseError
   Whitespace
   Whitespaces
   Digit
@@ -64,5 +63,5 @@ Public Enum TokenKind As Integer
   Backslash_UpperU
   Backslash_LowerU
   [Partial]
-  Identifier
+    Identifier
 End Enum

@@ -24,7 +24,8 @@
 
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
-        Dim Txn = Tokens.Empty, Sx = Ix
+        Dim Txn = Tokens.Empty
+        Dim Sx = Ix
         While Ix.IsValid
           Dim T = Whitespace.TryParse(Ix)
           If T.Kind = TokenKind.ParseError Then Exit While
@@ -46,7 +47,8 @@
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid OrElse Ix.Value.HasValue = False Then Return ParseError.Make.EoT(Ix)
         Select Case Ix.Value.Value
-          Case "0"c To "9"c : Return New Digit(Ix.ToUnitSpan)
+          Case "0"c To "9"c
+            Return New Digit(Ix.ToUnitSpan)
           Case Else
             Return ParseError.Make.NullParse(Ix)
         End Select
@@ -54,32 +56,19 @@
 
       Public Function GetValue() As Numerics.BigInteger?
         Select Case Me.Span.Start.Value
-          Case "0"c : Return D0
-          Case "1"c : Return D1
-          Case "2"c : Return D2
-          Case "3"c : Return D3
-          Case "4"c : Return D4
-          Case "5"c : Return D5
-          Case "6"c : Return D6
-          Case "7"c : Return D7
-          Case "8"c : Return D8
-          Case "9"c : Return D9
+          Case "0"c : Return Numerics.BigInteger.Zero
+          Case "1"c : Return Numerics.BigInteger.One
+          Case "2"c : Return New Numerics.BigInteger(2)
+          Case "3"c : Return New Numerics.BigInteger(3)
+          Case "4"c : Return New Numerics.BigInteger(4)
+          Case "5"c : Return New Numerics.BigInteger(5)
+          Case "6"c : Return New Numerics.BigInteger(6)
+          Case "7"c : Return New Numerics.BigInteger(7)
+          Case "8"c : Return New Numerics.BigInteger(8)
+          Case "9"c : Return New Numerics.BigInteger(9)
         End Select
         Return Nothing
       End Function
-
-#Region "Shared Digit Values"
-      Private Shared D0 As Numerics.BigInteger = Numerics.BigInteger.Zero
-      Private Shared D1 As Numerics.BigInteger = Numerics.BigInteger.One
-      Private Shared D2 As New Numerics.BigInteger(2)
-      Private Shared D3 As New Numerics.BigInteger(3)
-      Private Shared D4 As New Numerics.BigInteger(4)
-      Private Shared D5 As New Numerics.BigInteger(5)
-      Private Shared D6 As New Numerics.BigInteger(6)
-      Private Shared D7 As New Numerics.BigInteger(7)
-      Private Shared D8 As New Numerics.BigInteger(8)
-      Private Shared D9 As New Numerics.BigInteger(9)
-#End Region
 
     End Class
 
@@ -91,7 +80,8 @@
 
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
-        Dim Txn = Tokens.Empty, Sx = Ix
+        Dim Txn = Tokens.Empty()
+        Dim Sx = Ix
         While Ix.IsValid
           Dim T = Digit.TryParse(Ix)
           If T.Kind = TokenKind.ParseError Then Exit While
@@ -104,12 +94,11 @@
 
       Private _Value As Numerics.BigInteger?
       Private _First As Boolean = False
-
       Public Function GetValue() As Numerics.BigInteger?
         If Not _First Then
           Dim output = Numerics.BigInteger.Zero
           For Each d As FSDv2.FormatString.Common.Digit In Me.InnerTokens.GetEnumerator
-            output = (D10 * output) + d.GetValue
+            output = (10 * output) + d.GetValue
           Next
           _Value = output
           _First = True
@@ -117,7 +106,6 @@
         Return _Value
       End Function
 
-      Private Shared D10 As New Numerics.BigInteger(10)
     End Class
 
     Public Class HexDigit : Inherits Token
@@ -129,9 +117,8 @@
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid OrElse Ix.Value.HasValue = False Then Return ParseError.Make.EoT(Ix)
         Select Case Ix.Value.Value
-          Case "0"c To "9"c,
-               "a"c To "f"c,
-               "A"c To "F"c : Return New HexDigit(Ix.ToUnitSpan)
+          Case "0"c To "9"c, "a"c To "f"c, "A"c To "F"c
+            Return New HexDigit(Ix.ToUnitSpan)
           Case Else
             Return ParseError.Make.NullParse(Ix)
         End Select
@@ -147,7 +134,8 @@
 
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid Then Return ParseError.Make.EoT(Ix)
-        Dim Txn = Tokens.Empty, Sx = Ix
+        Dim Txn = Tokens.Empty()
+        Dim Sx = Ix
         While Ix.IsValid
           Dim T = HexDigit.TryParse(Ix)
           If TypeOf T Is ParseError Then Exit While
@@ -160,6 +148,7 @@
 
     End Class
 
+
     MustInherit Class Brace : Inherits Token
 
       Friend Sub New(Kind As TokenKind, Span As Source.Span, Optional Inner As Tokens = Nothing)
@@ -169,16 +158,15 @@
       Public Shared Function TryParse(Ix As Source.Position) As Token
         If Ix.IsInvalid OrElse Ix.Value.HasValue = False Then Return ParseError.Make.EoT(Ix)
         Dim nx = Ix.Next
-        Select Case Ix.Value.Value
-          Case "{"c
-            If nx.IsInvalid OrElse (nx <> "{") Then Return New Opening(Ix.ToUnitSpan)
-            Return New Brace.Esc.Opening(Ix.To(nx.Next), New Opening(Ix.ToUnitSpan) + New Opening(nx.ToUnitSpan))
-          Case "}"c
-            If nx.IsInvalid OrElse (nx <> "}") Then Return New Closing(Ix.ToUnitSpan)
-            Return New Brace.Esc.Closing(Ix.To(nx.Next), New Closing(Ix.ToUnitSpan) + New Closing(nx.ToUnitSpan))
-          Case Else
-            Return ParseError.Make.NullParse(Ix)
-        End Select
+        If Ix.Value.Value = "{"c Then
+          If nx.IsInvalid OrElse (nx <> "{") Then Return New Opening(Ix.ToUnitSpan)
+          Return New Brace.Esc.Opening(Ix.To(nx.Next), New Opening(Ix.ToUnitSpan) + New Opening(nx.ToUnitSpan))
+        ElseIf Ix.Value = "}"c Then
+          If nx.IsInvalid OrElse (nx <> "}") Then Return New Closing(Ix.ToUnitSpan)
+          Return New Brace.Esc.Closing(Ix.To(nx.Next), New Closing(Ix.ToUnitSpan) + New Closing(nx.ToUnitSpan))
+        Else
+          Return ParseError.Make.NullParse(Ix)
+        End If
       End Function
 
       Public Class Opening : Inherits Brace
