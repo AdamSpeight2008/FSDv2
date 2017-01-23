@@ -10,7 +10,7 @@ Public Class Tokens_Common_HexDigits_UnitTest
     Dim Text = ""
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigits.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigits.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(FormatString.Common.HexDigit))
     Assert.IsInstanceOfType(res, GetType(ParseError))
@@ -24,11 +24,11 @@ Public Class Tokens_Common_HexDigits_UnitTest
     Dim Text = "0123456789ABCDEFabcdef"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.HexDigits.TryParse(FirstPos)
+    Dim res = FormatString.Common.HexDigits.TryParse(FirstPos, False)
     Assert.IsInstanceOfType(res, GetType(FormatString.Common.HexDigits))
     Assert.AreEqual(TokenKind.HexDigits, res.Kind)
-    Assert.AreEqual(0, res.Span.Start.Index)
-    Assert.AreEqual(22, res.Span.Size)
+    Assert.AreEqual(0, res.Span?.Start?.Index)
+    Assert.AreEqual(22, res.Span?.Size)
     Assert.AreEqual("(  0: 22)", res.Span.ToString)
     Assert.AreEqual(22, res.InnerTokens.Count)
     Assert.AreEqual(TokenKind.HexDigit, res(0).Kind)

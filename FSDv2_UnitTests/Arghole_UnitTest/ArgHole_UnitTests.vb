@@ -14,22 +14,22 @@ Public Class ArgHole_UnitTests
   Const Cat = "Tokens.Arghole"
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _00_()
+  Public Sub Parser_ArgHole__00__EmptyString()
     Dim Text = ""
-        Dim TheSource = Source.Create(Text, Source.SourceKind., Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
-    Dim res = FormatString.ArgHole.TryParse(FirstPos)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
+    Dim res = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Assert.AreEqual(ParseError.Reason.EoT, DirectCast(res, ParseError).Why)
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _01_()
+  Public Sub Parser_ArgHole__01__OpeningBraceOnly()
     Dim Input = "{"
-        Dim TheSource = Source.Create(Input, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim TheSource = Source.Create(Input, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -44,11 +44,11 @@ Public Class ArgHole_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _02_()
+  Public Sub Parser_ArgHole__02__EmptyArgHole()
     Dim Text = "{}"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -60,21 +60,18 @@ Public Class ArgHole_UnitTests
     Dim Expected =
 "(  0:  2)  ArgHole
   [ 0]  (  0:  1)  Brace_Opening
-  [ 1]  (  1:  0)  ParseError.NullParse
-  [ 2]  (  1:  0)  ParseError.Partial
-    [ 0]  (  1:  1)  Brace_Closing
-  [ 3]  (  1:  1)  Brace_Closing
+  [ 1]  (  1:  1)  Brace_Closing
 "
     Assert.AreEqual(Expected, Actual)
 
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _03_()
+  Public Sub Parser_ArgHole__03__ArgIndexOnly()
     Dim Text = "{0}"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -90,20 +87,25 @@ Public Class ArgHole_UnitTests
   [ 1]  (  1:  1)  ArgHole_Index
     [ 0]  (  1:  1)  Digits
       [ 0]  (  1:  1)  Digit
-  [ 2]  (  2:  0)  ParseError.Partial
-    [ 0]  (  2:  1)  Brace_Closing
-  [ 3]  (  2:  1)  Brace_Closing
+  [ 2]  (  2:  1)  Brace_Closing
 "
+    '"(  0:  3)  ArgHole" & vbCrLf & 
+    '"  [ 0]  (  0:  1)  Brace_Opening" & vbCrLf & 
+    '"  [ 1]  (  1:  1)  ArgHole_Index" & vbCrLf & 
+    '"    [ 0]  (  1:  1)  Digits" & vbCrLf & 
+    '"      [ 0]  (  1:  1)  Digit" & vbCrLf & 
+    '"  [ 2]  (  2:  0)  ParseError.Invalid" & vbCrLf &
+    '"  [ 3]  (  2:  1)  Brace_Closing" & vbCrLf
     Assert.AreEqual(Expected, Actual)
 
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _04_()
+  Public Sub Parser_ArgHole__04__ArgIndexPlusWS()
     Dim Text = "{0 }"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -121,20 +123,18 @@ Public Class ArgHole_UnitTests
       [ 0]  (  1:  1)  Digit
     [ 1]  (  2:  1)  Whitespaces
       [ 0]  (  2:  1)  Whitespace
-  [ 2]  (  3:  0)  ParseError.Partial
-    [ 0]  (  3:  1)  Brace_Closing
-  [ 3]  (  3:  1)  Brace_Closing
+  [ 2]  (  3:  1)  Brace_Closing
 "
     Assert.AreEqual(Expected, Actual)
 
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _05_()
+  Public Sub Parser_ArgHole__05__ArgIndex_WS_EmptyArgAlign()
     Dim Text = "{0 ,}"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -150,19 +150,17 @@ Public Class ArgHole_UnitTests
   [ 2]  (  3:  1)  ArgHole_Align
     [ 0]  (  3:  1)  ArgHole_Align_Head
       [ 0]  (  3:  1)  Comma
-  [ 3]  (  4:  0)  ParseError.Partial
-    [ 0]  (  4:  1)  Brace_Closing
-  [ 4]  (  4:  1)  Brace_Closing
+  [ 3]  (  4:  1)  Brace_Closing
 "
     Assert.AreEqual(Expected, Actual)
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _06_()
+  Public Sub Parser_ArgHole__06__ArgIndex_WS_ArgAlign_WS_ArgFormat()
     Dim Text = "{0 , :}"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -191,11 +189,11 @@ Public Class ArgHole_UnitTests
 
   End Sub
   <TestMethod, TestCategory(Cat)>
-  Public Sub _07_()
+  Public Sub Parser_ArgHole__07__ArgIndex_WS_ArgAlign()
     Dim Text = "{0 , 1}"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -216,19 +214,17 @@ Public Class ArgHole_UnitTests
     [ 1]  (  5:  1)  ArgHole_Align_Body
       [ 0]  (  5:  1)  Digits
         [ 0]  (  5:  1)  Digit
-  [ 3]  (  6:  0)  ParseError.Partial
-    [ 0]  (  6:  1)  Brace_Closing
-  [ 4]  (  6:  1)  Brace_Closing
+  [ 3]  (  6:  1)  Brace_Closing
 "
     Assert.AreEqual(Expected, Actual)
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _08_()
+  Public Sub Parser_ArgHole__08__ArgIndex_MinusArgAlign()
     Dim Text = "{0 , -1}"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -250,18 +246,17 @@ Public Class ArgHole_UnitTests
       [ 0]  (  5:  1)  MinusSign
       [ 1]  (  6:  1)  Digits
         [ 0]  (  6:  1)  Digit
-  [ 3]  (  7:  0)  ParseError.Partial
-    [ 0]  (  7:  1)  Brace_Closing
-  [ 4]  (  7:  1)  Brace_Closing
+  [ 3]  (  7:  1)  Brace_Closing
 "
     Assert.AreEqual(Expected, Actual)
   End Sub
+
   <TestMethod, TestCategory(Cat)>
-  Public Sub _09_()
+  Public Sub Parser_ArgHole__09__ArgIndex_ArgFormat()
     Dim Text = "{0 :{{}"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos)
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
+    Dim ParseResult = FormatString.ArgHole.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsNotInstanceOfType(ParseResult, GetType(ParseError))
     Assert.IsInstanceOfType(ParseResult, GetType(ArgHole))
@@ -274,9 +269,7 @@ Public Class ArgHole_UnitTests
       [ 0]  (  1:  1)  Digit
     [ 1]  (  2:  1)  Whitespaces
       [ 0]  (  2:  1)  Whitespace
-  [ 2]  (  3:  0)  ParseError.Partial
-    [ 0]  (  3:  1)  Colon
-  [ 3]  (  3:  3)  ArgHole_Format
+  [ 2]  (  3:  3)  ArgHole_Format
     [ 0]  (  3:  1)  ArgHole_Format_Head
       [ 0]  (  3:  1)  Colon
     [ 1]  (  4:  2)  ArgHole_Format_Body
@@ -284,7 +277,7 @@ Public Class ArgHole_UnitTests
         [ 0]  (  4:  2)  Esc_Brace_Opening
           [ 0]  (  4:  1)  Brace_Opening
           [ 1]  (  5:  1)  Brace_Opening
-  [ 4]  (  6:  1)  Brace_Closing
+  [ 3]  (  6:  1)  Brace_Closing
 "
     Assert.AreEqual(Expected, Actual)
   End Sub

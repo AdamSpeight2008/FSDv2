@@ -13,7 +13,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\u"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Assert.AreEqual(ParseError.Reason.Unsupported, DirectCast(res, ParseError).Why)
@@ -24,7 +24,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\u"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Verbatum, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Assert.AreEqual(ParseError.Reason.Unsupported, DirectCast(res, ParseError).Why)
@@ -35,7 +35,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\u"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Dim pe As ParseError = DirectCast(res, ParseError)
@@ -47,7 +47,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\u0"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
   End Sub
@@ -56,7 +56,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\u00"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
   End Sub
@@ -65,7 +65,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\u000"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
   End Sub
@@ -74,7 +74,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\u0000"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
   End Sub
@@ -83,7 +83,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\u0000F"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
   End Sub
@@ -97,7 +97,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\U"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Assert.AreEqual(ParseError.Reason.Unsupported, DirectCast(res, ParseError).Why)
@@ -108,7 +108,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\U"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Verbatum, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Assert.AreEqual(ParseError.Reason.Unsupported, DirectCast(res, ParseError).Why)
@@ -119,7 +119,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\U"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Dim pe As ParseError = DirectCast(res, ParseError)
@@ -131,7 +131,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\U0"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
   End Sub
@@ -140,7 +140,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\U01"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
   End Sub
@@ -149,7 +149,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\U012"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
   End Sub
@@ -158,7 +158,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\U0123"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
   End Sub
@@ -167,7 +167,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\U01234"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
   End Sub
@@ -176,7 +176,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\U012345"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
   End Sub
@@ -185,7 +185,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\U0123456"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
   End Sub
@@ -194,7 +194,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\U01234567"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
   End Sub
@@ -204,7 +204,7 @@ Public Class EscSeq_Compound_Unicode
     Dim Text = "\U01234567f"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
   End Sub

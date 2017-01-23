@@ -11,7 +11,7 @@ Imports FSDv2.FormatString.Common
     Dim Text = "\'"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Assert.AreEqual(ParseError.Reason.Unsupported, DirectCast(res, ParseError).Why)
@@ -22,7 +22,7 @@ Imports FSDv2.FormatString.Common
     Dim Text = "\'"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Verbatum, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(ParseError))
     Assert.AreEqual(ParseError.Reason.Unsupported, DirectCast(res, ParseError).Why)
@@ -33,7 +33,7 @@ Imports FSDv2.FormatString.Common
     Dim Text = "\'"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.Simple))
@@ -44,7 +44,7 @@ Imports FSDv2.FormatString.Common
     Dim Text = "\""" ' \"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.Simple))
@@ -55,7 +55,7 @@ Imports FSDv2.FormatString.Common
     Dim Text = "\\"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.Simple))
@@ -66,7 +66,7 @@ Imports FSDv2.FormatString.Common
     Dim Text = "\0"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.Simple))
@@ -77,7 +77,7 @@ Imports FSDv2.FormatString.Common
     Dim Text = "\a"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.Simple))
@@ -88,7 +88,7 @@ Imports FSDv2.FormatString.Common
     Dim Text = "\b"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.Simple))
@@ -99,7 +99,7 @@ Imports FSDv2.FormatString.Common
     Dim Text = "\f"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.Simple))
@@ -110,7 +110,7 @@ Imports FSDv2.FormatString.Common
     Dim Text = "\n"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.Simple))
@@ -121,7 +121,7 @@ Imports FSDv2.FormatString.Common
     Dim Text = "\r"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.Simple))
@@ -132,7 +132,7 @@ Imports FSDv2.FormatString.Common
     Dim Text = "\t"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.Simple))
@@ -143,7 +143,7 @@ Imports FSDv2.FormatString.Common
     Dim Text = "\v"
         Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos)
+    Dim res = FormatString.Common.Esc.Sequence.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
     Assert.IsInstanceOfType(res, GetType(Esc.Sequence.Simple))

@@ -1,22 +1,26 @@
 ﻿Imports FSD
 
 Public MustInherit Class Token
-  Public ReadOnly Property Span As Source.Span
+  Public ReadOnly Property Span As Source.Span?
   ReadOnly Property InnerTokens As Tokens = Tokens.Empty
   Public ReadOnly Property Kind As TokenKind
 
-  Protected Sub New(kind As TokenKind, span As Source.Span, Optional Inner As Tokens = Nothing)
+  <DebuggerStepperBoundary>
+  Protected Sub New(kind As TokenKind, span As Source.Span?, Optional Inner As Tokens = Nothing)
     Me.Kind = kind : Me.Span = span : Me.InnerTokens = If(Inner, Tokens.Empty)
   End Sub
 
+  <DebuggerStepperBoundary>
   Public Shared Operator +(T0 As Token, T1 As Token) As Tokens
     Return Tokens.Create(T0, T1)
   End Operator
 
+  <DebuggerStepperBoundary>
   Public Shared Widening Operator CType(T As Token) As Tokens
     Return Tokens.Create(T)
   End Operator
 
+  <DebuggerStepperBoundary>
   Public Overrides Function ToString() As String
     Return $"{Span.ToString()}  {Kind.ToString}"
   End Function
@@ -63,5 +67,5 @@ Public Enum TokenKind As Integer
   Backslash_UpperU
   Backslash_LowerU
   [Partial]
-    Identifier
+  Identifier
 End Enum

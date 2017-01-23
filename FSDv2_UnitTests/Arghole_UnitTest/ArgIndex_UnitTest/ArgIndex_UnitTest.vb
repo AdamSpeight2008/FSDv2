@@ -13,7 +13,7 @@ Public Class ArgIndex_UnitTest
     Dim Text = ""
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.ArgHole.Index.TryParse(FirstPos)
+    Dim res = FormatString.ArgHole.Index.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(FormatString.ArgHole.Index))
     Assert.IsInstanceOfType(res, GetType(ParseError))
@@ -25,7 +25,7 @@ Public Class ArgIndex_UnitTest
     Dim Text = "0"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.ArgHole.Index.TryParse(FirstPos)
+    Dim res = FormatString.ArgHole.Index.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Index))
     Assert.AreEqual(TokenKind.ArgHole_Index, res.Kind)
@@ -40,7 +40,7 @@ Public Class ArgIndex_UnitTest
     Dim Text = "01"
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.ArgHole.Index.TryParse(FirstPos)
+    Dim res = FormatString.ArgHole.Index.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Index))
     Assert.AreEqual(TokenKind.ArgHole_Index, res.Kind)
@@ -49,7 +49,7 @@ Public Class ArgIndex_UnitTest
     Assert.AreEqual(TokenKind.Digits, res(0).Kind)
     Assert.AreEqual(2, res(0).InnerTokens.Count)
     Assert.AreEqual("(  0:  2)", res(0).Span.ToString)
-    Assert.AreEqual("01", res(0).Span.Text)
+    Assert.AreEqual("01", res(0).Span?.Text)
     Assert.AreEqual(TokenKind.Digit, res(0)(0).Kind)
     Assert.AreEqual(TokenKind.Digit, res(0)(1).Kind)
   End Sub
@@ -59,7 +59,7 @@ Public Class ArgIndex_UnitTest
     Dim Text = "0  "
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.ArgHole.Index.TryParse(FirstPos)
+    Dim res = FormatString.ArgHole.Index.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Index))
     Assert.AreEqual(TokenKind.ArgHole_Index, res.Kind)
@@ -68,14 +68,14 @@ Public Class ArgIndex_UnitTest
     Assert.AreEqual(TokenKind.Digits, res(0).Kind)
 
     Assert.AreEqual("(  0:  1)", res(0).Span.ToString)
-    Assert.AreEqual("0", res(0).Span.Text)
+    Assert.AreEqual("0", res(0).Span?.Text)
     Assert.AreEqual(1, res(0).InnerTokens.Count)
     Assert.AreEqual(TokenKind.Digit, res(0)(0).Kind)
 
     Assert.AreEqual(TokenKind.Whitespaces, res(1).Kind)
     Assert.AreEqual("(  1:  2)", res(1).Span.ToString)
     Assert.AreEqual(2, res(1).InnerTokens.Count)
-    Assert.AreEqual("  ", res(1).Span.Text)
+    Assert.AreEqual("  ", res(1).Span?.Text)
   End Sub
 
   <TestMethod, TestCategory("Tokens.Arghole.ArgIndex")>
@@ -83,7 +83,7 @@ Public Class ArgIndex_UnitTest
     Dim Text = "01  "
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim res = FormatString.ArgHole.Index.TryParse(FirstPos)
+    Dim res = FormatString.ArgHole.Index.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsInstanceOfType(res, GetType(FormatString.ArgHole.Index))
     Assert.AreEqual(TokenKind.ArgHole_Index, res.Kind)
@@ -92,14 +92,14 @@ Public Class ArgIndex_UnitTest
 
     Assert.AreEqual(TokenKind.Digits, res.InnerTokens(0).Kind)
     Assert.AreEqual("(  0:  2)", res(0).Span.ToString)
-    Assert.AreEqual("01", res(0).Span.Text)
+    Assert.AreEqual("01", res(0).Span?.Text)
     Assert.AreEqual(2, res(0).InnerTokens.Count)
     Assert.AreEqual(TokenKind.Digit, res(0)(0).Kind)
     Assert.AreEqual(TokenKind.Digit, res(0)(1).Kind)
 
     Assert.AreEqual(TokenKind.Whitespaces, res.InnerTokens(1).Kind)
     Assert.AreEqual("(  2:  2)", res(1).Span.ToString)
-    Assert.AreEqual("  ", res(1).Span.Text)
+    Assert.AreEqual("  ", res(1).Span?.Text)
     Assert.AreEqual(2, res(1).InnerTokens.Count)
   End Sub
 
@@ -112,7 +112,7 @@ Public Class ArgIndex_UnitTest
         ' [1] (1:1) Digits
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.Index.TryParse(FirstPos)
+    Dim ParseResult = FormatString.ArgHole.Index.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsInstanceOfType(ParseResult, GetType(FormatString.ArgHole.Index))
     Dim Expected =
@@ -135,7 +135,7 @@ Public Class ArgIndex_UnitTest
         ' [1] (1:1) Digits
         Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
         Dim FirstPos = TheSource.First
-    Dim ParseResult = FormatString.ArgHole.Index.TryParse(FirstPos)
+    Dim ParseResult = FormatString.ArgHole.Index.TryParse(FirstPos, False)
     Assert.IsNotNull(ParseResult)
     Assert.IsInstanceOfType(ParseResult, GetType(FormatString.ArgHole.Index))
 
