@@ -4,17 +4,16 @@ Partial Public Class Analyser
 
   Private Function Text(Txt As FormatString.Text, ByRef Q As Parameters) As Parameters
     If Txt.InnerTokens.Count = 0 Then Return Q
-    Dim en = Txt.InnerTokens.GetEnumerator.GetEnumerator
-    While en.MoveNext
-      Select Case en.Current.Kind
-        Case TokenKind.ParseError : Q = ParseError(DirectCast(en.Current, ParseError), Q)
-        Case TokenKind.Esc_Brace_Closing,
-             TokenKind.Esc_Brace_Opening
+    For i = 0 To Txt.InnerTokens.Count - 1
+      Dim Current = Txt(i)
+      Select Case Current.Kind
+        Case TokenKind.ParseError : Q = ParseError(DirectCast(Current, ParseError), Q)
+        Case TokenKind.Esc_Brace_Closing, TokenKind.Esc_Brace_Opening
         Case Else
-          Q.Result.Issues += Issue.Unexpected.Token(en.Current.Span, en.Current)
+          Q.Result.Issues += Issue.Unexpected.Token(Current.Span, Current)
 
       End Select
-    End While
+    Next
     Return Q
   End Function
 

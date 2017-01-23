@@ -1,6 +1,6 @@
 ﻿Partial Public Class Source
 
-  <DebuggerDisplay("({Start.Index},{Size}) =[{Me.Text}]")>
+  <DebuggerDisplay("({Start?.Index},{Size}) =[{Me.Text}]")>
   Public Structure Span
 
 #Region "ReadOnly Properties"

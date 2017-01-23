@@ -92,7 +92,8 @@ Expecting_Arghole_Index:
 
           Case Else
             Results = ParseError(TheParseError, Results)
-
+            idx += 1
+            GoTo Expecting_Arghole_Index 
         End Select
 
       Case Else
@@ -109,11 +110,8 @@ Expecting_Arghole_Index:
                                                Results As Parameters
                                              ) As Parameters
 Expection_Arghole_Align:
-    If idx >= edx Then
-      '
-      'Q.Result.Issues += Issue.Unexpected.EoT(Nothing)
-      Return Results
-    End If
+    If idx >= edx Then Return Results
+
     Dim current = src(idx)
 
     Select Case current.Kind
@@ -171,14 +169,14 @@ Expecting_Closing_Brace:
     End If
     Dim current = src(idx)
     Select Case current.Kind
+
       Case TokenKind.Brace_Closing
         idx += 1
         Return ArgHole_Completed(idx, edx, src, Results)
+
       Case Else
         Dim TheParseError = TryCast(current, ParseError)
-        If TheParseError IsNot Nothing AndAlso TheParseError(0).Kind = TokenKind.Brace_Closing Then
-          GoTo Expecting_Closing_Brace
-        End If
+        If TheParseError?(0).Kind = TokenKind.Brace_Closing Then GoTo Expecting_Closing_Brace
         Results.Result.Issues += Issue.Unexpected.Token(current.Span, current)
         GoTo Expecting_Closing_Brace
     End Select

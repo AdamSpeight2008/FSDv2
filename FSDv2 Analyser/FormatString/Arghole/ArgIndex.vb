@@ -5,18 +5,26 @@ Imports System.Numerics
 Partial Public Class Analyser
 
   Private Function Validate_ArgIndex(tkn As Token, Results As Parameters) As Parameters
-    Dim ValueOfArgIndex = DirectCast(tkn, FSDv2.FormatString.Common.Digits).GetValue
-    Results.Arg = If(Results.Arg, New Arg())
-    Results.Arg.Index = ValueOfArgIndex
-    If Results.Arg.Index.HasValue = False Then
-      Results.Result.Issues += Issue.Arg.Index.Missing(tkn.Span)
+
+    Dim Digits = TryCast(tkn, FSDv2.FormatString.Common.Digits)
+    If Digits Is Nothing Then
+
     Else
-      If Results.Arg.Index.Value >= Framework.UpperLimit Then
-        Results.Result.Issues += Issue.Arg.Index.Framework.Lower_Limit_Exceeded(tkn.Span)
-      ElseIf Results.Arg.Index.Value >= Results.Args.Count Then
-        Results.Result.Issues += Issue.Arg.Index.OutOfRange(tkn.Span)
+      Dim ValueOfArgIndex = Digits.GetValue
+      Results.Arg = If(Results.Arg, New Arg())
+      Results.Arg.Index = ValueOfArgIndex
+      If Results.Arg.Index.HasValue = False Then
+        Results.Result.Issues += Issue.Arg.Index.Missing(tkn.Span)
+      Else
+        If Results.Arg.Index.Value >= Framework.UpperLimit Then
+          Results.Result.Issues += Issue.Arg.Index.Framework.Lower_Limit_Exceeded(tkn.Span)
+        ElseIf Results.Arg.Index.Value >= Results.Args.Count Then
+          Results.Result.Issues += Issue.Arg.Index.OutOfRange(tkn.Span)
+        Else
+          Results.Args.MarkAsUsed(Results.Arg.Index.Value)
+
+        End If
       End If
-      Results.Args.MarkAsUsed(Results.Arg.Index.Value)
     End If
     Return Results
   End Function
@@ -29,17 +37,18 @@ Partial Public Class Analyser
                                    ) As Parameters
 Expecting_Digits:
     If idx >= edx Then
-      'Results.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing)
-      Return results
+      ''Results.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing)
+      'Return results
+    Else
+      If src(idx).Kind <> TokenKind.Digits Then
+        ' An easy mistake to make is to have whitespaces after the opening brace.
+        ' Eg: { 0}
+        results.Result.Issues += Issue.Unexpected.Token(src(idx).Span, src(idx))
+        idx += 1
+        GoTo Expecting_Digits
+      End If
+      results = Validate_ArgIndex(src(idx), results)
     End If
-    If src(idx).Kind <> TokenKind.Digits Then
-      ' An easy mistake to make is to have whitespaces after the opening brace.
-      ' Eg: { 0}
-      results.Result.Issues += Issue.Unexpected.Token(src(idx).Span, src(idx))
-      idx += 1
-      GoTo Expecting_Digits
-    End If
-    results = Validate_ArgIndex(src(idx), results)
     Return results
   End Function
 
@@ -50,13 +59,15 @@ Expecting_Digits:
                                                  src As Index,
                                                  Results As Parameters
                                                  ) As Parameters
-    idx += 1 : If idx >= edx Then Return Results
-    If src(idx).Kind = TokenKind.Whitespaces Then idx += 1
+    idx += 1
+    If idx < edx Then idx += If(src(idx).Kind = TokenKind.Whitespaces, 1, 0)
     Return Results
   End Function
 
   Private Function ArgIndex(src As Index, Results As Parameters) As Analyser.Parameters
+    '
     ' Arg.Index ::= Digits Whitespaces?
+    '
     Dim idx = 0, edx = src.InnerTokens.Count
     Results = Expecting_Digits(idx, edx, src, Results)
     Results = Expecting_Possible_Whitespaces(idx, edx, src, Results)

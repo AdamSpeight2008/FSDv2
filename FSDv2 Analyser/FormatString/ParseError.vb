@@ -1,16 +1,25 @@
 ﻿Imports FSDv2
 Imports FSDv2.FormatString.ArgHole
 Imports System.Numerics
+Imports FSDv2.ParseError
+Imports FSDv2_Analyser.Analyser.Issue
 
 Partial Public Class Analyser
 
   Private Function ParseError(pe As ParseError, ByRef Q As Parameters) As Parameters
     Select Case pe.Why
-      Case FSDv2.ParseError.Reason.UnexpectedCharacter : Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Characters, pe.Span)
-      Case FSDv2.ParseError.Reason.Invalid : Q.Result.Issues += New Issue(Issue.Kinds.Invalid, pe.Span)
-      Case FSDv2.ParseError.Reason.EoT : Q.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, pe.Span)
-      Case FSDv2.ParseError.Reason.ResyncSkipped
-        Q.Result.Issues += New Issue(Issue.Kinds.ResyncSkipped, pe.Span)
+      Case Reason.UnexpectedCharacter, Reason.ResyncSkipped
+        Q.Result.Issues += Issue.Unexpected.Characters(pe.Span)
+
+      Case Reason.Invalid
+        Q.Result.Issues += Issue.Invalid(pe.Span)
+
+      Case Reason.EoT
+        Q.Result.Issues += Issue.Unexpected.EoT(pe.Span)
+
+      'Case Reason.ResyncSkipped
+      '  Q.Result.Issues += Issue.Resynced.Skipped(pe.Span)
+
       Case FSDv2.ParseError.Reason.Partial
 
       Case Else

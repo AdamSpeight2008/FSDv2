@@ -3,6 +3,7 @@
   Public Class Issues
     Public Shared ReadOnly Property Empty() As New Issues(Nothing)
     Public ReadOnly Property Issues As Issue()
+
     Private Sub New(Issues As IEnumerable(Of Issue))
       Me.Issues = If(Issues Is Nothing, Array.Empty(Of Issue), Issues.ToArray)
     End Sub

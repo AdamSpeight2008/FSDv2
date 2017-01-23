@@ -41,7 +41,7 @@ Partial Public Class FormatString
       Return True
     End Function
 
-    Private Shared Function TryFind_ArgFormat(ByRef idx As Source.Position?, txn As Tokens, DoingResync As Boolean) As Boolean
+    Private Shared Function TryFind_ArgFormat(ByRef idx As Source.Position?, ByRef txn As Tokens, DoingResync As Boolean) As Boolean
       Dim T As Token = ArgHole.Format.TryParse(idx, DoingResync)
       If TypeOf T Is ParseError.EoT Then txn += T : Return False
       If T.Kind <> TokenKind.ArgHole_Format Then Return False
@@ -88,11 +88,9 @@ TryToResync:
       If Not DoingResync Then
         Dim ResultOfResyncing = RPX0.TryToResync(Ix, True)
         Dim pe = TryCast(ResultOfResyncing, ParseError)
-        If pe Is Nothing OrElse pe.Why = ParseError.Reason.NullParse Then GoTo Find_Brace_Closing
+        If pe Is Nothing Then GoTo Find_Brace_Closing
         Dim size = ResultOfResyncing.Span?.Size
-        If size > 0 Then
-          txn = Common.AddThenNext(ResultOfResyncing, txn, Ix)
-        End If
+        If size.HasValue AndAlso size.Value > 0 Then txn = Common.AddThenNext(ResultOfResyncing, txn, Ix)
         Select Case ResultOfResyncing(0).Kind
           Case TokenKind.Comma
             GoTo Find_Align

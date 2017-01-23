@@ -11,16 +11,12 @@ Partial Public Class Analyser
                                 Results As Parameters
                                   ) As Parameters
 Expecting_Colon:
-    If idx >= edx Then
-      Return Results
-    End If
+    If (idx >= edx) Then Return Results
     Dim Current = src(idx)
-    If Current.Kind <> TokenKind.Colon Then
-      Results.Result.Issues += Issue.Unexpected.Token(Current.Span, Current)
-      idx += 1
-      GoTo Expecting_Colon
-    End If
-    Return Results
+    If Current.Kind = TokenKind.Colon Then Return Results
+    Results.Result.Issues += Issue.Unexpected.Token(Current.Span, Current)
+    idx += 1
+    GoTo Expecting_Colon
   End Function
 
   Private Function Validate_ArgFormatBody(
@@ -37,7 +33,7 @@ Expecting_Colon:
              TokenKind.Text
           ' These are valid within an ArgFormat
         Case TokenKind.Brace_Opening
-          Results.Result.Issues += New Issue(Issue.Kinds.Invalid, Current.Span, "Opening Brace is not allowed with the ArgFormat.")
+          Results.Result.Issues += Issue.Invalid(Current.Span, "Opening Brace is not allowed with the ArgFormat.")
         Case Else
           Results.Result.Issues += Issue.Unexpected.Token(Current.Span, Current)
       End Select

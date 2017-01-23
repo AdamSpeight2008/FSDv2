@@ -87,5 +87,14 @@ Partial Public Class Analyser
         Return New Issue(Kinds.Missing_Closing_Brace, Span)
       End Function
     End Class
+
+    Public Class Resynced
+      Public Shared Function Skipped(Span As Source.Span) As Issue
+        Return New Issue(Kinds.ResyncSkipped, Span)
+      End Function
+    End Class
+    Public Shared Function Invalid(Span As Source.Span, Optional AdditionalText As String = Nothing) As Issue
+      Return New Issue(Kinds.Invalid, Span, AdditionalText)
+    End Function
   End Class
 End Class
