@@ -158,7 +158,7 @@ Public Class FSDv2_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Analyser_CS_Standard)>
-  Public Sub _09_()
+  Public Sub _09_EscCbSpcArgSpcArgSpcEscOb()
     '              01234567890
     Dim TheText = "}} {} {} {{"
     Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)

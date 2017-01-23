@@ -8,7 +8,7 @@ Public Class Tokens_Common_Digits_UnitTest
   Const Cat = "Parser:Tokens.Common.Digits"
 
   <TestMethod, TestCategory("Parser"), TestCategory(Cat)>
-  Public Sub _00_()
+  Public Sub _00_Empty()
     Dim Text = ""
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First
@@ -18,7 +18,7 @@ Public Class Tokens_Common_Digits_UnitTest
   End Sub
 
   <TestMethod, TestCategory("Parser"), TestCategory(Cat)>
-  Public Sub _01_()
+  Public Sub _01_Digits()
     Dim Text = "0123456789"
     Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
     Dim FirstPos = TheSource.First

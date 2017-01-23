@@ -10,10 +10,10 @@ Public Class Text_UnitTests
   Const Cat = "Tokens.Text"
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _00_()
+  Public Sub _00_Empty()
     Dim Text = ""
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
     Dim res = FormatString.Text.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
@@ -22,10 +22,10 @@ Public Class Text_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _01_()
+  Public Sub _01_abc()
     Dim Text = "abc"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
     Dim res = FormatString.Text.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
@@ -33,10 +33,10 @@ Public Class Text_UnitTests
     Assert.AreEqual("(  0:  3)", res.Span.ToString)
   End Sub
   <TestMethod, TestCategory(Cat)>
-  Public Sub _02_()
+  Public Sub _02_abcEsc()
     Dim Text = "abc\b"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
+    Dim TheSource = Source.Create(Text, Source.SourceKind.VB_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
     Dim res = FormatString.Text.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
@@ -44,10 +44,10 @@ Public Class Text_UnitTests
     Assert.AreEqual("(  0:  5)", res.Span.ToString)
   End Sub
   <TestMethod, TestCategory(Cat)>
-  Public Sub _03_()
+  Public Sub _03_abcEsc()
     Dim Text = "abc\b"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
+    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
     Dim res = FormatString.Text.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))
@@ -59,10 +59,10 @@ Public Class Text_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat)>
-  Public Sub _04_()
+  Public Sub _04_abcEscInv()
     Dim Text = "abc\q"
-        Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
-        Dim FirstPos = TheSource.First
+    Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
+    Dim FirstPos = TheSource.First
     Dim res = FormatString.Text.TryParse(FirstPos, False)
     Assert.IsNotNull(res)
     Assert.IsNotInstanceOfType(res, GetType(ParseError))

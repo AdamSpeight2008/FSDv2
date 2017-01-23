@@ -4,9 +4,9 @@ Imports System.Numerics
 
 Partial Public Class Analyser
 
-  Private Function Validate_ArgIndex(tkn As Token, Results As Parameters) As Parameters
+  Private Function Validate_ArgIndex(ThisToken As Token, Results As Parameters) As Parameters
 
-    Dim Digits = TryCast(tkn, FSDv2.FormatString.Common.Digits)
+    Dim Digits = TryCast(ThisToken, FSDv2.FormatString.Common.Digits)
     If Digits Is Nothing Then
 
     Else
@@ -14,12 +14,12 @@ Partial Public Class Analyser
       Results.Arg = If(Results.Arg, New Arg())
       Results.Arg.Index = ValueOfArgIndex
       If Results.Arg.Index.HasValue = False Then
-        Results.Result.Issues += Issue.Arg.Index.Missing(tkn.Span)
+        Results.Result.Issues += Issue.Arg.Index.Missing(ThisToken.Span)
       Else
         If Results.Arg.Index.Value >= Framework.UpperLimit Then
-          Results.Result.Issues += Issue.Arg.Index.Framework.Lower_Limit_Exceeded(tkn.Span)
+          Results.Result.Issues += Issue.Arg.Index.Framework.Lower_Limit_Exceeded(ThisToken.Span)
         ElseIf Results.Arg.Index.Value >= Results.Args.Count Then
-          Results.Result.Issues += Issue.Arg.Index.OutOfRange(tkn.Span)
+          Results.Result.Issues += Issue.Arg.Index.OutOfRange(ThisToken.Span)
         Else
           Results.Args.MarkAsUsed(Results.Arg.Index.Value)
 
@@ -29,38 +29,28 @@ Partial Public Class Analyser
     Return Results
   End Function
 
-  Private Function Expecting_Digits(
-                               ByRef idx As Integer,
-                                     edx As Integer,
-                                     src As Index,
-                                 results As Parameters
-                                   ) As Parameters
+  Private Function Expecting_Digits(ByRef idx As Integer, edx As Integer, ArgIndex As Index, results As Parameters) As Parameters
 Expecting_Digits:
-    If idx >= edx Then
-      ''Results.Result.Issues += New Issue(Issue.Kinds.Unexpected_End, Nothing)
-      'Return results
+    If EndOfText(idx, edx) Then
+      results.Result.Issues += Issue.Unexpected.EoT(Nothing)
+      Return results
     Else
-      If src(idx).Kind <> TokenKind.Digits Then
+      If ArgIndex(idx).Kind <> TokenKind.Digits Then
         ' An easy mistake to make is to have whitespaces after the opening brace.
         ' Eg: { 0}
-        results.Result.Issues += Issue.Unexpected.Token(src(idx).Span, src(idx))
+        results.Result.Issues += Issue.Unexpected.Token(ArgIndex(idx).Span, ArgIndex(idx))
         idx += 1
         GoTo Expecting_Digits
       End If
-      results = Validate_ArgIndex(src(idx), results)
+      results = Validate_ArgIndex(ArgIndex(idx), results)
     End If
     Return results
   End Function
 
 
-  Private Function Expecting_Possible_Whitespaces(
-                                                 ByRef idx As Integer,
-                                                 edx As Integer,
-                                                 src As Index,
-                                                 Results As Parameters
-                                                 ) As Parameters
+  Private Function Expecting_Possible_Whitespaces(ByRef idx As Integer, edx As Integer, ArgIndex As Index, Results As Parameters) As Parameters
     idx += 1
-    If idx < edx Then idx += If(src(idx).Kind = TokenKind.Whitespaces, 1, 0)
+    If Not EndOfText(idx, edx) Then idx += If(ArgIndex(idx).Kind = TokenKind.Whitespaces, 1, 0)
     Return Results
   End Function
 
@@ -75,12 +65,9 @@ Expecting_Digits:
     Return Results
   End Function
 
-  Private Function AnyMoreTokensAreUnexpected(
-                                         ByRef idx As Integer, edx As Integer,
-                                               src As Token, Results As Parameters
-                                             ) As Parameters
-    While idx < edx
-      Results.Result.Issues += Issue.Unexpected.Token(src(idx).Span, src(idx))
+  Private Function AnyMoreTokensAreUnexpected(ByRef idx As Integer, edx As Integer, ThisToken As Token, Results As Parameters) As Parameters
+    While Not EndOfText(idx, edx)
+      Results.Result.Issues += Issue.Unexpected.Token(ThisToken(idx).Span, ThisToken(idx))
       idx += 1
     End While
     Return Results

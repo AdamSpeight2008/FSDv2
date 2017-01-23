@@ -4,8 +4,12 @@ Partial Public Class FormatString
 
     Public Class Align : Inherits Token
 #Region "ResyncePoints"
-      Private Shared RPX0 As ResyncPoints = New ResyncPoint(AddressOf Head.TryParse) + New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
-      Private Shared RPX1 As ResyncPoints = New ResyncPoint(AddressOf Body.TryParse) + New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
+      Private Shared ReadOnly RPX0 As ResyncPoints = ResyncPoints.CreateNew(AddressOf Head.TryParse,
+                                                                   AddressOf Format.Colon.TryParse,
+                                                                   AddressOf Common.Brace.Closing.TryParse)
+      Private Shared ReadOnly RPX1 As ResyncPoints = ResyncPoints.CreateNew(AddressOf Body.TryParse,
+                                                                            AddressOf Format.Colon.TryParse,
+                                                                            AddressOf Common.Brace.Closing.TryParse)
 #End Region
 
       <DebuggerStepperBoundary>
@@ -14,23 +18,23 @@ Partial Public Class FormatString
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
+      Public Shared Function TryParse(Idx As Source.Position?, DoingResync As Boolean) As Token
         '
         '  ArgHole.Index ::= ArgHole.Align.Head ArgHole.Align.Body
         '
-        If Ix?.IsInvalid Then Return ParseError.Make.NullParse(Ix)
+        If Idx?.IsInvalid Then Return ParseError.Make.NullParse(Idx)
 #Region "IsThereAHead"
 IsThereAHead:
-        Dim Txn = Tokens.Empty, sx = Ix, _Head = Head.TryParse(Ix, DoingResync)
+        Dim Txn = Tokens.Empty, sx = Idx, _Head = Head.TryParse(Idx, DoingResync)
         If _Head.Kind <> TokenKind.ArgHole_Align_Head Then GoTo TryToResyncHead
-        Txn = Common.AddThenNext(_Head, Txn, Ix)
+        Txn = Common.AddThenNext(_Head, Txn, Idx)
 
 #End Region
 #Region "IsThereABody"
 IsThereABody:
-        Dim _Body = Body.TryParse(Ix, DoingResync)
+        Dim _Body = Body.TryParse(Idx, DoingResync)
         If _Body.Kind <> TokenKind.ArgHole_Align_Body Then GoTo TryToResyncBody
-        Txn = Common.AddThenNext(_Body, Txn, Ix)
+        Txn = Common.AddThenNext(_Body, Txn, Idx)
 #End Region
 Done:
         Return New Align(Txn.First.Span?.Start?.To(Txn.Last.Span?.Next), Txn)
@@ -38,20 +42,14 @@ Done:
 #Region "TryToResyncHead"
 TryToResyncHead:
         If Not DoingResync Then
-          Dim ResultOfResyncing = RPX0.TryToResync(Ix, True)
+          Dim ResultOfResyncing = RPX0.TryToResync(Idx, True)
           Dim Size = ResultOfResyncing.Span?.Size
-          If Size > 0 Then
-            Txn += New ParseError.Resync(sx?.To(ResultOfResyncing.Span?.Start), ResultOfResyncing)
-          End If
+          If Size > 0 Then Txn += New ParseError.Resync(sx?.To(ResultOfResyncing.Span?.Start), ResultOfResyncing)
           Select Case ResultOfResyncing.Kind
-            Case TokenKind.ArgHole_Align_Head
-              GoTo IsThereAHead
-            Case TokenKind.Colon
-              GoTo IsThereABody
-            Case TokenKind.ArgHole_Align_Body
-              GoTo IsThereABody
-            Case TokenKind.Brace_Closing
-              GoTo Done
+            Case TokenKind.ArgHole_Align_Head : GoTo IsThereAHead
+            Case TokenKind.Colon              : GoTo IsThereABody
+            Case TokenKind.ArgHole_Align_Body : GoTo IsThereABody
+            Case TokenKind.Brace_Closing      : GoTo Done
             Case TokenKind.ParseError
             Case Else
               Debug.Assert(False, "Unsupported Kind: " & ResultOfResyncing.Kind)
@@ -59,12 +57,12 @@ TryToResyncHead:
         End If
         'Return ParseError.Make.Invalid(Ix, Txn)
 
-        Return ParseError.Make.NullParse(Ix)
+        Return ParseError.Make.NullParse(Idx)
 #End Region
 #Region "TryToResyncBody"
 TryToResyncBody:
         If Not DoingResync Then
-          Dim ResultOfResyncing = RPX1.TryToResync(Ix, True)
+          Dim ResultOfResyncing = RPX1.TryToResync(Idx, True)
           Dim size = ResultOfResyncing.Span?.Size
           If size > 0 Then
             Txn += New ParseError.Resync(sx?.To(ResultOfResyncing.Span?.Start), ResultOfResyncing)
@@ -72,11 +70,8 @@ TryToResyncBody:
           End If
           Select Case ResultOfResyncing.Kind
             Case TokenKind.ParseError
-            Case TokenKind.ArgHole_Align_Head,
-               TokenKind.Colon,
-               TokenKind.ArgHole_Align_Body,
-               TokenKind.Brace_Closing
-              GoTo Done
+            Case TokenKind.ArgHole_Align_Head, TokenKind.Colon,
+                 TokenKind.ArgHole_Align_Body, TokenKind.Brace_Closing  :  GoTo Done
             Case Else
               Debug.Assert(False, "Unsupported Kind: " & ResultOfResyncing.Kind)
 
@@ -126,17 +121,17 @@ TryToResyncBody:
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
+        Public Shared Function TryParse(Index As Source.Position?, DoingResync As Boolean) As Token
           '
           ' ArgHole.Align.Head ::= Comma Whitespaces?
           '
-          If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
-          Dim Txn = Tokens.Empty, T = Comma.TryParse(Ix, DoingResync)
-          If T.Kind <> TokenKind.Comma Then Return ParseError.Make.NullParse(Ix)
-          Dim sx = Ix : Txn += T : Ix = T.Span?.Next
-          T = Common.Whitespaces.TryParse(Ix, DoingResync)
-          If T.Kind = TokenKind.Whitespaces Then Txn += T : Ix = T.Span?.Next
-          Return New Head(sx?.To(Ix), Txn)
+          If Index?.IsInvalid Then Return ParseError.Make.EoT(Index)
+          Dim Tokens = FSDv2.Tokens.Empty, Token = Comma.TryParse(Index, DoingResync)
+          If Token.Kind <> TokenKind.Comma Then Return ParseError.Make.NullParse(Index)
+          Dim Start = Index : Tokens += Token : Index = Token.Span?.Next
+          Token = Common.Whitespaces.TryParse(Index, DoingResync)
+          If Token.Kind = TokenKind.Whitespaces Then Tokens += Token : Index = Token.Span?.Next
+          Return New Head(Start?.To(Index), Tokens)
         End Function
 
       End Class
@@ -149,20 +144,20 @@ TryToResyncBody:
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
+        Public Shared Function TryParse(Index As Source.Position?, DoingResync As Boolean) As Token
           '
           '  ArgHole.Align.Body ::= MinusSign? Digits Whitespaces?
           '
-          If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
-          Dim sx = Ix, Txn = Tokens.Empty
-          Dim T As Token = MinusSign.TryParse(Ix, DoingResync)
-          If T.Kind = TokenKind.MinusSign Then Txn = Common.AddThenNext(T, Txn, Ix)
-          T = Common.Digits.TryParse(Ix, DoingResync)
-          If T.Kind = TokenKind.ParseError Then Return ParseError.Make.NullParse(Ix)
-          Txn = Common.AddThenNext(T, Txn, Ix)
-          T = Common.Whitespaces.TryParse(Ix, DoingResync)
-          If T.Kind = TokenKind.Whitespaces Then Txn = Common.AddThenNext(T, Txn, Ix)
-          Return New Body(sx?.To(Ix), Txn)
+          If Index?.IsInvalid Then Return ParseError.Make.EoT(Index)
+          Dim Start = Index, Tokens = FSDv2.Tokens.Empty, Token As Token
+          Token = MinusSign.TryParse(Index, DoingResync)
+          If Token.Kind = TokenKind.MinusSign Then Tokens = Common.AddThenNext(Token, Tokens, Index)
+          Token = Common.Digits.TryParse(Index, DoingResync)
+          If Token.Kind = TokenKind.ParseError Then Return ParseError.Make.NullParse(Index)
+          Tokens = Common.AddThenNext(Token, Tokens, Index)
+          Token = Common.Whitespaces.TryParse(Index, DoingResync)
+          If Token.Kind = TokenKind.Whitespaces Then Tokens = Common.AddThenNext(Token, Tokens, Index)
+          Return New Body(Start?.To(Index), Tokens)
         End Function
 
       End Class

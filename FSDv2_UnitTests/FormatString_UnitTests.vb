@@ -146,10 +146,10 @@ Public Class FSDv2_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat0)>
-  Public Sub _08_()
+  Public Sub _08_SpcArgSpcArgSpc()
     '              0123456
     Dim TheText = " {} {} "
-        Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
+    Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Text = ParseResult.AsString()
     Dim Expected = "(  0:  7)  FormatString
@@ -195,10 +195,10 @@ Public Class FSDv2_UnitTests
   End Sub
 
   <TestMethod, TestCategory(Cat0)>
-  Public Sub _10_()
+  Public Sub _10_ArgInv()
     '              0123456
     Dim TheText = "{x}"
-        Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
+    Dim TheSource = Source.Create(TheText, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
     Dim ParseResult = FormatString.TryParse(TheSource.First.Value, False)
     Dim Text = ParseResult.AsString()
     ' This should have a parse error of unexpected characters span (  1: 1).

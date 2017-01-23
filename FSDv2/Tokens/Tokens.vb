@@ -62,8 +62,7 @@
 
   Default Public ReadOnly Property Tokens(ByVal Index As Integer) As Token
     Get
-      If Index < 0 OrElse Index >= Count Then Return Nothing
-      Return _Tokens(Index)
+      Return If( Index < 0 OrElse Index >= Count, Nothing, _Tokens(Index))
     End Get
   End Property
 

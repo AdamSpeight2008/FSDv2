@@ -10,10 +10,10 @@
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
-        If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
-        If (Ix <> " "c) Then Return ParseError.Make.NullParse(Ix)
-        Return New Whitespace(Ix?.ToUnitSpan)
+      Public Shared Function TryParse(Idx As Source.Position?, DoingResync As Boolean) As Token
+        If Idx?.IsInvalid Then Return ParseError.Make.EoT(Idx)
+        If (Idx <> " "c) Then Return ParseError.Make.NullParse(Idx)
+        Return New Whitespace(Idx?.ToUnitSpan)
       End Function
 
     End Class
@@ -26,17 +26,16 @@
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
-        If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
-        Dim Txn = Tokens.Empty
-        Dim Sx = Ix
-        While Ix?.IsValid
-          Dim T = Whitespace.TryParse(Ix, DoingResync)
+      Public Shared Function TryParse(Idx As Source.Position?, DoingResync As Boolean) As Token
+        If Idx?.IsInvalid Then Return ParseError.Make.EoT(Idx)
+        Dim Txn = Tokens.Empty, Sx = Idx
+        While Idx?.IsValid
+          Dim T = Whitespace.TryParse(Idx, DoingResync)
           If T.Kind = TokenKind.ParseError Then Exit While
-          Txn = Common.AddThenNext(T, Txn, Ix)
+          Txn = Common.AddThenNext(T, Txn, Idx)
         End While
-        Dim s = Sx?.To(Ix)
-        If s.HasValue = False OrElse s.Value.Size = 0 Then Return ParseError.Make.NullParse(Ix)
+        Dim s = Sx?.To(Idx)
+        If s.HasValue = False OrElse s.Value.Size = 0 Then Return ParseError.Make.NullParse(Idx)
         Return New Whitespaces(s.Value, Txn)
       End Function
 
@@ -50,13 +49,13 @@
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
-        If Ix?.IsInvalid OrElse Ix?.Value.HasValue = False Then Return ParseError.Make.EoT(Ix)
-        Select Case Ix.Value.Value
+      Public Shared Function TryParse(Idx As Source.Position?, DoingResync As Boolean) As Token
+        If Idx?.IsInvalid OrElse Idx?.Value.HasValue = False Then Return ParseError.Make.EoT(Idx)
+        Select Case Idx.Value.Value
           Case "0"c To "9"c
-            Return New Digit(Ix?.ToUnitSpan)
+            Return New Digit(Idx?.ToUnitSpan)
           Case Else
-            Return ParseError.Make.NullParse(Ix)
+            Return ParseError.Make.NullParse(Idx)
         End Select
       End Function
       Private Shared ReadOnly _Two As New Numerics.BigInteger(2)
@@ -96,17 +95,17 @@
       Private Shared ReadOnly _Ten As New Numerics.BigInteger(10)
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
-        If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
+      Public Shared Function TryParse(Idx As Source.Position?, DoingResync As Boolean) As Token
+        If Idx?.IsInvalid Then Return ParseError.Make.EoT(Idx)
         Dim Txn = Tokens.Empty()
-        Dim Sx = Ix
-        While Ix?.IsValid
-          Dim T = Digit.TryParse(Ix, DoingResync)
+        Dim Sx = Idx
+        While Idx?.IsValid
+          Dim T = Digit.TryParse(Idx, DoingResync)
           If T.Kind = TokenKind.ParseError Then Exit While
-          Txn = Common.AddThenNext(T, Txn, Ix)
+          Txn = Common.AddThenNext(T, Txn, Idx)
         End While
-        Dim s = Sx?.To(Ix)
-        If s.HasValue = False OrElse s.Value.Size = 0 Then Return ParseError.Make.NullParse(Ix)
+        Dim s = Sx?.To(Idx)
+        If s.HasValue = False OrElse s.Value.Size = 0 Then Return ParseError.Make.NullParse(Idx)
         Return New Digits(s.Value, Txn)
       End Function
 
@@ -156,17 +155,17 @@
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
-        If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
+      Public Shared Function TryParse(Idx As Source.Position?, DoingResync As Boolean) As Token
+        If Idx?.IsInvalid Then Return ParseError.Make.EoT(Idx)
         Dim Txn = Tokens.Empty()
-        Dim Sx = Ix
-        While Ix?.IsValid
-          Dim T = HexDigit.TryParse(Ix, DoingResync)
+        Dim Sx = Idx
+        While Idx?.IsValid
+          Dim T = HexDigit.TryParse(Idx, DoingResync)
           If TypeOf T Is ParseError Then Exit While
-          Txn = Common.AddThenNext(T, Txn, Ix)
+          Txn = Common.AddThenNext(T, Txn, Idx)
         End While
-        Dim s = Sx?.To(Ix)
-        If s.HasValue = False OrElse s.Value.Size = 0 Then Return ParseError.Make.NullParse(Ix)
+        Dim s = Sx?.To(Idx)
+        If s.HasValue = False OrElse s.Value.Size = 0 Then Return ParseError.Make.NullParse(Idx)
         Return New HexDigits(s.Value, Txn)
       End Function
 
@@ -181,17 +180,17 @@
       End Sub
 
       <DebuggerStepperBoundary>
-      Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
-        If Ix?.IsInvalid OrElse Ix?.Value.HasValue = False Then Return ParseError.Make.EoT(Ix)
-        Dim nx = Ix?.Next
-        If Ix.Value.Value = "{"c Then
-          If nx?.IsInvalid OrElse (nx <> "{"c) Then Return New Opening(Ix?.ToUnitSpan)
-          Return New Brace.Esc.Opening(Ix?.To(nx?.Next), New Opening(Ix?.ToUnitSpan) + New Opening(nx?.ToUnitSpan))
-        ElseIf Ix.Value = "}"c Then
-          If nx?.IsInvalid OrElse (nx <> "}"c) Then Return New Closing(Ix?.ToUnitSpan)
-          Return New Brace.Esc.Closing(Ix?.To(nx?.Next), New Closing(Ix?.ToUnitSpan) + New Closing(nx?.ToUnitSpan))
+      Public Shared Function TryParse(Idx As Source.Position?, DoingResync As Boolean) As Token
+        If Idx?.IsInvalid OrElse Idx?.Value.HasValue = False Then Return ParseError.Make.EoT(Idx)
+        Dim nx = Idx?.Next
+        If Idx.Value.Value = "{"c Then
+          If nx?.IsInvalid OrElse (nx <> "{"c) Then Return New Opening(Idx?.ToUnitSpan)
+          Return New Brace.Esc.Opening(Idx?.To(nx?.Next), New Opening(Idx?.ToUnitSpan) + New Opening(nx?.ToUnitSpan))
+        ElseIf Idx.Value = "}"c Then
+          If nx?.IsInvalid OrElse (nx <> "}"c) Then Return New Closing(Idx?.ToUnitSpan)
+          Return New Brace.Esc.Closing(Idx?.To(nx?.Next), New Closing(Idx?.ToUnitSpan) + New Closing(nx?.ToUnitSpan))
         Else
-          Return ParseError.Make.NullParse(Ix)
+          Return ParseError.Make.NullParse(Idx)
         End If
       End Function
 
@@ -203,10 +202,10 @@
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Shadows Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
-          If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
-          Dim res = Brace.TryParse(Ix, DoingResync)
-          If res.Kind <> TokenKind.Brace_Opening Then Return ParseError.Make.NullParse(Ix)
+        Public Shared Shadows Function TryParse(Idx As Source.Position?, DoingResync As Boolean) As Token
+          If Idx?.IsInvalid Then Return ParseError.Make.EoT(Idx)
+          Dim res = Brace.TryParse(Idx, DoingResync)
+          If res.Kind <> TokenKind.Brace_Opening Then Return ParseError.Make.NullParse(Idx)
           Return res
         End Function
 
@@ -221,10 +220,10 @@
         End Sub
 
         <DebuggerStepperBoundary>
-        Public Shared Shadows Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
-          If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
-          Dim res = Brace.TryParse(Ix, DoingResync)
-          If res.Kind <> TokenKind.Brace_Closing Then Return ParseError.Make.NullParse(Ix)
+        Public Shared Shadows Function TryParse(Idx As Source.Position?, DoingResync As Boolean) As Token
+          If Idx?.IsInvalid Then Return ParseError.Make.EoT(Idx)
+          Dim res = Brace.TryParse(Idx, DoingResync)
+          If res.Kind <> TokenKind.Brace_Closing Then Return ParseError.Make.NullParse(Idx)
           Return res
         End Function
 

@@ -6,36 +6,30 @@
   End Sub
 
   <DebuggerStepperBoundary>
-  Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
-    If Ix?.IsInvalid Then Return ParseError.Make.NullParse(Ix)
-    Dim sx = Ix
-    Dim Txn = Tokens.Empty
-    Dim T As Token
-    Dim TextStart As Source.Position? = Nothing
-    While Ix?.IsValid
-      T = Common.Brace.TryParse(Ix, DoingResync)
-      Select Case T.Kind
+  Public Shared Function TryParse(Index As Source.Position?, DoingResync As Boolean) As Token
+    If Index?.IsInvalid Then Return ParseError.Make.NullParse(Index)
+    Dim Start = Index, Tokens = FSDv2.Tokens.Empty, Token As Token, Begining As Source.Position? = Nothing
+    While Index?.IsValid
+      Token = Common.Brace.TryParse(Index, DoingResync)
+      Select Case Token.Kind
 
-        Case TokenKind.Esc_Brace_Opening, TokenKind.Esc_Brace_Closing
-          Txn = Common.AddThenNext(T, Txn, Ix, TextStart)
+        Case TokenKind.Esc_Brace_Opening,
+             TokenKind.Esc_Brace_Closing : Tokens = Common.AddThenNext(Token, Tokens, Index, Begining)
 
-        Case TokenKind.Brace_Closing
-          Txn = Common.AddThenNext(ParseError.Make.Invalid(T.Span, T), Txn, Ix, TextStart)
+        Case TokenKind.Brace_Closing     : Tokens = Common.AddThenNext(ParseError.Make.Invalid(Token.Span, Token), Tokens, Index, Begining)
 
         Case TokenKind.Brace_Opening
-          Dim res = ArgHole.TryParse(Ix, DoingResync)
-          If res.Kind = TokenKind.ArgHole Then
-            Txn = Common.AddThenNext(res, Txn, Ix, TextStart)
-          Else
-            Txn = Common.AddThenNext(ParseError.Make.UnexpectedChars(Ix?.ToUnitSpan, res, ""), Txn, Ix, TextStart)
-          End If
+          Dim res = ArgHole.TryParse(Index, DoingResync)
+          Tokens = Common.AddThenNext(if(res.Kind<>TokenKind.ArgHole, ParseError.Make.UnexpectedChars(Index?.ToUnitSpan, res, ""),res), Tokens, Index, Begining)
+
         Case Else
-          If TextStart Is Nothing Then TextStart = Ix
-          Ix = Ix?.Next
+          If Begining Is Nothing Then Begining = Index
+          Index = Index?.Next
       End Select
+
     End While
-    Txn = Common.AddThenNext(Nothing, Txn, Ix, TextStart)
-    Return New FormatString(sx?.To(Ix), Txn)
+    Tokens = Common.AddThenNext(Nothing, Tokens, Index, Begining)
+    Return New FormatString(Start?.To(Index), Tokens)
   End Function
 
 End Class

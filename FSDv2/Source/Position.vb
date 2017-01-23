@@ -23,7 +23,7 @@
     End Function
 
     <DebuggerStepperBoundary>
-    Private Function Bound(value As Integer, Limit0 As Integer, Limit1 As Integer) As Integer
+    Private Shared Function Bound(value As Integer, Limit0 As Integer, Limit1 As Integer) As Integer
       If value < Limit0 Then
         If Limit0 = Integer.MinValue Then Return Integer.MinValue Else Return Limit0 - 1
       ElseIf value > Limit1 Then

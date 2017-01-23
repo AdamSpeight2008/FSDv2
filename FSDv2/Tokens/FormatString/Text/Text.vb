@@ -8,57 +8,57 @@
     End Sub
 
     <DebuggerStepperBoundary>
-    Public Shared Function TryParse(Ix As Source.Position, DoingResync As Boolean) As Token
-      Return _TryParse(Ix, False, DoingResync)
+    Public Shared Function TryParse(Index As Source.Position, DoingResync As Boolean) As Token
+      Return _TryParse(Index, False, DoingResync)
     End Function
 
     <DebuggerStepperBoundary>
     Friend Shared Function _TryParse(
-                                      Ix As Source.Position?,
+                                      Index As Source.Position?,
                               ParsingArgFormatText As Boolean,
                               DoingResync As Boolean
                                  ) As Token
-      Dim Txn = Tokens.Empty, sx = Ix, T As Token
+      Dim Tokens = FSDv2.Tokens.Empty, Start = Index, Token As Token
       Dim TextStart As New Source.Position?
-      While Ix?.IsValid
-#Region " Check to see if it is an escaped Brace Closing or Openind"
-        T = Common.Brace.Esc.Closing.TryParse(Ix, DoingResync) : If T.Kind = TokenKind.Esc_Brace_Closing Then Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
-        T = Common.Brace.Esc.Opening.TryParse(Ix, DoingResync) : If T.Kind = TokenKind.Esc_Brace_Opening Then Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
+      While Index?.IsValid
+#Region " Check to see if it is an escaped Brace Closing or Opening"
+        Token = Common.Brace.Esc.Closing.TryParse(Index, DoingResync) : If Token.Kind = TokenKind.Esc_Brace_Closing Then Tokens = Common.AddThenNext(Token, Tokens, Index, TextStart) : Continue While
+        Token = Common.Brace.Esc.Opening.TryParse(Index, DoingResync) : If Token.Kind = TokenKind.Esc_Brace_Opening Then Tokens = Common.AddThenNext(Token, Tokens, Index, TextStart) : Continue While
 #End Region
 #Region "Is it a Brace Closing } ?"
-        T = Common.Brace.Closing.TryParse(Ix, DoingResync)
-        If T.Kind = TokenKind.Brace_Closing Then
+        Token = Common.Brace.Closing.TryParse(Index, DoingResync)
+        If Token.Kind = TokenKind.Brace_Closing Then
           If ParsingArgFormatText Then Exit While
-          Txn = Common.AddThenNext(ParseError.Make.Invalid(T.Span, T, ""), Txn, Ix, TextStart)
+          Tokens = Common.AddThenNext(ParseError.Make.Invalid(Token.Span, Token, ""), Tokens, Index, TextStart)
         End If
 #End Region
 #Region "Is it a Brace Opeining { ?"
-        T = Common.Brace.Opening.TryParse(Ix, DoingResync)
-        If T.Kind = TokenKind.Brace_Opening Then
-          If ParsingArgFormatText Then Txn = Common.AddThenNext(ParseError.Make.Invalid(T.Span, T, ""), Txn, Ix, TextStart) : Continue While
-          Txn = Common.AddThenNext(Nothing, Txn, Ix, TextStart) : Exit While
+        Token = Common.Brace.Opening.TryParse(Index, DoingResync)
+        If Token.Kind = TokenKind.Brace_Opening Then
+          If ParsingArgFormatText Then Tokens = Common.AddThenNext(ParseError.Make.Invalid(Token.Span, Token, ""), Tokens, Index, TextStart) : Continue While
+          Tokens = Common.AddThenNext(Nothing, Tokens, Index, TextStart) : Exit While
         End If
 #End Region
 #Region "Check to see it is a C# specific escape sequence"
-        If Ix?.Src.Kind = Source.SourceKind.CS_Standard AndAlso Ix = "\"c Then
-          T = Common.Esc.Sequence.TryParse(Ix, DoingResync)
-          Select Case T.Kind
+        If Index?.Src.Kind = Source.SourceKind.CS_Standard AndAlso Index = "\"c Then
+          Token = Common.Esc.Sequence.TryParse(Index, DoingResync)
+          Select Case Token.Kind
             Case TokenKind.Esc_Seq_Simple, TokenKind.Esc_Seq_HexaDecimal, TokenKind.Esc_Seq_Unicode
-              Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
+              Tokens = Common.AddThenNext(Token, Tokens, Index, TextStart) : Continue While
             Case TokenKind.Partial
-              Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
+              Tokens = Common.AddThenNext(Token, Tokens, Index, TextStart) : Continue While
             Case TokenKind.ParseError
-              If T.IsNotNullParse Then Txn = Common.AddThenNext(T, Txn, Ix, TextStart) : Continue While
+              If Token.IsNotNullParse Then Tokens = Common.AddThenNext(Token, Tokens, Index, TextStart) : Continue While
           End Select
         End If
 #End Region
 #Region "Otherwise treat it as just a text character."
-        If TextStart Is Nothing Then TextStart = Ix
-        Ix = Ix?.Next
+        If TextStart Is Nothing Then TextStart = Index
+        Index = Index?.Next
 #End Region
       End While
-      If TextStart IsNot Nothing Then Txn = Common.AddThenNext(Nothing, Txn, Ix, TextStart)
-      Return New Text(sx?.To(Ix), Txn)
+      If TextStart IsNot Nothing Then Tokens = Common.AddThenNext(Nothing, Tokens, Index, TextStart)
+      Return New Text(Start?.To(Index), Tokens)
     End Function
 
   End Class

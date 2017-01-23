@@ -90,7 +90,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ParseError.vb" />
-    <Compile Include="Resync\ResyncPoint.vb" />
     <Compile Include="Resync\ResyncPoints.vb" />
     <Compile Include="Source\Position.vb" />
     <Compile Include="Source\Source.vb" />

@@ -4,7 +4,9 @@ Partial Public Class FormatString
 
   Partial Public Class ArgHole : Inherits Token
 #Region "Resync Points"
-    Private Shared RPX0 As ResyncPoints = New ResyncPoint(AddressOf Align.Comma.TryParse) + New ResyncPoint(AddressOf Format.Colon.TryParse) + New ResyncPoint(AddressOf Common.Brace.Closing.TryParse)
+    Private Shared RPX0 As ResyncPoints = ResyncPoints.CreateNew(AddressOf Align.Comma.TryParse,
+                                                                 AddressOf Format.Colon.TryParse,
+                                                                 AddressOf Common.Brace.Closing.TryParse)
 #End Region
 
     <DebuggerStepperBoundary>
@@ -12,92 +14,85 @@ Partial Public Class FormatString
       MyBase.New(TokenKind.ArgHole, Span, Inner)
     End Sub
 
-    Private Shared Function TryFind_Brace_Opening(ByRef idx As Source.Position?, ByRef txn As Tokens, DoingResync As Boolean) As Boolean
-      Dim t As Token = Common.Brace.Opening.TryParse(idx, DoingResync)
-      If t.Kind = TokenKind.Brace_Opening Then
-        txn = Common.AddThenNext(t, txn, idx) : Return True
-      End If
-      Return False
-    End Function
-
-    Private Shared Function TryFind_ArgIndex(ByRef idx As Source.Position?, ByRef txn As Tokens, DoingResync As Boolean) As Boolean
-      Dim T As Token = ArgHole.Index.TryParse(idx, DoingResync)
-      If TypeOf T Is ParseError.EoT Then
-        txn += T
-        Return False
-      ElseIf T.Kind <> TokenKind.ArgHole_Index Then
-        Return False
-      Else
-        txn = Common.AddThenNext(T, txn, idx)
-      End If
+    Private Shared Function TryFind_Brace_Opening(ByRef Index As Source.Position?, ByRef Tokens As Tokens, DoingResync As Boolean) As Boolean
+      Dim Token= Common.Brace.Opening.TryParse(Index, DoingResync)
+      If Token.Kind <> TokenKind.Brace_Opening Then Return False 
+      Tokens = Common.AddThenNext(Token, Tokens, Index)
       Return True
     End Function
 
-    Private Shared Function TryFind_ArgAlign(ByRef idx As Source.Position?, ByRef txn As Tokens, DoingResync As Boolean) As Boolean
-      Dim T = ArgHole.Align.TryParse(idx, DoingResync)
-      If TypeOf T Is ParseError.EoT Then txn += T : Return False
-      If T.Kind <> TokenKind.ArgHole_Align Then Return False
-      txn = Common.AddThenNext(T, txn, idx)
+    Private Shared Function TryFind_ArgIndex(ByRef Index As Source.Position?, ByRef Tokens As Tokens, DoingResync As Boolean) As Boolean
+      Dim Token = ArgHole.Index.TryParse(Index, DoingResync)
+      If TypeOf Token Is ParseError.EoT Then Tokens += Token : Return False
+      If Token.Kind <> TokenKind.ArgHole_Index Then Return False
+      Tokens = Common.AddThenNext(Token, Tokens, Index)
       Return True
     End Function
 
-    Private Shared Function TryFind_ArgFormat(ByRef idx As Source.Position?, ByRef txn As Tokens, DoingResync As Boolean) As Boolean
-      Dim T As Token = ArgHole.Format.TryParse(idx, DoingResync)
-      If TypeOf T Is ParseError.EoT Then txn += T : Return False
+    Private Shared Function TryFind_ArgAlign(ByRef Index As Source.Position?, ByRef Tokens As Tokens, DoingResync As Boolean) As Boolean
+      Dim Token = ArgHole.Align.TryParse(Index, DoingResync)
+      If TypeOf Token Is ParseError.EoT Then Tokens += Token : Return False
+      If Token.Kind <> TokenKind.ArgHole_Align Then Return False
+      Tokens = Common.AddThenNext(Token, Tokens, Index)
+      Return True
+    End Function
+
+    Private Shared Function TryFind_ArgFormat(ByRef Index As Source.Position?, ByRef Tokens As Tokens, DoingResync As Boolean) As Boolean
+      Dim T As Token = ArgHole.Format.TryParse(Index, DoingResync)
+      If TypeOf T Is ParseError.EoT Then Tokens += T : Return False
       If T.Kind <> TokenKind.ArgHole_Format Then Return False
-      txn = Common.AddThenNext(T, txn, idx)
+      Tokens = Common.AddThenNext(T, Tokens, Index)
       Return True
     End Function
 
-    Private Shared Function TryFind_Brace_Closing(ByRef idx As Source.Position?, ByRef txn As Tokens, DoingResync As Boolean) As Boolean
-      Dim T = Common.Brace.Closing.TryParse(idx, DoingResync)
-      If TypeOf T Is ParseError.EoT Then txn += T : Return False
-      If T.Kind <> TokenKind.Brace_Closing Then Return False
-      txn = Common.AddThenNext(T, txn, idx)
+    Private Shared Function TryFind_Brace_Closing(ByRef Index As Source.Position?, ByRef Tokens As Tokens, DoingResync As Boolean) As Boolean
+      Dim Token = Common.Brace.Closing.TryParse(Index, DoingResync)
+      If TypeOf Token Is ParseError.EoT Then Tokens += Token : Return False
+      If Token.Kind <> TokenKind.Brace_Closing Then Return False
+      Tokens = Common.AddThenNext(Token, Tokens, Index)
       Return True
     End Function
 
     '<DebuggerStepperBoundary>
-    Public Shared Function TryParse(Ix As Source.Position?, DoingResync As Boolean) As Token
+    Public Shared Function TryParse(Index As Source.Position?, DoingResync As Boolean) As Token
       '
       '  ArgHole ::= Brace.Opening ArgHole.Index?
       '
-      If Ix?.IsInvalid Then Return ParseError.Make.EoT(Ix)
+      If Index?.IsInvalid Then Return ParseError.Make.EoT(Index)
+
+      Dim Start = Index, Tokens = FSDv2.Tokens.Empty
+
 Find_Brace_Opening:
-      Dim sx = Ix, txn = Tokens.Empty, T As Token
-      If Not TryFind_Brace_Opening(Ix, txn, DoingResync) Then GoTo TryToResync
+      If Not TryFind_Brace_Opening(Index, Tokens, DoingResync) Then GoTo TryToResync
 
 Find_Index:
-      If Not TryFind_ArgIndex(Ix, txn, DoingResync) Then GoTo TryToResync
+      If Not TryFind_ArgIndex(Index, Tokens, DoingResync) Then GoTo TryToResync
 
 Find_Align:
-      If Not TryFind_ArgAlign(Ix, txn, DoingResync) Then GoTo TryToResync
+      If Not TryFind_ArgAlign(Index, Tokens, DoingResync) Then GoTo TryToResync
 
 Find_Format:
-      If Not TryFind_ArgFormat(Ix, txn, DoingResync) Then GoTo TryToResync
+      If Not TryFind_ArgFormat(Index, Tokens, DoingResync) Then GoTo TryToResync
 
 Find_Brace_Closing:
-      If Not TryFind_Brace_Closing(Ix, txn, DoingResync) Then GoTo TryToResync
+      If Not TryFind_Brace_Closing(Index, Tokens, DoingResync) Then GoTo TryToResync
 
 Done:
-      Return New ArgHole(sx?.To(Ix), txn)
+      Return New ArgHole(Start?.To(Index), Tokens)
       ' Checking for the valid tokens is left the Analysis (TODO)
 #Region "TryToResync"
 TryToResync:
-      If Ix?.IsInvalid Then GoTo Done
+      If Index?.IsInvalid Then GoTo Done
       If Not DoingResync Then
-        Dim ResultOfResyncing = RPX0.TryToResync(Ix, True)
-        Dim pe = TryCast(ResultOfResyncing, ParseError)
-        If pe Is Nothing Then GoTo Find_Brace_Closing
+        Dim ResultOfResyncing = RPX0.TryToResync(Index, True)
+        Dim ThisParseError = TryCast(ResultOfResyncing, ParseError)
+        If ThisParseError Is Nothing Then GoTo Find_Brace_Closing
         Dim size = ResultOfResyncing.Span?.Size
-        If size.HasValue AndAlso size.Value > 0 Then txn = Common.AddThenNext(ResultOfResyncing, txn, Ix)
+        If size.HasValue AndAlso size.Value > 0 Then Tokens = Common.AddThenNext(ResultOfResyncing, Tokens, Index)
         Select Case ResultOfResyncing(0).Kind
-          Case TokenKind.Comma
-            GoTo Find_Align
-          Case TokenKind.Colon
-            GoTo Find_Format
-          Case TokenKind.Brace_Closing
-            GoTo Find_Brace_Closing
+          Case TokenKind.Comma         : GoTo Find_Align
+          Case TokenKind.Colon         : GoTo Find_Format
+          Case TokenKind.Brace_Closing : GoTo Find_Brace_Closing
           Case Else
             Debug.Assert(False, "Unsupported Kind: " & ResultOfResyncing(0).Kind)
         End Select

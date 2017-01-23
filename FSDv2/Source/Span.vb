@@ -51,7 +51,10 @@
 
     <DebuggerStepperBoundary>
     Public Function Text() As String
-      Return New String(GetChars.Where(Function(c) c.HasValue).Select(Function(c) c.Value).ToArray)
+      If Start.HasValue = False Then Return String.Empty
+      Return Start.Value.Src.Text.Substring(Start.Value.Index, Me.Size)
+      'Return Me.Start.Value.Src
+      'Return New String(GetChars.Where(Function(c) c.HasValue).Select(Function(c) c.Value).ToArray)
     End Function
 
   End Structure
