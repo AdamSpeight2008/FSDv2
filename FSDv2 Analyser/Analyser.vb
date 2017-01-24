@@ -4,35 +4,40 @@ Imports System.Numerics
 
 Public Class Analyser
 
-  Public Function Analyse(FS As FSDv2.Token, ByRef q As Parameters) As Parameters
+  Public Function Analyse(FS As FSDv2.Token, ByRef Results As Parameters) As Parameters
 
     Select Case FS.Kind
 
       Case TokenKind.ParseError
-        Dim pe As ParseError = DirectCast(FS, ParseError)
-        Select Case pe.Why
+        Dim ThisParseError As ParseError = DirectCast(FS, ParseError)
+        Select Case ThisParseError.Why
           Case FSDv2.ParseError.Reason.NullParse
           Case Else
-            q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, pe.Span, $"Reason:= {pe.Why}")
+            Results.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, ThisParseError.Span, $"Reason:= {ThisParseError.Why}")
         End Select
 
       Case TokenKind.FormatString
-        For i = 0 To FS.InnerTokens.Count - 1
-          Dim t = FS(i)
-          Select Case t.Kind
-            Case TokenKind.ArgHole
-              q = ArgHole(DirectCast(t, FormatString.ArgHole), q)
-            Case TokenKind.Text
-              q = Text(DirectCast(t, FormatString.Text), q)
-            Case TokenKind.ParseError
-              q = ParseError(DirectCast(t, ParseError), q)
-            Case TokenKind.Esc_Brace_Closing, TokenKind.Esc_Brace_Opening
-            Case Else
-              q.Result.Issues += New Issue(Issue.Kinds.Unexpected_Token, t.Span, "")
+        Dim Index = 0, _Count = FS.InnerTokens.Count
+        While Index < _Count
+          Dim Token = FS(Index)
+          Select Case Token.Kind
+            Case TokenKind.Esc_Brace_Closing,
+                 TokenKind.Esc_Brace_Opening  : MoveToNext(Index) 
+            Case TokenKind.ArgHole            : Results = ArgHole(DirectCast(Token, FormatString.ArgHole), Results)
+                                                MoveToNext(Index) 
+            Case TokenKind.Text               : Results = Text(DirectCast(Token, FormatString.Text), Results)
+                                                MoveToNext(Index) 
+            Case TokenKind.ParseError         : Results = ParseError(DirectCast(Token, ParseError), Results)
+                                                MoveToNext(Index) 
+            Case Else                         : Results = WasUnexpected(Index, Token, Results )
           End Select
-        Next
+        End While
     End Select
-    Return q
+    Return Results
   End Function
 
+  <Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)>
+  Private Shared Sub MoveToNext(Byref Index As Integer)
+    Index += 1
+  End Sub
 End Class

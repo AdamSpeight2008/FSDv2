@@ -8,16 +8,16 @@ Module Module1
     '           0         1         2         3         4         5         6         7         8
     '           012345678901234567890123456789012345678901234567890123456789012345678901234567890
     Dim Text = "{  0 , -123 :{{}}x4}"
-    Text = "{x}"
+  '  Text = "{x}"
     Dim TheSource = Source.Create(Text, Source.SourceKind.CS_Standard, Source.StringKind.StringFormat)
         Dim Ix = TheSource.First
-    'Dim sw = Diagnostics.Stopwatch.StartNew
+    Dim sw = Diagnostics.Stopwatch.StartNew
     Dim ParseResult = FormatString.TryParse(Ix, False)
-    Console.WriteLine($"Input:=[{Text}]")
+     sw.Stop()
+   Console.WriteLine($"Input:=[{Text}]")
     Dim Actual = ParseResult.AsString
     Console.WriteLine($"Output:= {Actual}")
-    'sw.Stop()
-    '    Console.WriteLine(sw.Elapsed.TotalMilliseconds.ToString)
+        Console.WriteLine(sw.Elapsed.TotalMilliseconds.ToString)
 
   End Sub
 
